@@ -14,9 +14,9 @@ const HomeContainer = styled.div``;
 const index = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const user = useSelector((state: IRootState) => state.user.user);
   useEffect(() => {
-    console.log(user);
     socket.emit("active", { user: user });
   }, [user]);
+
   return (
     <HomeContainer>
       <Head>

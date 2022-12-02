@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
@@ -55,6 +56,7 @@ const InboxList = ({
 }) => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   // const [inboxList, setInboxList] = useState<IRoom[]>([]);
+
   useEffect(() => {
     socket.on("update_last_message_room", (updatedRoom) => {
       setInboxList((prev: IRoom[]) => {
@@ -93,6 +95,20 @@ const InboxList = ({
     };
     getInboxList();
   }, []);
+  const handleSeen = (room: IRoom) => {
+    socket.emit("seen_last_message", {
+      last_message_id: room.last_message._id,
+    });
+    setInboxList((prev: IRoom[]) => {
+      const prevList = [...prev];
+      const pos = prev.map((e) => e._id).indexOf(room._id);
+      prevList[pos] = {
+        ...room,
+        last_message: { ...room.last_message, is_seen: true },
+      };
+      return prevList;
+    });
+  };
   return (
     <StyledInboxList>
       <StyledTopContainer>
@@ -108,7 +124,11 @@ const InboxList = ({
       <StyledInboxs>
         {inboxList?.length > 0 &&
           inboxList?.map((item, index) => (
-            <InboxItem key={item._id} room={item} />
+            <InboxItem
+              key={`${item._id}${window.location.pathname}`}
+              room={item}
+              handleSeen={handleSeen}
+            />
           ))}
       </StyledInboxs>
     </StyledInboxList>

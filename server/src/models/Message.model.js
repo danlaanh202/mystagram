@@ -20,6 +20,10 @@ const MessageSchema = new mongoose.Schema(
     uuid: {
       type: String,
     },
+    is_seen: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

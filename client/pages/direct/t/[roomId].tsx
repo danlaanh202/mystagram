@@ -4,10 +4,9 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-
 import Message from "../../../components/message/Message";
 import MessageLayout from "../../../components/message/MessageLayout";
 import { IRootState } from "../../../redux/store";
@@ -15,6 +14,7 @@ import { IMedia, IMessage, IRoom, IUser } from "../../../types";
 import { v4 as uuidv4 } from "uuid";
 import { publicRequest } from "../../../utils/requestMethod";
 import { socket } from "../../_app";
+import { useDispatch } from "react-redux";
 
 const StyledMessageContainer = styled.div`
   flex-direction: column;
@@ -53,6 +53,7 @@ const StyledTopContainer = styled.div`
   .right {
     button {
       padding: 8px;
+      cursor: pointer;
     }
   }
 `;
@@ -115,6 +116,7 @@ export interface ITempLastMsg {
 const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
   const router = useRouter();
   const roomId = router.query.roomId;
+  const dispatch = useDispatch();
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [inboxList, setInboxList] = useState<IRoom[]>([]);
   const [recipient, setRecipient] = useState<IUser>();
@@ -161,8 +163,10 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
         );
       });
     };
+    setNewMsg([]);
     getRoomById();
   }, [roomId]);
+
   useEffect(() => {
     socket.on("receive_message", (msg: IMessage) => {
       setNewMsg((prev: IMessage[]) => [msg, ...prev]);
@@ -196,7 +200,15 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
               <button>
                 <AudioIcon />
               </button>
-              <button>
+              <button
+                onClick={() =>
+                  window.open(
+                    `http://localhost:3000/call?caller=${
+                      user._id as string
+                    }&recipient_id=${recipient?._id}`
+                  )
+                }
+              >
                 <VideoCallIcon />
               </button>
               <button>
@@ -232,7 +244,11 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
                 <EmojiIcon />
               </DivA>
               <DivA className="input-container">
-                <form onSubmit={handleSubmit(onSendMessageHandler)}>
+                <form
+                  onSubmit={handleSubmit(
+                    onSendMessageHandler as SubmitHandler<FieldValues>
+                  )}
+                >
                   <input
                     type="text"
                     placeholder="Message..."

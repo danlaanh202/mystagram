@@ -54,12 +54,13 @@ export interface IRoom extends ITimeStamps {
   last_message: IMessage; // changed to IMessage when coded
 }
 export interface IMessage extends ITimeStamps {
-  user: IUser;
+  user: IUser | string;
   message: string;
-  room?: IRoom;
+  room?: IRoom | string;
   media?: IMedia;
   _id?: string;
   uuid?: string;
+  is_seen?: boolean;
 }
 export interface IFollow extends ITimeStamps {
   follow_by: IUser | string;

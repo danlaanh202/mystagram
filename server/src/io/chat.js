@@ -1,13 +1,19 @@
 const mongoose = require("mongoose");
 const Message = require("../models/Message.model");
 const Room = require("../models/Room.model");
-function chatIo(io, sockets) {
+const callSockets = {};
+const sockets = {};
+function chatIo(io) {
   io.on("connection", (socket) => {
     socket.on("active", ({ user }) => {
       socket.userId = user._id;
       sockets[socket.userId] = socket;
       io.sockets.emit("receive_active", "Online");
       //then update active
+    });
+    socket.on("rtc_active", ({ user }) => {
+      socket.userId = user._id;
+      callSockets[socket.userId] = socket;
     });
     socket.on("create_room", async ({ my_user, recipient }) => {
       const my_user_id = mongoose.Types.ObjectId(my_user);
@@ -90,9 +96,44 @@ function chatIo(io, sockets) {
         "update_last_message_room",
         savedRoom
       );
+      io.to(`${sockets[recipientId]?.id}`).emit(
+        "receive_message_notification",
+        savedRoom.last_message
+      );
+    });
+    socket.on("seen_last_message", async ({ last_message_id }) => {
+      await Message.findByIdAndUpdate(
+        last_message_id,
+        {
+          is_seen: true,
+        },
+        { new: true }
+      );
+    });
+    socket.on("call", ({ userId, recipientId, peerId }) => {
+      io.to(`${sockets[recipientId]?.id}`).emit("receive_call", {
+        peer_id: peerId,
+        caller: userId,
+        recipient_id: recipientId,
+      });
+    });
+    socket.on("call_answer", ({ userId, recipientId, isAnswer }) => {
+      io.to(`${callSockets[userId]?.id}`)
+        .to(`${callSockets[recipientId]?.id}`)
+        .emit("call_answered", {
+          userId,
+          recipientId,
+          isAnswer,
+        });
+    });
+    socket.on("call_end", ({ userId, recipientId }) => {
+      io.to(`${callSockets[userId]?.id}`)
+        .to(`${callSockets[recipientId]?.id}`)
+        .emit("call_ended", true);
     });
     socket.on("disconnect", () => {
       if (!socket.userId) return;
+      delete callSockets[socket.userId];
       delete sockets[socket.userId];
     });
   });

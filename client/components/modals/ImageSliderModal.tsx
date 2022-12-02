@@ -1,6 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { IPost } from "../../types";
-import SwiperItem from "../image-item/SwiperItem";
 import ImageSlider from "./ImageSlider";
 import ModalProto from "./ModalProto";
 
@@ -10,12 +9,14 @@ const ImageSliderModal = ({
   modalIndex = 0,
   posts,
   setModalIndex,
+  setUpdatedPost,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   modalIndex: number;
   posts: IPost[] | IPost;
   setModalIndex: Dispatch<SetStateAction<number>>;
+  setUpdatedPost?: Dispatch<SetStateAction<IPost>>;
 }) => {
   return (
     <ModalProto open={open} setOpen={setOpen}>
@@ -23,6 +24,7 @@ const ImageSliderModal = ({
         setModalIndex={setModalIndex}
         posts={posts}
         modalIndex={modalIndex}
+        setUpdatedPost={setUpdatedPost}
       />
     </ModalProto>
   );

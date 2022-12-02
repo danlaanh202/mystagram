@@ -5,11 +5,13 @@ import styled from "styled-components";
 import { IRootState } from "../../redux/store";
 import { IMedia, IRoom, IUser } from "../../types";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { handleSeenMessages } from "../../redux/headerStatusRedux";
 
 const StyledInboxItem = styled.div`
   padding: 8px 20px;
   display: flex;
-
+  position: relative;
   align-items: center;
   gap: 12px;
   cursor: pointer;
@@ -21,7 +23,12 @@ const StyledInboxItem = styled.div`
     background: #fafafa;
   }
   .inbox-info {
+    flex: 1;
     .name {
+    }
+    .name-noti {
+      color: #262626;
+      font-weight: 600;
     }
     .last-message {
       display: flex;
@@ -32,19 +39,35 @@ const StyledInboxItem = styled.div`
           margin: 0 4px;
         }
       }
+      .msg-noti {
+        color: #262626;
+        font-weight: 600;
+      }
     }
+  }
+  .not-seen-mark {
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background: #0095f6;
   }
 `;
 const StyledAvatar = styled(Avatar)`
   width: 56px !important;
   height: 56px !important;
 `;
-const InboxItem = ({ room }: { room: IRoom }) => {
+const InboxItem = ({
+  room,
+  handleSeen,
+}: {
+  room: IRoom;
+  handleSeen: (room: IRoom) => void;
+}) => {
   const router = useRouter();
-
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [recipient, setRecipient] = useState<IUser>();
-
+  const [isSeen, setIsSeen] = useState(true);
+  const dispatch = useDispatch();
   useEffect(() => {
     room.users?.every((item: IUser, index) => {
       if (item._id !== user._id) {
@@ -53,7 +76,17 @@ const InboxItem = ({ room }: { room: IRoom }) => {
       }
       return true;
     });
+    if ((room.last_message.user as string) !== user._id) {
+      setIsSeen(room.last_message.is_seen as boolean);
+    }
   }, [room]);
+  useEffect(() => {
+    if (!isSeen && router.asPath.split("/").includes(room._id as string)) {
+      setIsSeen(true);
+      handleSeen(room);
+      dispatch(handleSeenMessages({ room: room._id as string }));
+    }
+  }, [router.asPath, isSeen]);
   return (
     <StyledInboxItem
       style={
@@ -73,11 +106,15 @@ const InboxItem = ({ room }: { room: IRoom }) => {
         src={(recipient?.avatar as IMedia)?.media_url}
       />
       <div className="inbox-info">
-        <div className="name">{recipient?.name}</div>
+        <div className={`name ${isSeen ? "" : "name-noti"}`}>
+          {recipient?.name}
+        </div>
         <div className="last-message">
           {room?.last_message ? (
             <>
-              <div className="msg">{room.last_message.message}</div>
+              <div className={`msg ${isSeen ? "" : "msg-noti"}`}>
+                {room.last_message.message}
+              </div>
               <div className="date">2d</div>
             </>
           ) : (
@@ -85,6 +122,7 @@ const InboxItem = ({ room }: { room: IRoom }) => {
           )}
         </div>
       </div>
+      {!isSeen && <div className="not-seen-mark"></div>}
     </StyledInboxItem>
   );
 };

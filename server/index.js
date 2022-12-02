@@ -2,10 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const route = require("./src/routes");
 const bodyParser = require("body-parser");
-
 const http = require("http");
 const socketio = require("socket.io");
 const chatIo = require("./src/io/chat");
+const { ExpressPeerServer } = require("peer");
 const app = express();
 const server = http.createServer(app);
 require("dotenv").config();
@@ -48,9 +48,28 @@ mongoose
 
 //MVC to create REST API
 route(app);
-let sockets = {};
-chatIo(io, sockets);
 
+chatIo(io);
 server.listen(process.env.PORT, () =>
   console.log("listening on port " + process.env.PORT)
 );
+
+//Peer
+
+const peerExpress = require("express");
+
+const peerApp = peerExpress();
+
+const peerServer = require("http").createServer(peerApp);
+
+const peerPort = 4001;
+
+peerApp.use("/peer", ExpressPeerServer(peerServer, { debug: true }));
+peerServer.listen(peerPort);
+
+peerServer.on("connection", (client) => {
+  console.log("peer client", client.id);
+});
+peerServer.on("disconnect", (client) => {
+  console.log("peer client leave");
+});

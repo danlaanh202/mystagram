@@ -12,7 +12,7 @@ import styled from "styled-components";
 import { IRootState } from "../../redux/store";
 import { IMedia, IRoom, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
-import Spinner from "../Spinner";
+import Spinner from "../loading/Spinner";
 import ModalProto from "./ModalProto";
 const StyledSendNewMessage = styled.div`
   position: absolute;

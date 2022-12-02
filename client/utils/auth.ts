@@ -1,7 +1,7 @@
 import { publicRequest } from "./requestMethod";
 import { Dispatch } from "@reduxjs/toolkit";
 import { ILoginUser } from "../types";
-import { loginSuccess } from "../redux/userRedux";
+import { clearUser, loginSuccess } from "../redux/userRedux";
 export const login = async (dispatch: Dispatch<any>, user: ILoginUser) => {
   try {
     const res = await publicRequest
@@ -20,4 +20,9 @@ export const login = async (dispatch: Dispatch<any>, user: ILoginUser) => {
   } catch (err) {
     return "fail";
   }
+};
+
+export const logout = (dispatch: Dispatch<any>) => {
+  dispatch(clearUser());
+  sessionStorage.removeItem("user");
 };

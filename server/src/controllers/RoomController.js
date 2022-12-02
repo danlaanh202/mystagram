@@ -95,6 +95,26 @@ class RoomController {
       return res.status(500).json(error);
     }
   }
+  async getNumberOfUnseenMessage(req, res) {
+    try {
+      const unSeenMessage = await Room.find({
+        users: { $all: mongoose.Types.ObjectId(req.query.userId) },
+      }).populate({
+        path: "last_message",
+      });
+      const newUnSeen = unSeenMessage
+        .map((item) => item.last_message)
+        .filter(
+          (e) =>
+            e.is_seen === false &&
+            !mongoose.Types.ObjectId(req.query.userId).equals(e.user)
+        );
+
+      return res.status(200).json(newUnSeen);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
 }
 
 module.exports = new RoomController();

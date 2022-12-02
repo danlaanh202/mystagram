@@ -51,7 +51,7 @@ button {
   top: 0;
   bottom: 0;
   width: 100%;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(
     124deg,
     #ff2400,
@@ -65,7 +65,7 @@ button {
     #dd00f3
   );
   background-size: 900% 900%;
-  animation: rainbow 9s ease infinite;
+  animation: rainbow 6s ease infinite;
 }
 
 /* @media (prefers-color-scheme: dark) {

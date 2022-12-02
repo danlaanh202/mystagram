@@ -117,7 +117,9 @@ const LikeUsersModal = ({ post }: { post: IPost }) => {
             color: "#262626",
           }}
         >
-          {post.likes?.length} likes
+          {post.likes?.length > 1
+            ? `${post.likes.length} likes`
+            : `${post.likes.length} like`}
         </div>
       }
     >

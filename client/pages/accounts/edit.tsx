@@ -1,8 +1,9 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styled from "styled-components";
 import Layout from "../../components/Layout";
+import ChangePassword from "../../components/profile/edit/ChangePassword";
 import EditProfile from "../../components/profile/edit/EditProfile";
 const StyledEditContainer = styled.div``;
 const StyledContainer = styled.div`
@@ -49,8 +50,11 @@ const StyledRightContainer = styled.div`
   flex: 1;
   border: 1px solid #dbdbdb;
 `;
-const Edit = ({ list }: { list: IList[] }) => {
+const Edit = () => {
   const [activeId, setActiveId] = useState<number>(0);
+  useEffect(() => {
+    window.history.pushState("", "", `/accounts/${list[activeId]?.slug}`);
+  }, [activeId]);
   return (
     <StyledEditContainer>
       <Head>
@@ -71,7 +75,8 @@ const Edit = ({ list }: { list: IList[] }) => {
               ))}
             </StyledLeftContainer>
             <StyledRightContainer>
-              <EditProfile />
+              {activeId === 0 && <EditProfile />}
+              {activeId === 1 && <ChangePassword />}
             </StyledRightContainer>
           </StyledSettingsContainer>
         </StyledContainer>
@@ -80,26 +85,25 @@ const Edit = ({ list }: { list: IList[] }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = () => {
-  const data = [
-    { index: 0, title: "Edit profile", component: <></> },
-    { index: 1, title: "Change password", component: <></> },
-    { index: 2, title: "Apps and websites", component: <></> },
-    { index: 3, title: "Email notifications", component: <></> },
-    { index: 4, title: "Push notifications", component: <></> },
-    { index: 5, title: "Manage contacts", component: <></> },
-    { index: 6, title: "Privacy and security", component: <></> },
-    { index: 7, title: "Ads", component: <></> },
-    { index: 8, title: "Supervision", component: <></> },
-    { index: 9, title: "Login Activity", component: <></> },
-    { index: 10, title: "Emails from Instagram", component: <></> },
-    { index: 11, title: "Help", component: <></> },
-    { index: 12, title: "Digital collectibles", component: <></> },
-  ];
-  return {
-    props: {
-      list: JSON.parse(JSON.stringify(data)),
-    },
-  };
-};
+const list = [
+  { index: 0, title: "Edit profile", component: <></>, slug: "edit" },
+  {
+    index: 1,
+    title: "Change password",
+    component: <></>,
+    slug: "password/change",
+  },
+  { index: 2, title: "Apps and websites", component: <></> },
+  { index: 3, title: "Email notifications", component: <></> },
+  { index: 4, title: "Push notifications", component: <></> },
+  { index: 5, title: "Manage contacts", component: <></> },
+  { index: 6, title: "Privacy and security", component: <></> },
+  { index: 7, title: "Ads", component: <></> },
+  { index: 8, title: "Supervision", component: <></> },
+  { index: 9, title: "Login Activity", component: <></> },
+  { index: 10, title: "Emails from Instagram", component: <></> },
+  { index: 11, title: "Help", component: <></> },
+  { index: 12, title: "Digital collectibles", component: <></> },
+];
+
 export default Edit;

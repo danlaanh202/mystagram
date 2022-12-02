@@ -8,7 +8,7 @@ import { IRootState } from "../../redux/store";
 import { editUser } from "../../redux/userRedux";
 import { IUser, IMedia } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
-import DotSpinner from "../DotSpinner";
+import DotSpinner from "../loading/DotSpinner";
 
 const StyledSuggestionItem = styled.div`
   display: flex;

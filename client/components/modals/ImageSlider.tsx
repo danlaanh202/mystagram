@@ -41,10 +41,12 @@ const ImageSlider = ({
   modalIndex,
   posts,
   setModalIndex,
+  setUpdatedPost,
 }: {
   modalIndex: number;
   posts: IPost[] | IPost;
   setModalIndex: Dispatch<SetStateAction<number>>;
+  setUpdatedPost?: Dispatch<SetStateAction<IPost>>;
 }) => {
   return (
     <>
@@ -60,7 +62,10 @@ const ImageSlider = ({
             </StyledPrevBtn>
           )}
           <StyledImageSlider>
-            <SwiperItem post={posts[modalIndex]} />
+            <SwiperItem
+              post={posts[modalIndex]}
+              setUpdatedPost={setUpdatedPost}
+            />
           </StyledImageSlider>
           {modalIndex !== (posts as IPost[]).length - 1 && (
             <StyledNextBtn

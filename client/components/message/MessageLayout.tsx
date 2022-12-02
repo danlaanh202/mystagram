@@ -25,7 +25,6 @@ const MessageLayout = ({
   inboxList?: IRoom[];
   setInboxList?: Dispatch<SetStateAction<IRoom[]>>;
 }) => {
-  // const [inboxList, setInboxList] = useState<IRoom[]>([]);
   return (
     <>
       <Layout>

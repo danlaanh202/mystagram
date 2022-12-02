@@ -46,18 +46,28 @@ export default function ProfileMuiTab({
   posts,
   setShowImageSlider,
   setModalIndex,
+  currentUsername,
 }: {
   posts: IPost[];
   setShowImageSlider: React.Dispatch<React.SetStateAction<boolean>>;
   setModalIndex: React.Dispatch<React.SetStateAction<number>>;
+  currentUsername: string;
 }) {
   const [value, setValue] = React.useState(0);
   const router = useRouter();
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const user = useSelector((state: IRootState) => state.user.user as IUser);
-
+  const user = useSelector((state: IRootState) => state.user?.user as IUser);
+  React.useEffect(() => {
+    if (value === 0) {
+      window.history.pushState("", "", `/${currentUsername}`);
+    } else if (value === 1) {
+      window.history.pushState("", "", `/${currentUsername}/saved`);
+    } else if (value === 2) {
+      window.history.pushState("", "", `/${currentUsername}/tagged`);
+    }
+  }, [value]);
   return (
     <Box sx={{ width: "100%", maxWidth: "935px", margin: "0 auto" }}>
       <Box sx={{ borderTop: 1, borderColor: "divider" }}>

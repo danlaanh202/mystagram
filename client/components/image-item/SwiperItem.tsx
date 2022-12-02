@@ -186,14 +186,26 @@ const StyledSmallAvatar = styled(Avatar)`
   width: 19px !important;
   height: 19px !important;
 `;
-const SwiperItem = ({ post }: { post: IPost }) => {
+const SwiperItem = ({
+  post,
+  setUpdatedPost,
+}: {
+  post: IPost;
+  setUpdatedPost?: Dispatch<SetStateAction<IPost>>;
+}) => {
   const [comments, setComments] = useState<IComment[]>([]);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [openLikesModal, setOpenLikesModal] = useState<boolean>(false);
+  const [likeLength, setLikeLength] = useState<number>(post.likes.length || 0);
   const [isLiked, setIsLiked] = useState(
     (post?.likes as string[])?.includes(user?._id as string)
   );
   const bottomRef = useRef<HTMLDivElement>(null);
+  const handleToggleLike = () => {
+    toggleLike(isLiked);
+    setLikeLength((prev: number) => (isLiked ? prev - 1 : prev + 1));
+    setIsLiked((prev: boolean) => !prev);
+  };
   const setToBottom = () => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -227,17 +239,29 @@ const SwiperItem = ({ post }: { post: IPost }) => {
   const toggleLike = async (isLike: boolean) => {
     try {
       if (!isLike) {
-        await publicRequest.post("/like/like_post", {
-          user_id: user._id,
-          post_id: post._id,
-        });
-      } else {
-        await publicRequest.delete("/like/unlike_post", {
-          params: {
+        await publicRequest
+          .post("/like/like_post", {
             user_id: user._id,
             post_id: post._id,
-          },
-        });
+          })
+          .then((response) => {
+            if (setUpdatedPost) {
+              setUpdatedPost(response.data.post);
+            }
+          });
+      } else {
+        await publicRequest
+          .delete("/like/unlike_post", {
+            params: {
+              user_id: user._id,
+              post_id: post._id,
+            },
+          })
+          .then((response) => {
+            if (setUpdatedPost) {
+              setUpdatedPost(response.data.post);
+            }
+          });
       }
     } catch (error) {
       console.log(error);
@@ -311,13 +335,7 @@ const SwiperItem = ({ post }: { post: IPost }) => {
           <div className="r-bottom">
             <div className="icon-container">
               <div>
-                <button
-                  className="icon"
-                  onClick={() => {
-                    toggleLike(isLiked);
-                    setIsLiked((prev: boolean) => !prev);
-                  }}
-                >
+                <button className="icon" onClick={handleToggleLike}>
                   <HeartIcon isLiked={isLiked} />
                 </button>
                 <button className="icon">
@@ -350,7 +368,7 @@ const SwiperItem = ({ post }: { post: IPost }) => {
                   className="likes-length"
                   onClick={() => setOpenLikesModal(true)}
                 >
-                  {post.likes.length} likes
+                  {likeLength} likes
                 </div>
               </div>
               <div className="story-date">APRIL 2, 2021</div>

@@ -4,9 +4,10 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { publicRequest } from "../../utils/requestMethod";
-import useDebounce from "../../hooks/useDebounce";
+
 import { IMedia, IUser } from "../../types";
 import { useRouter } from "next/router";
+import useDebounce from "../../hooks/useDebounce";
 const StyledSearch = styled.div`
   flex: 1;
   height: 36px;

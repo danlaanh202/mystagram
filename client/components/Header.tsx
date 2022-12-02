@@ -7,7 +7,6 @@ import HeaderNav from "./header/HeaderNav";
 import SearchInput from "./header/SearchInput";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import SearchDropdown from "./header/SearchDropdown";
 function LoadingComponent() {
   const router = useRouter();
 

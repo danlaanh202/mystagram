@@ -61,7 +61,7 @@ const Story = ({ post }: { post: IPost }) => {
   } = useForm({
     mode: "onSubmit",
   });
-  const [updatedPost, setUpdatedPost] = useState<IPost>();
+  const [updatedPost, setUpdatedPost] = useState<IPost>(post);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const onCommentHandler = async (data: { comment: string }) => {
@@ -106,20 +106,17 @@ const Story = ({ post }: { post: IPost }) => {
 
   return (
     <StyledStory>
-      <TopStory post={updatedPost || post} />
+      <TopStory post={updatedPost} />
       <div className="image-container">
         <StyledImage
-          src={
-            (updatedPost?.media?.media_url as string) ||
-            (post?.media?.media_url as string)
-          }
+          src={updatedPost?.media?.media_url as string}
           layout="fill"
         />
       </div>
       <BottomStory
         setOpenModal={setOpenModal}
         toggleLike={toggleLike}
-        post={updatedPost || post}
+        post={updatedPost}
       />
       <form
         onSubmit={handleSubmit(onCommentHandler)}
@@ -136,9 +133,10 @@ const Story = ({ post }: { post: IPost }) => {
         <ImageSliderModal
           open={openModal}
           setOpen={setOpenModal}
-          posts={updatedPost || post}
+          posts={updatedPost}
           modalIndex={0}
           setModalIndex={() => {}}
+          setUpdatedPost={setUpdatedPost}
         />
       )}
     </StyledStory>

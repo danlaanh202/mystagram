@@ -5,7 +5,10 @@ class UserController {
   async getUser(req, res, next) {
     try {
       const user = await User.findOne({
-        username: req.query.username,
+        $or: [
+          { username: req.query.username },
+          { _id: mongoose.Types.ObjectId(req.query.user_id) },
+        ],
       }).populate("avatar");
       return res.status(200).json(user);
     } catch (error) {

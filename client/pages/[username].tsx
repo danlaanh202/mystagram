@@ -350,6 +350,7 @@ const UserProfile = ({
               setShowImageSlider={setShowImageSlider}
               posts={posts}
               setModalIndex={setModalIndex}
+              currentUsername={currentUser.username}
             />
           </div>
         </StyledContainer>

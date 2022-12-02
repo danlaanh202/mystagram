@@ -14,6 +14,7 @@ import { MouseEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../../redux/userRedux";
+import { logout } from "../../utils/auth";
 const StyledIconButton = styled(IconButton)`
   padding: 0 !important;
   margin-left: 0 !important;
@@ -123,8 +124,7 @@ export default function AccountMenu({ user }: { user: IUser }) {
 
         <MenuItem
           onClick={() => {
-            dispatch(clearUser());
-            sessionStorage.removeItem("user");
+            logout(dispatch);
             router.push("/login");
           }}
         >
