@@ -16,10 +16,11 @@ import { useRouter } from "next/router";
 import { publicRequest } from "../../utils/requestMethod";
 import { useDispatch } from "react-redux";
 import {
-  IUnseenMessages,
+  setIsUnseenNotification,
   setUnseenMessages,
 } from "../../redux/headerStatusRedux";
 import { socket } from "../../pages/_app";
+import { md } from "../../utils/responsive";
 
 const StyledHeaderNav = styled.div`
   flex: 1;
@@ -46,13 +47,57 @@ const StyledHeaderNav = styled.div`
       font-size: 11px;
     }
   }
+  .home-btn {
+    ${md({
+      display: "none",
+    })}
+  }
+  .new-post-btn {
+    ${md({
+      display: "none",
+    })}
+  }
+  .explore-btn {
+    ${md({
+      display: "none",
+    })}
+  }
+  .activity-feed {
+    position: relative;
+    ${md({
+      display: "none",
+    })}
+    .activity-btn {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .new-noti {
+      position: absolute;
+      bottom: -10px;
+      background: #ff3040;
+      width: 4px;
+      height: 4px;
+      border-radius: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+  .menu-btn {
+    ${md({
+      display: "none",
+    })}
+  }
 `;
 const HeaderNav = () => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const router = useRouter();
   const [activeId, setActiveId] = useState(0);
   const dispatch = useDispatch();
-  const { unseenMessages } = useSelector((state: IRootState) => state.header);
+  const { unseenMessages, isUnseenNotification } = useSelector(
+    (state: IRootState) => state.header
+  );
   useEffect(() => {
     let url = router.asPath.split("/");
     if (url[1] === "") setActiveId(0);
@@ -74,6 +119,7 @@ const HeaderNav = () => {
         dispatch(setUnseenMessages(unseenMessages));
       });
     };
+
     if (user) {
       getNumberOfUnseen();
     }
@@ -81,18 +127,20 @@ const HeaderNav = () => {
 
   return (
     <StyledHeaderNav>
-      <Link href="/">
-        <a
-          style={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <HomeIcon isActive={activeId === 0} />
-        </a>
-      </Link>
+      <div className="home-btn">
+        <Link href="/">
+          <a
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <HomeIcon isActive={activeId === 0} />
+          </a>
+        </Link>
+      </div>
       <Link href="/direct/inbox">
         <a
           className="message-icon"
@@ -109,22 +157,30 @@ const HeaderNav = () => {
           <MessageIcon isActive={activeId === 1} />
         </a>
       </Link>
-      <CreateNewPost />
-      <Link href="/explore">
-        <a
-          style={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <FindPeopleIcon isActive={activeId === 3} />
-        </a>
-      </Link>
-
-      <ActivityFeed />
-      <AccountMenu user={user as IUser} />
+      <div className="new-post-btn">
+        <CreateNewPost />
+      </div>
+      <div className="explore-btn">
+        <Link href="/explore">
+          <a
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <FindPeopleIcon isActive={activeId === 3} />
+          </a>
+        </Link>
+      </div>
+      <div className="activity-feed">
+        <ActivityFeed />
+        {isUnseenNotification && <div className="new-noti"></div>}
+      </div>
+      <div className="menu-btn">
+        <AccountMenu user={user as IUser} />
+      </div>
     </StyledHeaderNav>
   );
 };

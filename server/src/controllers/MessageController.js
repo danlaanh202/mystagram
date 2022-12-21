@@ -5,7 +5,9 @@ class MessageController {
   async getMessages(req, res) {
     try {
       const options = {
-        sort: { _id: -1 },
+        sort: {
+          _id: -1,
+        },
         page: parseInt(req.query.page) | 1,
         limit: parseInt(req.query.limit) | 10,
         populate: [
@@ -33,6 +35,9 @@ class MessageController {
       const messages = await Message.paginate(
         {
           room: mongoose.Types.ObjectId(req.query.room_id),
+          _id: {
+            $lt: mongoose.Types.ObjectId(req.query.top_message),
+          },
         },
         options
       ).then((resp) => resp);

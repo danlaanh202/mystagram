@@ -10,11 +10,14 @@ import styled from "styled-components";
 import Message from "../../../components/message/Message";
 import MessageLayout from "../../../components/message/MessageLayout";
 import { IRootState } from "../../../redux/store";
-import { IMedia, IMessage, IRoom, IUser } from "../../../types";
+import { IDocs, IMedia, IMessage, IRoom, IUser } from "../../../types";
 import { v4 as uuidv4 } from "uuid";
 import { publicRequest } from "../../../utils/requestMethod";
 import { socket } from "../../_app";
 import { useDispatch } from "react-redux";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { BackIcon } from "../../../components/message/InboxList";
+import { md } from "../../../utils/responsive";
 
 const StyledMessageContainer = styled.div`
   flex-direction: column;
@@ -44,6 +47,17 @@ const StyledTopContainer = styled.div`
     align-items: center;
     gap: 8px;
     margin-left: 12px;
+    ${md({
+      marginLeft: 0,
+    })}
+    .back-button {
+      display: none;
+
+      margin-right: 12px;
+      ${md({
+        display: "block",
+      })}
+    }
     .name {
       font-size: 16px;
       line-height: 24px;
@@ -64,11 +78,18 @@ const StyledAvatar = styled(Avatar)`
 const StyledMessages = styled.div`
   flex: 1;
   display: flex;
+  flex-direction: column-reverse;
   background: white;
-  overflow-y: scroll;
-  .messages-container {
+  overflow-y: auto;
+  width: 100%;
+  .infinite-scroll-component__outerdiv {
     flex: 1;
     padding: 20px 20px 0;
+  }
+  .outer-messages {
+    display: flex;
+    flex-direction: column-reverse;
+    overflow: unset !important;
   }
 `;
 const StyledInputContainer = styled.div`
@@ -100,11 +121,7 @@ const StyledInputContainer = styled.div`
 const DivA = styled.div`
   padding: 8px;
 `;
-const StyledMessagesChild = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column-reverse;
-`;
+
 const BottomDiv = styled.div`
   height: 1px;
   width: 100%;
@@ -113,15 +130,16 @@ export interface ITempLastMsg {
   _id: string;
   message: string;
 }
-const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
+const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
   const router = useRouter();
   const roomId = router.query.roomId;
-  const dispatch = useDispatch();
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [inboxList, setInboxList] = useState<IRoom[]>([]);
   const [recipient, setRecipient] = useState<IUser>();
   const [newMsg, setNewMsg] = useState<IMessage[]>([]);
+  const [oldMsg, setOldMsg] = useState<IMessage[]>([]);
   const [lastMessage, setLastMessage] = useState<ITempLastMsg>();
+  const [hasMore, setHasMore] = useState(true);
   const {
     handleSubmit,
     register,
@@ -147,6 +165,7 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
       ]);
     }
   };
+
   useEffect(() => {
     socket.emit("join_conversation", {
       room_id: roomId,
@@ -179,13 +198,37 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
       block: "start",
     });
   };
-
+  const fetchData = async () => {
+    try {
+      let topId =
+        oldMsg[oldMsg.length - 1]?._id ||
+        initialMessages.docs[initialMessages.docs.length - 1]._id;
+      console.log(topId);
+      await publicRequest
+        .get("/message/get", {
+          params: {
+            room_id: roomId,
+            top_message: topId,
+          },
+        })
+        .then((resp) => {
+          if (resp.data.docs.length === 0) {
+            setHasMore(false);
+          }
+          setOldMsg((prev) => [...prev, ...resp.data.docs]);
+        });
+    } catch (error) {
+      setHasMore(false);
+      console.log(error);
+    }
+  };
   return (
     <StyledMessageContainer>
       <Head>
         <title>Instagram • Chats</title>
       </Head>
       <MessageLayout
+        isChat={true}
         inboxList={inboxList}
         setInboxList={setInboxList}
         lastMessage={lastMessage}
@@ -193,6 +236,12 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
         <StyledMessageBox>
           <StyledTopContainer>
             <div className="left">
+              <div
+                className="back-button"
+                onClick={() => router.push("/direct/inbox")}
+              >
+                <BackIcon />
+              </div>
               <StyledAvatar src={(recipient?.avatar as IMedia)?.media_url} />
               <div className="name">{recipient?.name}</div>
             </div>
@@ -216,27 +265,49 @@ const MessagePage = ({ initialMessages }: { initialMessages: IMessage[] }) => {
               </button>
             </div>
           </StyledTopContainer>
-          <StyledMessages>
-            <div className="messages-container">
-              <StyledMessagesChild>
-                <BottomDiv ref={bottomRef}></BottomDiv>
-                {newMsg?.length > 0 &&
-                  newMsg?.map((item, index) => (
-                    <Message
-                      recipient={recipient}
-                      key={item.uuid || item._id}
-                      message={item}
-                    />
-                  ))}
-                {initialMessages?.map((item) => (
+
+          <StyledMessages id="scrollableDiv">
+            <InfiniteScroll
+              next={fetchData}
+              hasMore={hasMore}
+              refreshFunction={fetchData}
+              pullDownToRefresh
+              pullDownToRefreshThreshold={50}
+              loader={
+                <h4
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  Loading...
+                </h4>
+              }
+              inverse={true}
+              dataLength={
+                (oldMsg?.length || 0) +
+                (initialMessages?.docs?.length || 0) +
+                (newMsg?.length || 0) +
+                1
+              }
+              className="outer-messages"
+              scrollableTarget="scrollableDiv"
+            >
+              <BottomDiv ref={bottomRef}></BottomDiv>
+              {newMsg?.length > 0 &&
+                newMsg?.map((item) => (
                   <Message
                     recipient={recipient}
-                    key={item._id}
+                    key={item.uuid || item._id}
                     message={item}
                   />
                 ))}
-              </StyledMessagesChild>
-            </div>
+              {initialMessages?.docs?.map((item) => (
+                <Message recipient={recipient} key={item._id} message={item} />
+              ))}
+              {oldMsg?.map((item) => (
+                <Message recipient={recipient} key={item._id} message={item} />
+              ))}
+            </InfiniteScroll>
           </StyledMessages>
           <StyledInputContainer>
             <div className="input-box">
@@ -276,9 +347,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .get(`${process.env.API_URL}/message/get`, {
       params: {
         room_id: context.query.roomId,
+        limit: 20,
       },
     })
-    .then((response) => response.data.docs);
+    .then((response) => response.data);
   return {
     props: {
       initialMessages: messages,

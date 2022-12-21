@@ -1,3 +1,4 @@
+import { INotification } from "./../types/index";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUnseenMessages {
@@ -7,8 +8,9 @@ export interface IUnseenMessages {
 const headerSlice = createSlice({
   name: "header",
   initialState: {
+    isUnseenNotification: false,
     unseenMessages: [] as IUnseenMessages[],
-    unseenNotifications: [],
+    unseenNotifications: [] as INotification[],
   },
   reducers: {
     setUnseenMessages: (state, action: PayloadAction<IUnseenMessages[]>) => {
@@ -31,8 +33,19 @@ const headerSlice = createSlice({
         state.unseenMessages.splice(pos, 1);
       }
     },
+    setUnseenNotifications: (
+      state,
+      action: PayloadAction<INotification[]>
+    ) => {},
+    setIsUnseenNotification: (state, action: PayloadAction<boolean>) => {
+      state.isUnseenNotification = action.payload;
+    },
   },
 });
-export const { setUnseenMessages, handleSeenMessages, uploadUnseenMessages } =
-  headerSlice.actions;
+export const {
+  setUnseenMessages,
+  handleSeenMessages,
+  uploadUnseenMessages,
+  setIsUnseenNotification,
+} = headerSlice.actions;
 export default headerSlice.reducer;

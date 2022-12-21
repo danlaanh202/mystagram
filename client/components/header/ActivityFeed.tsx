@@ -2,11 +2,17 @@ import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import ActivityFeedIcon from "../icons/ActivityFeedIcon";
 import styled from "styled-components";
-import Avatar from "@mui/material/Avatar";
+import { publicRequest } from "../../utils/requestMethod";
+import { IRootState } from "../../redux/store";
+import { useSelector } from "react-redux";
+import { INotification, IUser } from "../../types";
+import NotificationItem from "./NotificationItem";
+import { setIsUnseenNotification } from "../../redux/headerStatusRedux";
+import { useDispatch } from "react-redux";
+import { socket } from "../../pages/_app";
 const StyledIconButton = styled(IconButton)`
   padding: 0 !important;
   margin-left: 0 !important;
@@ -14,6 +20,9 @@ const StyledIconButton = styled(IconButton)`
 const StyledFeedContainer = styled.div`
   height: 362px;
   width: 500px;
+  overflow: hidden;
+  overflow-y: ${({ overflowY }: { overflowY: boolean }) =>
+    overflowY ? "scroll" : "none"}; ;
 `;
 const StyledMenu = styled(Menu)`
   top: 12px !important;
@@ -24,11 +33,55 @@ const StyledMenu = styled(Menu)`
 export default function ActivityFeed() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const user = useSelector((state: IRootState) => state.user.user as IUser);
+  const [notis, setNotis] = useState<INotification[]>([]);
+  const dispatch = useDispatch();
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  useEffect(() => {
+    const getNotifications = async () => {
+      try {
+        await publicRequest("/noti/get_notifications", {
+          params: {
+            user_id: user._id,
+          },
+        }).then((response) => {
+          setNotis(response.data);
+        });
+      } catch (error) {}
+    };
+    getNotifications();
+  }, []);
+  useEffect(() => {
+    dispatch(setIsUnseenNotification(false));
+    notis.every((item) => {
+      if (item.is_seen === false) {
+        dispatch(setIsUnseenNotification(true));
+        return false;
+      }
+      return true;
+    });
+  }, [notis]);
+  useEffect(() => {
+    socket.on("get_new_noti", (data) => {
+      setNotis((prev: INotification[]) => [data, ...prev]);
+      dispatch(setIsUnseenNotification(true));
+    });
+  }, [socket]);
+  const setSeen = (id: string) => {
+    setNotis((prev: INotification[]) =>
+      prev.map((item) => {
+        if (item._id === id) {
+          return { ...item, is_seen: true };
+        } else {
+          return item;
+        }
+      })
+    );
   };
   return (
     <>
@@ -51,7 +104,7 @@ export default function ActivityFeed() {
         id="account-menu"
         open={open}
         onClose={handleClose}
-        onClick={handleClose}
+        // onClick={handleClose}
         PaperProps={{
           elevation: 2,
           sx: {
@@ -63,7 +116,7 @@ export default function ActivityFeed() {
               display: "block",
               position: "absolute",
               top: 0,
-              right: 8,
+              right: 7,
               width: 10,
               height: 10,
               bgcolor: "background.paper",
@@ -75,20 +128,13 @@ export default function ActivityFeed() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <StyledFeedContainer>
-          <StyledFeedItem>
-            <div className="avatar-container">
-              <Avatar />
-            </div>
-          </StyledFeedItem>
+        <StyledFeedContainer overflowY={notis?.length > 4 ? true : false}>
+          {notis?.length > 0 &&
+            notis.map((item, index) => (
+              <NotificationItem key={item._id} noti={item} setSeen={setSeen} />
+            ))}
         </StyledFeedContainer>
       </StyledMenu>
     </>
   );
 }
-
-const StyledFeedItem = styled.div`
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-`;

@@ -3,12 +3,13 @@ import styled from "styled-components";
 import { IPost, IUser } from "../../types";
 import BottomStory from "./BottomStory";
 import TopStory from "./TopStory";
-import { useForm } from "react-hook-form";
-import { publicRequest } from "../../utils/requestMethod";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { publicRequest, pushNotification } from "../../utils/requestMethod";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../redux/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageSliderModal from "../modals/ImageSliderModal";
+import { socket } from "../../pages/_app";
 
 const StyledStory = styled.div`
   background: white;
@@ -61,6 +62,7 @@ const Story = ({ post }: { post: IPost }) => {
   } = useForm({
     mode: "onSubmit",
   });
+
   const [updatedPost, setUpdatedPost] = useState<IPost>(post);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -72,7 +74,19 @@ const Story = ({ post }: { post: IPost }) => {
           post_id: post._id,
           comment: data.comment,
         })
-        .then((response) => setUpdatedPost(response.data.post));
+        .then((response) => {
+          setUpdatedPost(response.data.post);
+          if (user._id !== (post.user as IUser)._id) {
+            socket.emit("push_noti", {
+              type: "comment",
+              postId: post._id,
+              notificationFrom: user._id,
+              notificationTo: (post.user as IUser)._id,
+              commentId: response.data.comment._id,
+            });
+          }
+        });
+
       reset();
     } catch (error) {
       console.log(error);
@@ -88,6 +102,14 @@ const Story = ({ post }: { post: IPost }) => {
           })
           .then((response) => {
             setUpdatedPost(response.data.post);
+            if (user._id !== (post.user as IUser)._id) {
+              socket.emit("push_noti", {
+                type: "like",
+                postId: post._id,
+                notificationFrom: user._id,
+                notificationTo: (post.user as IUser)._id,
+              });
+            }
           });
       } else {
         await publicRequest
@@ -97,7 +119,19 @@ const Story = ({ post }: { post: IPost }) => {
               post_id: post._id,
             },
           })
-          .then((response) => setUpdatedPost(response.data.post));
+          .then(async (response) => {
+            setUpdatedPost(response.data.post);
+            await publicRequest
+              .delete("/noti/undo_like_notification", {
+                params: {
+                  post_id: post._id,
+                  noti_type: "like",
+                  noti_from: user._id,
+                  noti_to: (post.user as IUser)._id,
+                },
+              })
+              .then((response) => console.log(response.data));
+          });
       }
     } catch (error) {
       console.log(error);
@@ -119,7 +153,7 @@ const Story = ({ post }: { post: IPost }) => {
         post={updatedPost}
       />
       <form
-        onSubmit={handleSubmit(onCommentHandler)}
+        onSubmit={handleSubmit(onCommentHandler as SubmitHandler<FieldValues>)}
         className="comment-container"
       >
         <input

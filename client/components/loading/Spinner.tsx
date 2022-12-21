@@ -23,7 +23,7 @@ const Spinner = ({
   width,
   height,
   color,
-  borderSize,
+  borderSize = 2,
 }: {
   width: number;
   height: number;

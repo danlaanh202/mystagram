@@ -8,11 +8,18 @@ import { publicRequest } from "../../utils/requestMethod";
 import { IMedia, IUser } from "../../types";
 import { useRouter } from "next/router";
 import useDebounce from "../../hooks/useDebounce";
+import { m1000, md, md2 } from "../../utils/responsive";
 const StyledSearch = styled.div`
   flex: 1;
   height: 36px;
   position: relative;
   margin-left: 12px;
+  ${m1000({
+    marginRight: "20px",
+  })}
+  ${md2({
+    display: "none",
+  })}
   .search-input {
     height: 100%;
     padding: 4px 4px 4px 32px;

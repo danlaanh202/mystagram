@@ -5,13 +5,14 @@ import Link from "next/link";
 import styled from "styled-components";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ILoginUser } from "../types";
 import { useDispatch } from "react-redux";
 import { login as loginFunc } from "../utils/auth";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Spinner from "../components/loading/Spinner";
 const StyledLoginPages = styled.div`
   background: #fafafa;
   height: 100vh;
@@ -67,6 +68,11 @@ const StyledButton = styled.button`
   border-radius: 4px;
   margin-top: 4px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  max-height: 28px;
 `;
 const StyledOrComponent = styled.div`
   display: flex;
@@ -116,15 +122,19 @@ const login = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const onSubmitHandler = async (data: ILoginUser) => {
+    setLoading(true);
     try {
       loginFunc(dispatch, data).then((res) => {
-        console.log(res);
         if (res === "done") {
+          setLoading(false);
           router.push("/");
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -136,7 +146,9 @@ const login = () => {
         <StyledLogoContainer>
           <Image src="/logo.png" alt="" width={175} height={50} />
         </StyledLogoContainer>
-        <StyledForm onSubmit={handleSubmit(onSubmitHandler)}>
+        <StyledForm
+          onSubmit={handleSubmit(onSubmitHandler as SubmitHandler<FieldValues>)}
+        >
           <TextField
             fullWidth
             label="Username"
@@ -156,7 +168,9 @@ const login = () => {
             InputLabelProps={{ className: "style-label" }}
             {...register("password")}
           />
-          <StyledButton>Log in</StyledButton>
+          <StyledButton>
+            {loading ? <Spinner width={14} height={14} /> : "Login"}
+          </StyledButton>
         </StyledForm>
         <StyledOrComponent>
           <div className="thanh"></div>

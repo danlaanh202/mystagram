@@ -6,6 +6,8 @@ import RightItems from "./main/RightItems";
 import Story from "./main/Story";
 import { IPost } from "../types";
 import StoryDialog from "./dialog/StoryDialog";
+import { m1000 } from "../utils/responsive";
+import MobileNavbar from "./mobilenav/MobileNavbar";
 
 const StyledHome = styled.div`
   background: #fafafa;
@@ -21,6 +23,10 @@ const MainContainer = styled.div`
 `;
 const MainItems = styled.div`
   width: 470px;
+  ${m1000({
+    marginLeft: "auto",
+    marginRight: "auto",
+  })}
 `;
 const ReelContainer = styled.div`
   padding: 16px 0;
@@ -35,15 +41,14 @@ const ReelContainer = styled.div`
 const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
   return (
     <StyledHome>
-      <Layout>
+      <Layout isShowHeader={true}>
         <MainContainer>
           <MainItems>
             <ReelContainer>
               <ReelItem />
               <ReelItem />
             </ReelContainer>
-
-            {initialPosts.map((item, index) => (
+            {initialPosts.map((item) => (
               <Story key={item._id} post={item} />
             ))}
           </MainItems>

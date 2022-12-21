@@ -1,22 +1,32 @@
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-
 import { ITempLastMsg } from "../../pages/direct/t/[roomId]";
 import { socket } from "../../pages/_app";
 import { IRootState } from "../../redux/store";
 import { IRoom, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
+import { md, sm } from "../../utils/responsive";
 import SendNewMessageModal from "../modals/SendNewMessageModal";
 import InboxItem from "./InboxItem";
-
-const StyledInboxList = styled.div`
+interface IStyledComponentProps {
+  isChat: boolean;
+}
+const StyledInboxList = styled.div<IStyledComponentProps>`
   width: 350px;
   background: white;
   display: flex;
   flex-direction: column;
   height: 100%;
+  ${(props) =>
+    props.isChat
+      ? md({
+          display: "none",
+        })
+      : md({
+          width: "100%",
+        })};
 `;
 const StyledTopContainer = styled.div`
   display: flex;
@@ -26,6 +36,15 @@ const StyledTopContainer = styled.div`
   border-right: 1px solid #dbdbdb;
   border-bottom: 1px solid #dbdbdb;
   height: 60px;
+  .back-button {
+    opacity: 0;
+
+    pointer-events: none;
+    ${md({
+      opacity: 1,
+      pointerEvents: "auto",
+    })}
+  }
   .change-account {
     display: flex;
     align-items: center;
@@ -49,11 +68,14 @@ const InboxList = ({
   lastMessage,
   inboxList,
   setInboxList,
+  isChat,
 }: {
   lastMessage?: ITempLastMsg;
   inboxList: IRoom[];
   setInboxList: Dispatch<SetStateAction<IRoom[]>>;
+  isChat: boolean;
 }) => {
+  const router = useRouter();
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   // const [inboxList, setInboxList] = useState<IRoom[]>([]);
 
@@ -110,12 +132,13 @@ const InboxList = ({
     });
   };
   return (
-    <StyledInboxList>
+    <StyledInboxList isChat={isChat}>
       <StyledTopContainer>
-        <div></div>
+        <div className="back-button" onClick={() => router.push("/")}>
+          <BackIcon />
+        </div>
         <div className="change-account">
           <span>{user?.username}</span>
-          <DownIcon />
         </div>
         <div>
           <SendNewMessageModal setInboxList={setInboxList} type={1} />
@@ -134,19 +157,22 @@ const InboxList = ({
     </StyledInboxList>
   );
 };
-const DownIcon = () => {
+
+export default InboxList;
+
+export const BackIcon = () => {
   return (
     <svg
-      aria-label="Down chevron icon"
+      aria-label="Back"
       color="#262626"
       fill="#262626"
-      height="20"
+      height="24"
       role="img"
       viewBox="0 0 24 24"
-      width="20"
+      width="24"
+      style={{ transform: "rotate(-90deg)" }}
     >
       <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
     </svg>
   );
 };
-export default InboxList;

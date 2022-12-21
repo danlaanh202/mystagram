@@ -1,7 +1,14 @@
 import Avatar from "@mui/material/Avatar";
 import Modal from "@mui/material/Modal";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import {
+  LegacyRef,
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { socket } from "../pages/_app";
@@ -9,7 +16,9 @@ import { uploadUnseenMessages } from "../redux/headerStatusRedux";
 
 import { IMedia, IMessage, IRoom, IUser } from "../types";
 import { publicRequest } from "../utils/requestMethod";
+import { md } from "../utils/responsive";
 import Header from "./Header";
+import MobileNavbar from "./mobilenav/MobileNavbar";
 const StyledContainer = styled.div`
   padding-top: 62px;
 `;
@@ -63,11 +72,32 @@ const StyledCallAvatar = styled(Avatar)`
   width: 92px !important;
   height: 92px !important;
 `;
-const Layout = ({ children }: { children: ReactNode }) => {
+const StyledMobileNavbar = styled.div<{ isShowMobileBar: boolean }>`
+  position: fixed;
+  display: none;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: #ffffff;
+  border-top: 1px solid #dbdbdb;
+  ${(props) =>
+    props.isShowMobileBar ? md({ display: "flex" }) : md({ display: "none" })};
+`;
+const Layout = ({
+  children,
+  isShowHeader = true,
+  isShowMobileBar = true,
+}: {
+  children: ReactNode;
+  isShowHeader: boolean;
+  isShowMobileBar: boolean;
+}) => {
   const [openCallModal, setOpenCallModal] = useState(false);
   const [caller, setCaller] = useState<IUser>();
   const [peerId, setPeerId] = useState<string>("");
   const [recipientId, setRecipientId] = useState<string>("");
+  const notificationSoundRef = useRef<HTMLAudioElement>(null);
   const dispatch = useDispatch();
   const handleClose = () => {
     setOpenCallModal(false);
@@ -105,13 +135,17 @@ const Layout = ({ children }: { children: ReactNode }) => {
           _id: data._id as string,
         })
       );
+      if (notificationSoundRef.current !== null) {
+        notificationSoundRef.current.play();
+      }
     });
   }, [socket]);
 
   return (
     <>
-      <Header />
+      <Header isShow={isShowHeader} />
       {children}
+      <audio src="/notification_sound.mp3" ref={notificationSoundRef}></audio>
       <>
         {openCallModal && (
           <Modal
@@ -145,6 +179,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
           </Modal>
         )}
       </>
+      <StyledMobileNavbar isShowMobileBar={isShowMobileBar}>
+        <MobileNavbar />
+      </StyledMobileNavbar>
     </>
   );
 };

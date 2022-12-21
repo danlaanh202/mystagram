@@ -8,6 +8,7 @@ const messageRouter = require("./message.route");
 const followRouter = require("./follow.route");
 const commentRouter = require("./comment.route");
 const likeRouter = require("./like.route");
+const notiRouter = require("./notification.route");
 function route(app) {
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
@@ -19,5 +20,6 @@ function route(app) {
   app.use("/follow", followRouter);
   app.use("/comment", commentRouter);
   app.use("/like", likeRouter);
+  app.use("/noti", notiRouter);
 }
 module.exports = route;

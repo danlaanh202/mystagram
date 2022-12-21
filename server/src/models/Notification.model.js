@@ -20,6 +20,10 @@ const NotificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    comment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

@@ -7,6 +7,7 @@ import HeaderNav from "./header/HeaderNav";
 import SearchInput from "./header/SearchInput";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { m1000, md } from "../utils/responsive";
 function LoadingComponent() {
   const router = useRouter();
 
@@ -34,7 +35,7 @@ function LoadingComponent() {
 
   return loading ? <div id="rainbow_progress_bar"></div> : <></>;
 }
-const StyledHeaderContainer = styled.div`
+const StyledHeaderContainer = styled.div<{ isShow: boolean }>`
   /* width: 100%; */
   border-bottom: 1px solid #dbdbdb;
   background: white;
@@ -44,12 +45,17 @@ const StyledHeaderContainer = styled.div`
   left: 0;
   right: 0;
   z-index: 100;
-
+  ${(props) =>
+    props.isShow
+      ? md({})
+      : md({
+          display: "none",
+        })};
   .container {
     max-width: 935px;
     width: 100%;
     margin: 0 auto;
-    padding: 10px 0;
+    padding: 10px 10px;
     display: flex;
     align-items: center;
     .logo-container {
@@ -57,12 +63,14 @@ const StyledHeaderContainer = styled.div`
       flex: 1;
       cursor: pointer;
     }
+    ${m1000({
+      padding: "10px 20px",
+    })}
   }
 `;
-const Header = () => {
-  const loading = useSelector((state: IRootState) => state.loading.isLoading);
+const Header = ({ isShow = true }: { isShow?: boolean }) => {
   return (
-    <StyledHeaderContainer>
+    <StyledHeaderContainer isShow={isShow}>
       <LoadingComponent />
       <div className="container">
         <Link href="/">

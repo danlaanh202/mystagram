@@ -44,7 +44,7 @@ const TopStory = ({ post }: { post: IPost }) => {
         <span>{post.user?.username}</span>
       </div>
       <div className="p-8">
-        <StoryDialog />
+        <StoryDialog post={post} />
       </div>
     </StyledTopStory>
   );

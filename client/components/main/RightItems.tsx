@@ -5,13 +5,17 @@ import styled from "styled-components";
 import { IRootState } from "../../redux/store";
 import { IMedia, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
+import { m1000 } from "../../utils/responsive";
+
 import Suggestion from "./Suggestion";
 
 const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-
+  ${m1000({
+    display: "none",
+  })}
   .self {
     display: flex;
     align-items: center;

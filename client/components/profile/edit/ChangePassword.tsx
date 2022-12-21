@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
+import { m1000 } from "../../../utils/responsive";
 const StyledEditProfile = styled.div`
   margin-top: 32px;
   .item-container {
@@ -30,6 +31,7 @@ const AsideContainer = styled.div`
   flex: 0 0 194px;
   padding: 0 32px;
   text-align: right;
+
   /* margin-top: 10px; */
   label {
     font-size: 16px;
@@ -41,7 +43,9 @@ const AsideContainer = styled.div`
 const RightContainer = styled.div`
   flex-basis: 355px;
   /* padding-right: 60px; */
-
+  ${m1000({
+    paddingRight: "60px",
+  })}
   .info-container {
     .username {
       font-size: 24px;

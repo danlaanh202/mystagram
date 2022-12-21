@@ -57,5 +57,27 @@ class PostController {
       return res.status(500).json(error);
     }
   }
+  async getPostById(req, res) {
+    try {
+      const post = await Post.findById(req.query.post_id).populate([
+        {
+          path: "user",
+          populate: {
+            path: "avatar",
+          },
+        },
+        { path: "media" },
+        {
+          path: "last_comment",
+          populate: {
+            path: "user",
+          },
+        },
+      ]);
+      return res.status(200).json(post);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
 }
 module.exports = new PostController();

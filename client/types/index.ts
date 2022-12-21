@@ -75,3 +75,24 @@ export interface IComment {
   is_reply: boolean;
   reply_comments: IComment[] | string[];
 }
+export interface INotification {
+  _id?: string;
+  notification_type: string;
+  post?: IPost | string;
+  notification_from: IUser | string;
+  user: IUser | string;
+  is_seen: boolean;
+  comment?: string | IComment;
+}
+export interface IDocs {
+  docs: any[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number;
+  page: number;
+  pagingCounter: number;
+  prevPage?: null | number;
+  totalDocs: number;
+  totalPages: number;
+}

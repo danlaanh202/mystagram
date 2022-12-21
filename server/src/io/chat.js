@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Message = require("../models/Message.model");
 const Room = require("../models/Room.model");
+const Notification = require("../models/Notification.model");
 const callSockets = {};
 const sockets = {};
 function chatIo(io) {
@@ -131,6 +132,40 @@ function chatIo(io) {
         .to(`${callSockets[recipientId]?.id}`)
         .emit("call_ended", true);
     });
+    socket.on(
+      "push_noti",
+      async ({ type, postId, notificationFrom, notificationTo, commentId }) => {
+        const newNotification = new Notification({
+          notification_type: type,
+          post: mongoose.Types.ObjectId(postId),
+          notification_from: mongoose.Types.ObjectId(notificationFrom),
+          user: mongoose.Types.ObjectId(notificationTo),
+          comment: mongoose.Types.ObjectId(commentId),
+        });
+        try {
+          const savedNotification = await (
+            await newNotification.save()
+          ).populate([
+            {
+              path: "notification_from",
+              populate: {
+                path: "avatar",
+              },
+            },
+            {
+              path: "post",
+              populate: {
+                path: "media",
+              },
+            },
+          ]);
+          io.to(`${sockets[notificationTo].id}`).emit(
+            "get_new_noti",
+            savedNotification
+          );
+        } catch (error) {}
+      }
+    );
     socket.on("disconnect", () => {
       if (!socket.userId) return;
       delete callSockets[socket.userId];

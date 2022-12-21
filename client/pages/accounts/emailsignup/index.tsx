@@ -5,12 +5,12 @@ import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ISignupUser } from "../../../types";
 import { publicRequest } from "../../../utils/requestMethod";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 const StyledSignUp = styled.div`
   background: #fafafa;
   min-height: 100vh;
@@ -75,6 +75,11 @@ const StyledButton = styled.button`
   margin-top: 4px;
   cursor: pointer;
   margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  max-height: 28px;
 `;
 const StyledOrComponent = styled.div`
   display: flex;
@@ -125,13 +130,18 @@ const index = () => {
     mode: "onChange",
   });
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const onSubmitHandler = async (data: ISignupUser) => {
+    setLoading(true);
     try {
       await publicRequest.post("/auth/register", data).then((response) => {
         console.log(response.data);
+        setLoading(false);
         router.push("/login");
       });
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -156,7 +166,9 @@ const index = () => {
           <div className="or">OR</div>
           <div className="thanh"></div>
         </StyledOrComponent>
-        <StyledForm onSubmit={handleSubmit(onSubmitHandler)}>
+        <StyledForm
+          onSubmit={handleSubmit(onSubmitHandler as SubmitHandler<FieldValues>)}
+        >
           <TextField
             fullWidth
             label="Mobile Number or Email"

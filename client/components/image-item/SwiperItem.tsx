@@ -8,27 +8,36 @@ import HeartIcon from "../icons/HeartIcon";
 import SaveIcon from "../icons/SaveIcon";
 import ShareIcon from "../icons/ShareIcon";
 import PostComment from "./PostComment";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { CloseIcon } from "../modals/LikeUsersModal";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { m1000 } from "../../utils/responsive";
 const StyledItemContainer = styled.div`
   height: calc(100vh - 60px);
   display: flex;
   overflow: hidden;
   min-height: 80vh;
-  /* position: relative; */
-  /* height: 100%; */
-  /* justify-content: center; */
-  /* align-items: center; */
-  /* width: calc(100% - 200px); */
+  ${m1000({
+    maxWidth: "calc(100% - 20px)",
+    height: "450px",
+    minHeight: "unset",
+    width: "100%",
+    margin: "0 auto",
+  })}
+
   .left-container {
     width: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: black;
+    ${m1000({
+      width: "300px",
+      flex: 1,
+      height: "100%",
+    })}
 
     .image-container {
       display: flex;
@@ -48,6 +57,9 @@ const StyledItemContainer = styled.div`
     border-radius: 0 8px 8px 0;
     height: 100%;
     overflow: hidden;
+    ${m1000({
+      width: "400px",
+    })}
     .r-top {
       display: flex;
       justify-content: space-between;
@@ -72,7 +84,7 @@ const StyledItemContainer = styled.div`
       padding: 16px;
       display: flex;
       flex: 1;
-      /* max-height: calc(100% - 226px); */
+
       flex-direction: column;
       overflow-y: scroll;
       ::-webkit-scrollbar {
@@ -209,7 +221,8 @@ const SwiperItem = ({
   const setToBottom = () => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "nearest",
+      inline: "start",
     });
   };
   useEffect(() => {
@@ -228,6 +241,7 @@ const SwiperItem = ({
     };
     getComments();
   }, [post]);
+
   const {
     handleSubmit,
     register,
@@ -282,8 +296,8 @@ const SwiperItem = ({
           ]);
         })
         .then(() => {
-          setToBottom();
           reset();
+          setToBottom();
         });
     } catch (error) {
       console.log(error);
@@ -324,7 +338,7 @@ const SwiperItem = ({
               </div>
             </div>
             <div className="r-center-comments">
-              <div ref={bottomRef} className="r-center-sb"></div>
+              <div className="r-center-sb" ref={bottomRef}></div>
               <div>
                 {comments?.map((item) => (
                   <PostComment key={item._id} comment={item} />
@@ -375,7 +389,9 @@ const SwiperItem = ({
             </div>
           </div>
           <form
-            onSubmit={handleSubmit(onCommentHandler)}
+            onSubmit={handleSubmit(
+              onCommentHandler as SubmitHandler<FieldValues>
+            )}
             className="comment-container"
           >
             <input
@@ -402,13 +418,14 @@ const StyledComponentContainer = styled.div`
   position: absolute;
   z-index: 9999;
   /* width: 100vw; */
-  height: 100vh;
+  height: 120vh;
   left: -50vw;
   right: -50vw;
   top: -30px;
+  /* overflow: hidden; */
 `;
 const StyledLikeUsersContainer = styled.div`
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

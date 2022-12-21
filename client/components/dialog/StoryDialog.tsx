@@ -3,8 +3,11 @@ import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import styled from "styled-components";
+import { IPost } from "../../types";
+import { useRouter } from "next/router";
+import { md } from "../../utils/responsive";
 
-export default function StoryDialog() {
+export default function StoryDialog({ post }: { post: IPost }) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -32,13 +35,21 @@ export default function StoryDialog() {
           <circle cx="18" cy="12" r="1.5"></circle>
         </svg>
       </div>
-      <SimpleDialog onClose={handleClose} open={open}></SimpleDialog>
+      <SimpleDialog
+        onClose={handleClose}
+        open={open}
+        post={post}
+      ></SimpleDialog>
     </div>
   );
 }
 const StyledButtonContainer = styled.div`
   border-bottom: 1px solid #dbdbdb;
   width: 400px;
+  ${md({
+    width: "80vw",
+    maxWidth: "400px",
+  })}
   .normal-btn {
     cursor: pointer;
     min-height: 48px;
@@ -59,10 +70,13 @@ const StyledDialog = styled(Dialog)`
 function SimpleDialog({
   open,
   onClose,
+  post,
 }: {
   open: boolean;
   onClose: () => void;
+  post: IPost;
 }) {
+  const router = useRouter();
   return (
     <StyledDialog open={open} onClose={onClose}>
       <StyledButtonContainer>
@@ -72,15 +86,31 @@ function SimpleDialog({
         <button className="normal-btn danger-btn">Unfollow</button>
       </StyledButtonContainer>
       <StyledButtonContainer>
-        <button className="normal-btn">Go to post</button>
+        <button
+          className="normal-btn"
+          onClick={() => router.push(`/p/${post?._id}`)}
+        >
+          Go to post
+        </button>
       </StyledButtonContainer>
       <StyledButtonContainer>
         <button className="normal-btn">Share to...</button>
       </StyledButtonContainer>
       <StyledButtonContainer>
-        <button className="normal-btn">Copy link</button>
+        <button
+          className="normal-btn"
+          onClick={() => {
+            navigator.clipboard
+              .writeText(`http://localhost:3000/p/${post?._id}`)
+              .then(() => {
+                onClose();
+              });
+          }}
+        >
+          Copy link
+        </button>
       </StyledButtonContainer>
-      <StyledButtonContainer>
+      <StyledButtonContainer onClick={() => onClose()}>
         <button className="normal-btn">Cancel</button>
       </StyledButtonContainer>
     </StyledDialog>

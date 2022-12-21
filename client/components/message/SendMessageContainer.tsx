@@ -1,4 +1,7 @@
+import { Dispatch, SetStateAction, useState } from "react";
 import styled from "styled-components";
+import { IRoom } from "../../types";
+import { md, sm } from "../../utils/responsive";
 import SendNewMessageModal from "../modals/SendNewMessageModal";
 
 const StyledSendMessageContainer = styled.div`
@@ -8,6 +11,9 @@ const StyledSendMessageContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  ${md({
+    display: "none",
+  })}
   .title {
     margin-top: 16px;
     font-weight: 300;
@@ -29,7 +35,11 @@ const StyledSendMessageContainer = styled.div`
     cursor: pointer;
   }
 `;
-const SendMessageContainer = () => {
+const SendMessageContainer = ({
+  setInboxList,
+}: {
+  setInboxList: Dispatch<SetStateAction<IRoom[]>>;
+}) => {
   return (
     <StyledSendMessageContainer>
       <DirectIcon />
@@ -38,7 +48,7 @@ const SendMessageContainer = () => {
       <div className="des">
         Send private photos and messages to a friend or group.
       </div>
-      <SendNewMessageModal type={2} />
+      <SendNewMessageModal type={2} setInboxList={setInboxList} />
     </StyledSendMessageContainer>
   );
 };

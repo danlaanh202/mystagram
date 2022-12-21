@@ -17,17 +17,20 @@ import { editUser } from "../redux/userRedux";
 import FollowersModal from "../components/modals/FollowersModal";
 import FollowingModal from "../components/modals/FollowingModal";
 import ImageSliderModal from "../components/modals/ImageSliderModal";
+import MobileHeader from "../components/header/MobileHeader";
+import { md } from "../utils/responsive";
 const StyledUserProfile = styled.div``;
 const StyledContainer = styled.div`
   width: 100%;
   background: #fafafa;
   min-height: 100vh;
-
   .prof-container {
     max-width: 935px;
     width: 100%;
     margin: 0 auto;
     padding: 30px 20px;
+    overflow: hidden;
+    ${md({ display: "none" })}
   }
   .mui-profile-tab {
     margin-top: 4px;
@@ -174,6 +177,33 @@ const StyledTopContainer = styled.div`
   }
 `;
 
+const StyledMobileProfileContainer = styled.div`
+  display: none;
+  margin: 16px;
+  ${md({
+    display: "block",
+  })}
+  .info-container {
+    display: flex;
+    .avt {
+      width: 78px;
+      height: 78px;
+    }
+    .right-prof-container {
+      .right-prof-username-container {
+        .username {
+          font-size: 28px;
+          line-height: 32px;
+          font-weight: 300;
+        }
+        .three-dot {
+        }
+      }
+      .right-bottom-btn-container {
+      }
+    }
+  }
+`;
 const UserProfile = ({
   currentUser,
   posts,
@@ -241,119 +271,144 @@ const UserProfile = ({
           {`@${(thisUser?.username as string) || currentUser.username}`}
         </title>
       </Head>
-      <Layout>
-        <StyledContainer>
-          <div className="prof-container">
-            <StyledTopContainer>
-              <div className="avatar-container">
-                <Avatar
-                  className="avt"
-                  src={
-                    (
-                      (thisUser?.avatar as IMedia) ||
-                      (currentUser.avatar as IMedia)
-                    )?.media_url
-                  }
-                />
-              </div>
-              <div className="prof-info">
-                <div className="t">
-                  <div className="t-username">
-                    {(thisUser?.username as string) || currentUser.username}
-                  </div>
-                  {currentUser._id === user?._id ? (
-                    <>
-                      <button
-                        className="pri-btn"
-                        onClick={() => router.push("/accounts/edit")}
-                      >
-                        <div>Edit Profile</div>
-                      </button>
-                      <div className="t-settings">
-                        <SettingsIcon />
-                      </div>
-                    </>
-                  ) : isFollowed ? (
-                    <>
-                      <button
-                        className="pri-btn"
-                        onClick={() => router.push("/")}
-                      >
-                        <div>Message</div>
-                      </button>
-                      <button
-                        className="pri-btn"
-                        onClick={() => router.push("/")}
-                      >
-                        <div style={{ padding: "0 16px" }}>
-                          <FollowIcon />
-                        </div>
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      disabled={followLoading}
-                      className="follow-btn"
-                      onClick={handleFollow}
-                    >
-                      {followLoading ? (
-                        <div className="loading"></div>
-                      ) : (
-                        <div>Follow</div>
-                      )}
-                    </button>
-                  )}
-                  <>
-                    <ThreeDotIcon />
-                  </>
+      <Layout isShowMobileBar={true} isShowHeader={false}>
+        <>
+          <MobileHeader
+            centerComp={(thisUser?.username as string) || currentUser.username}
+          />
+          <StyledContainer>
+            <div className="prof-container">
+              <StyledTopContainer>
+                <div className="avatar-container">
+                  <Avatar
+                    className="avt"
+                    src={
+                      (
+                        (thisUser?.avatar as IMedia) ||
+                        (currentUser.avatar as IMedia)
+                      )?.media_url
+                    }
+                  />
                 </div>
-                <div className="c">
-                  <div className="c-item">
-                    <div>
-                      <span>18</span> posts
+                <div className="prof-info">
+                  <div className="t">
+                    <div className="t-username">
+                      {(thisUser?.username as string) || currentUser.username}
+                    </div>
+                    {currentUser._id === user?._id ? (
+                      <>
+                        <button
+                          className="pri-btn"
+                          onClick={() => router.push("/accounts/edit")}
+                        >
+                          <div>Edit Profile</div>
+                        </button>
+                        <div className="t-settings">
+                          <SettingsIcon />
+                        </div>
+                      </>
+                    ) : isFollowed ? (
+                      <>
+                        <button
+                          className="pri-btn"
+                          onClick={() => router.push("/")}
+                        >
+                          <div>Message</div>
+                        </button>
+                        <button
+                          className="pri-btn"
+                          onClick={() => router.push("/")}
+                        >
+                          <div style={{ padding: "0 16px" }}>
+                            <FollowIcon />
+                          </div>
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        disabled={followLoading}
+                        className="follow-btn"
+                        onClick={handleFollow}
+                      >
+                        {followLoading ? (
+                          <div className="loading"></div>
+                        ) : (
+                          <div>Follow</div>
+                        )}
+                      </button>
+                    )}
+                    <>
+                      <ThreeDotIcon />
+                    </>
+                  </div>
+                  <div className="c">
+                    <div className="c-item">
+                      <div>
+                        <span>18</span> posts
+                      </div>
+                    </div>
+
+                    <div className="c-item">
+                      <FollowersModal currentUser={thisUser || currentUser}>
+                        <div className="c-item-followers">
+                          <span>
+                            {thisUser?.followers?.length ||
+                              currentUser?.followers?.length}
+                          </span>{" "}
+                          followers
+                        </div>
+                      </FollowersModal>
+                    </div>
+                    <div className="c-item">
+                      <FollowingModal>
+                        <div>
+                          <span>
+                            {thisUser?.following?.length ||
+                              currentUser?.following?.length}
+                          </span>{" "}
+                          following
+                        </div>
+                      </FollowingModal>
                     </div>
                   </div>
-
-                  <div className="c-item">
-                    <FollowersModal currentUser={thisUser || currentUser}>
-                      <div className="c-item-followers">
-                        <span>
-                          {thisUser?.followers?.length ||
-                            currentUser?.followers?.length}
-                        </span>{" "}
-                        followers
-                      </div>
-                    </FollowersModal>
-                  </div>
-                  <div className="c-item">
-                    <FollowingModal>
-                      <div>
-                        <span>
-                          {thisUser?.following?.length ||
-                            currentUser?.following?.length}
-                        </span>{" "}
-                        following
-                      </div>
-                    </FollowingModal>
+                  <div className="b">
+                    <div className="b-name">
+                      {thisUser?.name || currentUser.name}
+                    </div>
                   </div>
                 </div>
-                <div className="b">
-                  <div className="b-name">
-                    {thisUser?.name || currentUser.name}
+              </StyledTopContainer>
+            </div>
+            <StyledMobileProfileContainer>
+              <div className="info-container">
+                <div className="avatar-container">
+                  <Avatar
+                    className="avt"
+                    src={
+                      (
+                        (thisUser?.avatar as IMedia) ||
+                        (currentUser.avatar as IMedia)
+                      )?.media_url
+                    }
+                  />
+                </div>
+                <div className="right-prof-container">
+                  <div className="right-prof-username-container">
+                    <div className="username">danlaanh202</div>
                   </div>
                 </div>
               </div>
-            </StyledTopContainer>
-          </div>
-          <div className="mui-profile-tab">
-            <ProfileMuiTab
-              setShowImageSlider={setShowImageSlider}
-              posts={posts}
-              setModalIndex={setModalIndex}
-              currentUsername={currentUser.username}
-            />
-          </div>
-        </StyledContainer>
+            </StyledMobileProfileContainer>
+            <div className="mui-profile-tab">
+              <ProfileMuiTab
+                setShowImageSlider={setShowImageSlider}
+                posts={posts}
+                setModalIndex={setModalIndex}
+                currentUsername={currentUser.username}
+              />
+            </div>
+          </StyledContainer>
+        </>
       </Layout>
       {showImageSlider && (
         <ImageSliderModal

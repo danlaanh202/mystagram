@@ -19,8 +19,12 @@ const index = () => {
       <Head>
         <title>Inbox • Chats</title>
       </Head>
-      <MessageLayout inboxList={inboxList} setInboxList={setInboxList}>
-        <SendMessageContainer />
+      <MessageLayout
+        isChat={false}
+        inboxList={inboxList}
+        setInboxList={setInboxList}
+      >
+        <SendMessageContainer setInboxList={setInboxList} />
       </MessageLayout>
     </StyledInbox>
   );

@@ -14,6 +14,7 @@ import { ChangeEvent, useState } from "react";
 import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { IMedia, IUser } from "../../types";
+import { m1000 } from "../../utils/responsive";
 const StyledCreateNewPost = styled.div`
   position: absolute;
   top: 50%;
@@ -82,6 +83,9 @@ const StyledCreatePostDetail = styled.div`
     color: #262626;
     border-radius: 16px 16px 0 0;
     padding: 0 16px;
+    ${m1000({
+      width: "calc(100vw - 32px)",
+    })}
     &-back {
       cursor: pointer;
     }
@@ -98,6 +102,9 @@ const StyledCreatePostDetail = styled.div`
     background: white;
     border-radius: 0 0 16px 16px;
     overflow: hidden;
+    ${m1000({
+      width: "calc(100vw - 32px)",
+    })}
     .b-l {
       flex: 1;
       height: 537px;
@@ -202,9 +209,7 @@ const CreateNewPost = () => {
       console.log(error);
     }
   };
-  // useEffect(() => {
-  //   console.log(caption);
-  // }, [caption]);
+
   return (
     <ModalProto
       open={openModal}

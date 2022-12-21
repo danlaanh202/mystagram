@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Layout from "../../components/Layout";
 import ChangePassword from "../../components/profile/edit/ChangePassword";
 import EditProfile from "../../components/profile/edit/EditProfile";
+import { m1000 } from "../../utils/responsive";
 const StyledEditContainer = styled.div``;
 const StyledContainer = styled.div`
   width: 100%;
@@ -19,12 +20,15 @@ const StyledSettingsContainer = styled.div`
   background: white;
   min-height: 50px;
   margin: auto;
+  ${m1000({
+    maxWidth: "calc(100vw - 24px)",
+  })}
 `;
-interface IList {
-  index: number;
-  title: String;
-  component: ReactNode;
-}
+// interface IList {
+//   index: number;
+//   title: String;
+//   component: ReactNode;
+// }
 const StyledLeftContainer = styled.div`
   background: white;
   border-top: 1px solid #dbdbdb;
@@ -60,7 +64,7 @@ const Edit = () => {
       <Head>
         <title>{list[activeId].title} - Instagram</title>
       </Head>
-      <Layout>
+      <Layout isShowHeader={false}>
         <StyledContainer>
           <StyledSettingsContainer>
             <StyledLeftContainer>
