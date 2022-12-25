@@ -46,11 +46,13 @@ const MobileHeader = ({
   centerComp,
   rightComp,
   leftCompRouter = "/",
+  backRouter = "/",
 }: {
   leftComp?: ReactNode;
   centerComp: ReactNode;
   rightComp?: ReactNode;
   leftCompRouter?: string;
+  backRouter?: string;
 }) => {
   const router = useRouter();
   return (
@@ -58,7 +60,7 @@ const MobileHeader = ({
       {leftCompRouter !== "/" ? (
         leftComp
       ) : (
-        <div className="left-btn" onClick={() => router.push(leftCompRouter)}>
+        <div className="left-btn" onClick={() => router.push(backRouter)}>
           <BackIcon />
         </div>
       )}

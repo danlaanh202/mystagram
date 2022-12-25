@@ -32,7 +32,7 @@ const StyledGridItemContainer = styled.div`
     })}
   }
 `;
-const GridExploreItem = ({
+const GridExploreItems = ({
   posts,
   setModalIndex,
   setShowImageSlider,
@@ -59,4 +59,4 @@ const GridExploreItem = ({
   );
 };
 
-export default GridExploreItem;
+export default GridExploreItems;

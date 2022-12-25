@@ -177,7 +177,6 @@ const EditProfile = () => {
     handleDeleteImage,
   } = useUploadMedia();
   const onEditHandler = async (data: IUser) => {
-    console.log(data);
     try {
       await publicRequest
         .put("/user/edit", {
@@ -218,7 +217,10 @@ const EditProfile = () => {
   }, [previewSource]);
   return (
     <StyledEditProfile>
-      <MobileHeader centerComp={<>Edit profile</>} />
+      <MobileHeader
+        backRouter={`/${user.username}`}
+        centerComp={<>Edit profile</>}
+      />
       <div className="item-container top">
         <AsideContainer className="top-aside">
           <StyledAvatar src={(user.avatar as IMedia)?.media_url} />

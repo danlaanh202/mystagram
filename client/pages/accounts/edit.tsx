@@ -1,6 +1,6 @@
-import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { ReactNode, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Layout from "../../components/Layout";
 import ChangePassword from "../../components/profile/edit/ChangePassword";
@@ -62,14 +62,24 @@ const StyledRightContainer = styled.div`
   border: 1px solid #dbdbdb;
 `;
 const Edit = () => {
+  const router = useRouter();
   const [activeId, setActiveId] = useState<number>(0);
   useEffect(() => {
-    window.history.pushState("", "", `/accounts/${list[activeId]?.slug}`);
+    // window.history.pushState("", "", `/accounts/${list[activeId]?.slug}`);
+    if (activeId)
+      router.push(
+        `?type=${list[activeId]?.slug}&activeInd=${activeId}`,
+        undefined,
+        { shallow: true }
+      );
   }, [activeId]);
+  useEffect(() => {
+    setActiveId(parseInt(router.query.activeInd as string));
+  }, [router]);
   return (
     <StyledEditContainer>
       <Head>
-        <title>{list[activeId].title} - Instagram</title>
+        <title>{list[activeId]?.title || list[0].title} - Instagram</title>
       </Head>
       <Layout isShowMobileBar={true} isShowHeader={false}>
         <StyledContainer>
@@ -97,12 +107,12 @@ const Edit = () => {
 };
 
 const list = [
-  { index: 0, title: "Edit profile", component: <></>, slug: "edit" },
+  { index: 0, title: "Edit profile", component: <></>, slug: "edit_profile" },
   {
     index: 1,
     title: "Change password",
     component: <></>,
-    slug: "password/change",
+    slug: "change_password",
   },
   { index: 2, title: "Apps and websites", component: <></> },
   { index: 3, title: "Email notifications", component: <></> },

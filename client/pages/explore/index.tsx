@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import Layout from "../../components/Layout";
 import Head from "next/head";
-import GridExploreItem from "../../components/explore/GridExploreItem";
-import { useEffect, useState } from "react";
+import GridExploreItems from "../../components/explore/GridExploreItems";
+import { ChangeEvent, useEffect, useState } from "react";
 import ImageSliderModal from "../../components/modals/ImageSliderModal";
 import { IPost } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
 import { md } from "../../utils/responsive";
+import MobileSearchComponent from "../../components/dialog/MobileSearchComponent";
+import useDebounce from "../../hooks/useDebounce";
 const StyledExploreContainer = styled.div`
   background: #fafafa;
   min-height: 100vh;
@@ -27,9 +29,15 @@ const StyledSearchBar = styled.div`
   padding: 0 16px;
   display: none;
   align-items: center;
+  z-index: 20;
   ${md({
     display: "flex",
   })}
+  .cancel-btn {
+    margin-left: 12px;
+    color: #262626;
+    font-weight: 600;
+  }
   .search-inp {
     padding: 4px 12px 4px 22px;
     flex: 1;
@@ -53,6 +61,9 @@ const index = () => {
   const [showImageSlider, setShowImageSlider] = useState(false);
   const [modalIndex, setModalIndex] = useState<number>(-1);
   const [posts, setPosts] = useState<IPost[]>([]);
+  const [showSearchComponent, setShowSearchComponent] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const searchTextDebounce = useDebounce(searchText, 300);
   useEffect(() => {
     const getPosts = async () => {
       try {
@@ -70,14 +81,39 @@ const index = () => {
       </Head>
       <Layout isShowMobileBar={true} isShowHeader={false}>
         <StyledSearchBar>
-          <input type="text" className="search-inp" placeholder="Search" />
+          <input
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSearchText(e.target.value)
+            }
+            value={searchText}
+            onFocus={() => setShowSearchComponent(true)}
+            type="text"
+            className="search-inp"
+            placeholder="Search"
+          />
+          {showSearchComponent && (
+            <div
+              onClick={() => {
+                setShowSearchComponent(false);
+                setSearchText("");
+              }}
+              className="cancel-btn"
+            >
+              Cancel
+            </div>
+          )}
         </StyledSearchBar>
         <StyledContainer>
-          <GridExploreItem
-            setShowImageSlider={setShowImageSlider}
-            posts={posts}
-            setModalIndex={setModalIndex}
-          />
+          {showSearchComponent && (
+            <MobileSearchComponent searchText={searchTextDebounce} />
+          )}
+          <div style={showSearchComponent ? { display: "none" } : {}}>
+            <GridExploreItems
+              setShowImageSlider={setShowImageSlider}
+              posts={posts}
+              setModalIndex={setModalIndex}
+            />
+          </div>
         </StyledContainer>
       </Layout>
       {showImageSlider && (

@@ -132,13 +132,18 @@ export default function MobileOptionsDialog() {
             <ListItem
               button
               onClick={() => {
-                router.push("/accounts/edit");
+                router.push("/accounts/edit?activeInd=0");
               }}
             >
               <ListItemText primary="Edit profile" />
             </ListItem>
             <Divider />
-            <ListItem button>
+            <ListItem
+              button
+              onClick={() => {
+                router.push("/accounts/edit?activeInd=1");
+              }}
+            >
               <ListItemText primary="Change password" />
             </ListItem>
             <Divider />

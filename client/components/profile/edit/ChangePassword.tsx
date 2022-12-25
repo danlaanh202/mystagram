@@ -6,17 +6,29 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { m1000 } from "../../../utils/responsive";
+import { IRootState } from "../../../redux/store";
+import { IUser } from "../../../types";
+import { m1000, md } from "../../../utils/responsive";
+import MobileHeader from "../../header/MobileHeader";
 const StyledEditProfile = styled.div`
   margin-top: 32px;
+
+  ${md({
+    marginTop: 0,
+    marginBottom: "44px",
+  })}
   .item-container {
     display: flex;
     margin-bottom: 16px;
-    align-items: center;
   }
   .top {
     align-items: center;
+    ${md({
+      padding: "0 20px",
+      marginTop: "20px",
+    })}
     &-aside {
       margin: 0 !important;
     }
@@ -25,13 +37,21 @@ const StyledEditProfile = styled.div`
 const StyledAvatar = styled(Avatar)`
   margin-left: auto;
   width: 38px !important;
-  height: 38px !important;
+  height: 38px !important
+  ;
+  ${md({
+    marginRight: "20px",
+  })}
 `;
 const AsideContainer = styled.div`
   flex: 0 0 194px;
   padding: 0 32px;
   text-align: right;
-
+  ${md({
+    padding: "0",
+    textAlign: "left",
+    flex: "unset",
+  })}
   /* margin-top: 10px; */
   label {
     font-size: 16px;
@@ -45,6 +65,10 @@ const RightContainer = styled.div`
   /* padding-right: 60px; */
   ${m1000({
     paddingRight: "60px",
+  })}
+  ${md({
+    flexBasis: "unset",
+    padding: "0",
   })}
   .info-container {
     .username {
@@ -68,7 +92,19 @@ const RightContainer = styled.div`
     }
   }
 `;
-const StyledForm = styled.div``;
+const StyledForm = styled.div`
+  ${md({
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    padding: "0 20px",
+  })}
+  .item-container {
+    ${md({
+      flexDirection: "column",
+    })}
+  }
+`;
 const StyledSubmitButton = styled.button`
   color: white;
   margin-top: 16px;
@@ -93,6 +129,7 @@ const ChangePassword = () => {
   ) => {
     setState(str);
   };
+  const user = useSelector((state: IRootState) => state.user.user as IUser);
   useEffect(() => {
     if (
       oldPassword &&
@@ -112,6 +149,10 @@ const ChangePassword = () => {
   };
   return (
     <StyledEditProfile>
+      <MobileHeader
+        backRouter={`/${user.username}`}
+        centerComp={<>Change Password</>}
+      />
       <div className="item-container top">
         <AsideContainer className="top-aside">
           <StyledAvatar />
