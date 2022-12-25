@@ -1,10 +1,15 @@
 import styled from "styled-components";
 import Head from "next/head";
-import Layout from "../../components/Layout";
-import SwiperItem from "../../components/image-item/SwiperItem";
+
 import { GetServerSideProps } from "next";
 import axios from "axios";
-import { IPost } from "../../types";
+import { IPost } from "../../../types";
+import SwiperItem from "../../../components/image-item/SwiperItem";
+import Layout from "../../../components/Layout";
+import { md } from "../../../utils/responsive";
+import MobileHeader from "../../../components/header/MobileHeader";
+import Story from "../../../components/main/Story";
+
 const StyledPostContainer = styled.div`
   background: #fafafa;
   min-height: 100vh;
@@ -14,18 +19,38 @@ const StyledContainer = styled.div`
   max-width: 935px;
   margin: 0 auto;
   padding: 20px;
+  ${md({
+    padding: "0",
+  })}
+  .story-comp {
+    /* margin-top:; */
+
+    margin-bottom: 44px;
+    display: none;
+    ${md({
+      display: "block",
+    })};
+  }
+  .pc-comp {
+    ${md({ display: "none" })}
+  }
 `;
 const Post = ({ post }: { post: IPost }) => {
-  console.log(post);
   return (
     <StyledPostContainer>
       <Head>
         <title>Instagram photo by abcxyz</title>
       </Head>
-      <Layout>
+      <Layout isShowHeader={false} isShowMobileBar={true}>
         {/* <SwiperItem /> */}
         <StyledContainer>
-          <SwiperItem post={post} />
+          <MobileHeader centerComp={<>Post</>} />
+          <div className="story-comp">
+            <Story showCommentInput={false} post={post} />
+          </div>
+          <div className="pc-comp">
+            <SwiperItem post={post} />
+          </div>
         </StyledContainer>
       </Layout>
     </StyledPostContainer>

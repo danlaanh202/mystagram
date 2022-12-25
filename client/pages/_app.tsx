@@ -10,21 +10,29 @@ import "swiper/css/bundle";
 export const socket = io(`${process.env.API_URL}`);
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  // const [isLogged, setIsLogged] = useState<boolean>(false);
   useEffect(() => {
     if (window) {
       if (
         router.asPath !== "/login" &&
-        router.asPath !== "/accounts/emailsignup" &&
-        !JSON.parse(sessionStorage?.getItem("user") as string)
-      )
-        router.push("/login");
+        router.asPath !== "/accounts/emailsignup"
+      ) {
+        if (
+          JSON.parse(
+            JSON.parse(localStorage?.getItem("persist:root") as string).user
+          ).user._id === undefined
+        )
+          router.push("/login");
+      }
       if (
-        JSON.parse(sessionStorage?.getItem("user") as string) &&
-        (router.asPath === "/login" ||
-          router.asPath === "/accounts/emailsignup")
+        router.asPath === "/login" ||
+        router.asPath === "/accounts/emailsignup"
       )
-        router.push("/");
+        if (
+          JSON.parse(
+            JSON.parse(localStorage?.getItem("persist:root") as string).user
+          ).user._id
+        )
+          router.push("/");
     }
   }, [router.asPath]);
   return (

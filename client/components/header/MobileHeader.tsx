@@ -17,6 +17,7 @@ const StyledMobileHeader = styled.div`
   background: white;
   border-bottom: 1px solid #dbdbdb;
   display: none;
+  z-index: 20;
   ${md({
     display: "flex",
   })}
@@ -37,7 +38,11 @@ const StyledMobileHeader = styled.div`
 `;
 
 const MobileHeader = ({
-  leftComp = <BackIcon />,
+  leftComp = (
+    <div className="left-btn" onClick={() => router.push(leftCompRouter)}>
+      <BackIcon />
+    </div>
+  ),
   centerComp,
   rightComp,
   leftCompRouter = "/",
@@ -50,9 +55,13 @@ const MobileHeader = ({
   const router = useRouter();
   return (
     <StyledMobileHeader>
-      <div className="left-btn" onClick={() => router.push(leftCompRouter)}>
-        {leftComp}
-      </div>
+      {leftCompRouter !== "/" ? (
+        leftComp
+      ) : (
+        <div className="left-btn" onClick={() => router.push(leftCompRouter)}>
+          <BackIcon />
+        </div>
+      )}
       <div className="center-content">{centerComp && centerComp}</div>
       <div className="right-content">{rightComp && rightComp}</div>
     </StyledMobileHeader>

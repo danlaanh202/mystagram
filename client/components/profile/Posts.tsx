@@ -4,7 +4,7 @@ import GridItem from "./GridItem";
 import axios from "axios";
 import { IPost } from "../../types";
 import { Dispatch, SetStateAction } from "react";
-import { m1000 } from "../../utils/responsive";
+import { m1000, md } from "../../utils/responsive";
 const StyledPosts = styled.div`
   margin-bottom: 24px;
   display: flex;
@@ -16,10 +16,17 @@ const StyledPosts = styled.div`
     margin: "0 auto",
     marginBottom: "24px",
   })}
+  ${md({
+    maxWidth: "unset",
+  })}
   .grid-container {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 28px;
+
+    ${md({
+      gap: "4px",
+    })}
   }
 `;
 

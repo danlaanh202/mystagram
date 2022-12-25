@@ -13,7 +13,7 @@ import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { CloseIcon } from "../modals/LikeUsersModal";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { m1000 } from "../../utils/responsive";
+import { m1000, md } from "../../utils/responsive";
 const StyledItemContainer = styled.div`
   height: calc(100vh - 60px);
   display: flex;
@@ -21,7 +21,7 @@ const StyledItemContainer = styled.div`
   min-height: 80vh;
   ${m1000({
     maxWidth: "calc(100% - 20px)",
-    height: "450px",
+    height: "800px",
     minHeight: "unset",
     width: "100%",
     margin: "0 auto",
@@ -38,7 +38,9 @@ const StyledItemContainer = styled.div`
       flex: 1,
       height: "100%",
     })}
-
+    ${md({
+      display: "none",
+    })}
     .image-container {
       display: flex;
       align-items: center;
@@ -59,7 +61,8 @@ const StyledItemContainer = styled.div`
     overflow: hidden;
     ${m1000({
       width: "400px",
-    })}
+    })};
+
     .r-top {
       display: flex;
       justify-content: space-between;

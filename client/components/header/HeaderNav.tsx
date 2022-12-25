@@ -106,24 +106,24 @@ const HeaderNav = () => {
   }, [router]);
   useEffect(() => {
     const getNumberOfUnseen = async () => {
-      await publicRequest("/room/unseen_number", {
-        params: {
-          userId: user?._id,
-        },
-      }).then((resp) => {
-        // console.log(resp.data);
-        let unseenMessages = resp.data.map((item: IMessage) => {
-          return { _id: item._id, room: item.room };
+      await publicRequest
+        .get("/room/unseen_number", {
+          params: {
+            userId: user?._id,
+          },
+        })
+        .then((resp) => {
+          let unseenMessages = resp.data?.map((item: IMessage) => {
+            return { _id: item._id, room: item.room };
+          });
+          dispatch(setUnseenMessages(unseenMessages));
         });
-
-        dispatch(setUnseenMessages(unseenMessages));
-      });
     };
 
     if (user) {
       getNumberOfUnseen();
     }
-  }, []);
+  }, [user]);
 
   return (
     <StyledHeaderNav>

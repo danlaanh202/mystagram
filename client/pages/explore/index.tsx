@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import ImageSliderModal from "../../components/modals/ImageSliderModal";
 import { IPost } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
+import { md } from "../../utils/responsive";
 const StyledExploreContainer = styled.div`
   background: #fafafa;
   min-height: 100vh;
@@ -24,8 +25,11 @@ const StyledSearchBar = styled.div`
   right: 0;
   height: 44px;
   padding: 0 16px;
-  display: flex;
+  display: none;
   align-items: center;
+  ${md({
+    display: "flex",
+  })}
   .search-inp {
     padding: 4px 12px 4px 22px;
     flex: 1;

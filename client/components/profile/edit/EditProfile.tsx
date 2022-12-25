@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import Avatar from "@mui/material/Avatar";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import useUploadMedia from "../../../hooks/useUploadMedia";
@@ -11,15 +11,25 @@ import * as yup from "yup";
 import { publicRequest } from "../../../utils/requestMethod";
 import { useDispatch } from "react-redux";
 import { editUser } from "../../../redux/userRedux";
-import { m1000 } from "../../../utils/responsive";
+import { m1000, md } from "../../../utils/responsive";
+import MobileHeader from "../../header/MobileHeader";
 const StyledEditProfile = styled.div`
   margin-top: 32px;
+
+  ${md({
+    marginTop: 0,
+    marginBottom: "44px",
+  })}
   .item-container {
     display: flex;
     margin-bottom: 16px;
   }
   .top {
     align-items: center;
+    ${md({
+      padding: "0 20px",
+      marginTop: "20px",
+    })}
     &-aside {
       margin: 0 !important;
     }
@@ -27,6 +37,12 @@ const StyledEditProfile = styled.div`
   .edit-form {
     margin: 16px 0;
     width: 100%;
+    ${md({
+      display: "flex",
+      justifyContent: "center",
+      flexDirection: "column",
+      padding: "0 20px",
+    })}
     .submit-btn {
       background: #0095f6;
       color: white;
@@ -39,6 +55,11 @@ const StyledEditProfile = styled.div`
       display: block;
       cursor: pointer;
     }
+    .item-container {
+      ${md({
+        flexDirection: "column",
+      })}
+    }
   }
 `;
 const AsideContainer = styled.div`
@@ -46,7 +67,11 @@ const AsideContainer = styled.div`
   padding: 0 32px;
   text-align: right;
   margin-top: 6px;
-
+  ${md({
+    padding: "0",
+    textAlign: "left",
+    flex: "unset",
+  })}
   label {
     font-weight: 600;
     line-height: 16px;
@@ -57,8 +82,13 @@ const AsideContainer = styled.div`
 const RightContainer = styled.div`
   flex-basis: 355px;
   /* padding-right: 60px; */
+
   ${m1000({
     paddingRight: "60px",
+  })}
+  ${md({
+    flexBasis: "unset",
+    padding: "0",
   })}
   .item {
     width: 100%;
@@ -117,6 +147,9 @@ const StyledAvatar = styled(Avatar)`
   margin-left: auto;
   width: 38px !important;
   height: 38px !important;
+  ${md({
+    marginRight: "20px",
+  })}
 `;
 const schema = yup.object({
   username: yup
@@ -185,6 +218,7 @@ const EditProfile = () => {
   }, [previewSource]);
   return (
     <StyledEditProfile>
+      <MobileHeader centerComp={<>Edit profile</>} />
       <div className="item-container top">
         <AsideContainer className="top-aside">
           <StyledAvatar src={(user.avatar as IMedia)?.media_url} />
@@ -203,7 +237,10 @@ const EditProfile = () => {
           </div>
         </RightContainer>
       </div>
-      <form onSubmit={handleSubmit(onEditHandler)} className="edit-form">
+      <form
+        onSubmit={handleSubmit(onEditHandler as SubmitHandler<FieldValues>)}
+        className="edit-form"
+      >
         <div className="item-container">
           <AsideContainer>
             <label htmlFor="name">Name</label>

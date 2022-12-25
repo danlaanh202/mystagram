@@ -9,12 +9,20 @@ import { useRouter } from "next/router";
 import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { IPost, IUser } from "../../types";
+import styled from "styled-components";
+import { md } from "../../utils/responsive";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
-
+const StyledTab = styled(Tab)`
+  .tab-label {
+    /* ${md({
+      display: "none",
+    })} */
+  }
+`;
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -77,93 +85,29 @@ export default function ProfileMuiTab({
           aria-label="basic tabs example"
           sx={{ display: "flex", justifyContent: "center" }}
         >
-          <Tab
+          <StyledTab
             label={
               <div className="flex-center">
                 <PostIcon />
-                <div>Posts</div>
+                <div className="tab-label">Posts</div>
               </div>
             }
             {...a11yProps(0)}
           />
-          <Tab
+          <StyledTab
             label={
               <div className="flex-center">
                 <SavedIcon />
-                <div>Saved</div>
+                <div className="tab-label">Saved</div>
               </div>
             }
             {...a11yProps(1)}
           />
-          <Tab
+          <StyledTab
             label={
               <div className="flex-center">
-                <svg
-                  aria-label=""
-                  color="#262626"
-                  fill="#262626"
-                  height="12"
-                  role="img"
-                  viewBox="0 0 24 24"
-                  width="12"
-                >
-                  <rect
-                    fill="none"
-                    height="18"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    width="18"
-                    x="3"
-                    y="3"
-                  ></rect>
-                  <line
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    x1="9.015"
-                    x2="9.015"
-                    y1="3"
-                    y2="21"
-                  ></line>
-                  <line
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    x1="14.985"
-                    x2="14.985"
-                    y1="3"
-                    y2="21"
-                  ></line>
-                  <line
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    x1="21"
-                    x2="3"
-                    y1="9.015"
-                    y2="9.015"
-                  ></line>
-                  <line
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    x1="21"
-                    x2="3"
-                    y1="14.985"
-                    y2="14.985"
-                  ></line>
-                </svg>
-                <div>Tagged</div>
+                <PostIcon />
+                <div className="tab-label">Tagged</div>
               </div>
             }
             {...a11yProps(2)}

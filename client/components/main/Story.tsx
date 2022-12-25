@@ -10,6 +10,7 @@ import { IRootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 import ImageSliderModal from "../modals/ImageSliderModal";
 import { socket } from "../../pages/_app";
+import { md } from "../../utils/responsive";
 
 const StyledStory = styled.div`
   background: white;
@@ -17,7 +18,11 @@ const StyledStory = styled.div`
   border-radius: 12px;
   border: 1px solid #dbdbdb;
   margin-top: 16px;
-
+  ${md({
+    borderRadius: 0,
+    marginTop: 0,
+    borderTop: "1px solid transparent",
+  })}
   display: flex;
   flex-direction: column;
   .image-container {
@@ -53,7 +58,13 @@ const StyledImage = styled(Image)`
   height: unset !important;
 `;
 
-const Story = ({ post }: { post: IPost }) => {
+const Story = ({
+  post,
+  showCommentInput = true,
+}: {
+  post: IPost;
+  showCommentInput: boolean;
+}) => {
   const {
     handleSubmit,
     register,
@@ -152,17 +163,21 @@ const Story = ({ post }: { post: IPost }) => {
         toggleLike={toggleLike}
         post={updatedPost}
       />
-      <form
-        onSubmit={handleSubmit(onCommentHandler as SubmitHandler<FieldValues>)}
-        className="comment-container"
-      >
-        <input
-          type="text"
-          placeholder="Add a comment"
-          {...register("comment")}
-        />
-        <button>Post</button>
-      </form>
+      {showCommentInput && (
+        <form
+          onSubmit={handleSubmit(
+            onCommentHandler as SubmitHandler<FieldValues>
+          )}
+          className="comment-container"
+        >
+          <input
+            type="text"
+            placeholder="Add a comment"
+            {...register("comment")}
+          />
+          <button>Post</button>
+        </form>
+      )}
       {openModal && (
         <ImageSliderModal
           open={openModal}

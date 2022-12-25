@@ -19,6 +19,7 @@ import FollowingModal from "../components/modals/FollowingModal";
 import ImageSliderModal from "../components/modals/ImageSliderModal";
 import MobileHeader from "../components/header/MobileHeader";
 import { md } from "../utils/responsive";
+import MobileOptionsDialog from "../components/dialog/MobileOptionsDialog";
 const StyledUserProfile = styled.div``;
 const StyledContainer = styled.div`
   width: 100%;
@@ -188,9 +189,14 @@ const StyledMobileProfileContainer = styled.div`
     .avt {
       width: 78px;
       height: 78px;
+      /* margin-right: 28px; */
     }
     .right-prof-container {
+      width: 100%;
+      padding: 0 20px;
       .right-prof-username-container {
+        margin-bottom: 12px;
+        display: flex;
         .username {
           font-size: 28px;
           line-height: 32px;
@@ -200,7 +206,47 @@ const StyledMobileProfileContainer = styled.div`
         }
       }
       .right-bottom-btn-container {
+        display: flex;
+        gap: 8px;
+        .right-bottom-btn {
+          width: 100%;
+        }
+        .rb-btn {
+          padding: 4px 8px;
+          border: 1px solid #dbdbdb;
+          border-radius: 4px;
+          color: #262626;
+          font-weight: 600;
+        }
+        .msg-btn {
+          flex: 1;
+        }
+        .follow-btn {
+          padding: 4px 8px;
+          border-radius: 4px;
+          background: #0095f6;
+          color: white;
+          /* width: 100%; */
+          flex: 1;
+          text-align: center;
+          .loading {
+            animation: spin 1s linear infinite;
+            width: 14px;
+            height: 14px;
+            border-radius: 100%;
+            border: 1px solid white;
+            border-right: 1px solid transparent;
+          }
+        }
       }
+    }
+  }
+  .info-description {
+    margin-top: 16px;
+    .info-name {
+      font-weight: 600;
+    }
+    .info-desc-content {
     }
   }
 `;
@@ -274,6 +320,8 @@ const UserProfile = ({
       <Layout isShowMobileBar={true} isShowHeader={false}>
         <>
           <MobileHeader
+            leftComp={<MobileOptionsDialog />}
+            leftCompRouter="/abc"
             centerComp={(thisUser?.username as string) || currentUser.username}
           />
           <StyledContainer>
@@ -394,8 +442,61 @@ const UserProfile = ({
                 </div>
                 <div className="right-prof-container">
                   <div className="right-prof-username-container">
-                    <div className="username">danlaanh202</div>
+                    <div className="username">
+                      {" "}
+                      {(thisUser?.username as string) || currentUser.username}
+                    </div>
+                    {currentUser._id !== user?._id && (
+                      <div className="three-dot">
+                        <ThreeDotIcon />
+                      </div>
+                    )}
                   </div>
+                  <div className="right-bottom-btn-container">
+                    {currentUser._id === user?._id ? (
+                      <>
+                        <button
+                          onClick={() => router.push("/accounts/edit")}
+                          className="rb-btn right-bottom-btn"
+                        >
+                          Edit Profile
+                        </button>
+                      </>
+                    ) : isFollowed ? (
+                      <>
+                        <button className="rb-btn msg-btn">Message</button>
+                        <button className="rb-btn">
+                          <FollowIcon />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          disabled={followLoading}
+                          onClick={handleFollow}
+                          className="follow-btn"
+                        >
+                          {followLoading ? (
+                            <div className="loading"></div>
+                          ) : (
+                            <div>Follow</div>
+                          )}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="info-description">
+                <div className="info-name">
+                  {" "}
+                  {(thisUser?.name as string) || currentUser.name}
+                </div>
+                <div className="info-desc-content">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Natus maxime ipsum at fugit sit necessitatibus beatae quaerat
+                  magnam, adipisci corrupti recusandae nisi aliquid, iure dolore
+                  illo accusamus animi ducimus ut?
                 </div>
               </div>
             </StyledMobileProfileContainer>

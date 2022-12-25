@@ -76,8 +76,8 @@ const InboxItem = ({
       }
       return true;
     });
-    if ((room.last_message.user as string) !== user._id) {
-      setIsSeen(room.last_message.is_seen as boolean);
+    if ((room.last_message?.user as string) !== user._id) {
+      setIsSeen(room.last_message?.is_seen as boolean);
     }
   }, [room]);
   useEffect(() => {

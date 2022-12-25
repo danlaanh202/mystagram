@@ -119,7 +119,7 @@ const InboxList = ({
   }, []);
   const handleSeen = (room: IRoom) => {
     socket.emit("seen_last_message", {
-      last_message_id: room.last_message._id,
+      last_message_id: room.last_message?._id,
     });
     setInboxList((prev: IRoom[]) => {
       const prevList = [...prev];

@@ -10,6 +10,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import LikeUsersModal from "../modals/LikeUsersModal";
+import { md } from "../../utils/responsive";
 const StyledBottomStory = styled.div`
   padding: 8px;
 `;
@@ -22,6 +23,17 @@ const IconsContainer = styled.div`
     outline: none;
     background: white;
     cursor: pointer;
+    .pc-comp {
+      ${md({
+        display: "none",
+      })}
+    }
+    .mb-comp {
+      display: none;
+      ${md({
+        display: "block",
+      })}
+    }
   }
 `;
 const StyledLikeAmount = styled.div`
@@ -50,6 +62,17 @@ const PostContentContainer = styled.div`
       margin-bottom: 8px;
       margin-top: 8px;
       cursor: pointer;
+      .mb-router {
+        display: none;
+        ${md({
+          display: "inline-block",
+        })}
+      }
+      .pc-router {
+        ${md({
+          display: "none",
+        })}
+      }
     }
     .comment {
       margin-bottom: 4px;
@@ -103,8 +126,18 @@ const BottomStory = ({
           >
             <HeartIcon isLiked={isLiked} />
           </button>
-          <button className="icon" onClick={() => setOpenModal(true)}>
-            <CommentIcon />
+          <button className="icon">
+            <div onClick={() => setOpenModal(true)} className="pc-comp">
+              <CommentIcon />
+            </div>
+            <div
+              onClick={() => {
+                router.push(`/p/${post._id}/comments`);
+              }}
+              className="mb-comp"
+            >
+              <CommentIcon />
+            </div>
           </button>
           <button className="icon">
             <ShareIcon />
@@ -127,8 +160,20 @@ const BottomStory = ({
             {post.user?.username}{" "}
           </span>
           <span className="post-content">{post.caption}</span>
-          <div className="view-all-comments" onClick={() => setOpenModal(true)}>
-            <div>View all {post.comments.length} comments</div>
+          <div className="view-all-comments">
+            <div>
+              <span
+                className="mb-router"
+                onClick={() => {
+                  router.push(`/p/${post._id}/comments`);
+                }}
+              >
+                View all {post.comments.length} comments
+              </span>
+              <span className="pc-router" onClick={() => setOpenModal(true)}>
+                View all {post.comments.length} comments
+              </span>
+            </div>
           </div>
           {additionComment?.length > 0 &&
             additionComment.map((item: IComment, index) => (

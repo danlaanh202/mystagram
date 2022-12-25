@@ -31,12 +31,16 @@ const StyledGridItem = styled.div`
 `;
 const StyledImage = styled(Image)`
   object-fit: cover;
-  width: 100% !important;
+  width: calc(935px / 3 - 14px) !important;
   position: relative !important;
   height: calc(935px / 3 - 14px) !important;
   ${m1000({
     height: "calc(100vw / 3 - 14px) !important",
     width: "calc(100vw / 3 - 14px) !important",
+  })};
+  ${md({
+    height: "calc(100vw / 3 - 2px) !important",
+    width: "calc(100vw / 3 - 2px) !important",
   })}
 `;
 const StyledLayer = styled.div`
@@ -78,7 +82,7 @@ const GridItem = ({
       <StyledImage src={(post.media as IMedia).media_url} layout="fill" />
       <div
         onClick={() => {
-          router.push("/");
+          router.push(`/p/${post._id}`);
         }}
         className="layer-mobile"
       ></div>

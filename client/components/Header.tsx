@@ -45,9 +45,12 @@ const StyledHeaderContainer = styled.div<{ isShow: boolean }>`
   left: 0;
   right: 0;
   z-index: 100;
+
   ${(props) =>
     props.isShow
-      ? md({})
+      ? md({
+          // height: "52px",
+        })
       : md({
           display: "none",
         })};
@@ -65,7 +68,7 @@ const StyledHeaderContainer = styled.div<{ isShow: boolean }>`
     }
     ${m1000({
       padding: "10px 20px",
-    })}
+    })};
   }
 `;
 const Header = ({ isShow = true }: { isShow?: boolean }) => {

@@ -21,6 +21,7 @@ const StyledGridItemContainer = styled.div`
   })}
   .grid-item {
     height: 293px;
+    /* width: 293px; */
     background: blue;
     display: flex;
     align-items: center;
