@@ -1,10 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Layout from "../../components/Layout";
 import ChangePassword from "../../components/profile/edit/ChangePassword";
 import EditProfile from "../../components/profile/edit/EditProfile";
+import { IRootState } from "../../redux/store";
 import { m1000, md } from "../../utils/responsive";
 const StyledEditContainer = styled.div``;
 const StyledContainer = styled.div`
@@ -64,6 +66,7 @@ const StyledRightContainer = styled.div`
 const Edit = () => {
   const router = useRouter();
   const [activeId, setActiveId] = useState<number>(0);
+  const headerTitle = useSelector((state: IRootState) => state.header.title);
   useEffect(() => {
     // window.history.pushState("", "", `/accounts/${list[activeId]?.slug}`);
     if (activeId)

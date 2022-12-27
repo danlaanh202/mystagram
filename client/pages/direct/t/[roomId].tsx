@@ -41,7 +41,7 @@ const StyledTopContainer = styled.div`
   border-bottom: 1px solid #dbdbdb;
   height: 60px;
   background: white;
-
+  width: 100%;
   .left {
     display: flex;
     align-items: center;
@@ -81,6 +81,7 @@ const StyledMessages = styled.div`
   flex-direction: column-reverse;
   background: white;
   overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
   .infinite-scroll-component__outerdiv {
     flex: 1;

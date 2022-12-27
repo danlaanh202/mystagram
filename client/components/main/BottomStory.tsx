@@ -13,6 +13,17 @@ import LikeUsersModal from "../modals/LikeUsersModal";
 import { md } from "../../utils/responsive";
 const StyledBottomStory = styled.div`
   padding: 8px;
+  .pc-comp {
+    ${md({
+      display: "none",
+    })}
+  }
+  .mb-comp {
+    display: none;
+    ${md({
+      display: "block",
+    })}
+  }
 `;
 const IconsContainer = styled.div`
   display: flex;
@@ -23,17 +34,6 @@ const IconsContainer = styled.div`
     outline: none;
     background: white;
     cursor: pointer;
-    .pc-comp {
-      ${md({
-        display: "none",
-      })}
-    }
-    .mb-comp {
-      display: none;
-      ${md({
-        display: "block",
-      })}
-    }
   }
 `;
 const StyledLikeAmount = styled.div`
@@ -149,7 +149,26 @@ const BottomStory = ({
           </button>
         </div>
       </IconsContainer>
-      <LikeUsersModal post={post} />
+      <div className="pc-comp">
+        <LikeUsersModal post={post} />
+      </div>
+      <button className="mb-comp">
+        <div
+          onClick={() => router.push(`/p/${post._id}/liked_by`)}
+          style={{
+            padding: "0 8px",
+            fontSize: "14px",
+            lineHeight: "18px",
+            fontWeight: "600",
+            color: "#262626",
+          }}
+        >
+          {post.likes?.length > 1
+            ? `${post.likes.length} likes`
+            : `${post.likes.length} like`}
+        </div>
+      </button>
+
       {/* <StyledLikeAmount>{post.likes?.length} likes</StyledLikeAmount> */}
       <PostContentContainer>
         <div className="post">

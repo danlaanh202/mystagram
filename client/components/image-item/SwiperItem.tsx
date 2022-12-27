@@ -228,6 +228,14 @@ const SwiperItem = ({
       inline: "start",
     });
   };
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm({
+    mode: "onSubmit",
+  });
   useEffect(() => {
     const getComments = async () => {
       try {
@@ -245,14 +253,6 @@ const SwiperItem = ({
     getComments();
   }, [post]);
 
-  const {
-    handleSubmit,
-    register,
-    reset,
-    formState: { errors, isValid, isSubmitting },
-  } = useForm({
-    mode: "onSubmit",
-  });
   const toggleLike = async (isLike: boolean) => {
     try {
       if (!isLike) {

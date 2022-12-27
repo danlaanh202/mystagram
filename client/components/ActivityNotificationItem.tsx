@@ -1,11 +1,11 @@
 import Avatar from "@mui/material/Avatar";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import { IMedia, INotification, IPost, IUser } from "../types";
 
 const StyledActivityNotiContainer = styled.div`
   padding: 12px 16px;
   display: flex;
-
   align-items: center;
   .notification {
     display: flex;
@@ -35,10 +35,13 @@ const ActivityNotificationItem = ({
   noti: INotification;
   setSeen: (id: string) => void;
 }) => {
-  return (
-    <StyledActivityNotiContainer>
-      <StyledAvatar />
+  const router = useRouter();
 
+  return (
+    <StyledActivityNotiContainer
+      onClick={() => router.push(`/p/${(noti.post as IPost)._id}`)}
+    >
+      <StyledAvatar />
       <div className="notification">
         <div
           className="notification-username"

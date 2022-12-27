@@ -27,6 +27,7 @@ const StyledActContainer = styled.div`
 const index = () => {
   const [notis, setNotis] = useState<INotification[]>([]);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
+  const headerTitle = useSelector((state: IRootState) => state.header.title);
   const setSeen = (id: string) => {
     setNotis((prev: INotification[]) =>
       prev.map((item) => {

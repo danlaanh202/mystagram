@@ -11,6 +11,7 @@ const headerSlice = createSlice({
     isUnseenNotification: false,
     unseenMessages: [] as IUnseenMessages[],
     unseenNotifications: [] as INotification[],
+    title: "",
   },
   reducers: {
     setUnseenMessages: (state, action: PayloadAction<IUnseenMessages[]>) => {
@@ -40,6 +41,12 @@ const headerSlice = createSlice({
     setIsUnseenNotification: (state, action: PayloadAction<boolean>) => {
       state.isUnseenNotification = action.payload;
     },
+    setTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload;
+    },
+    clearTitle: (state) => {
+      state.title = "";
+    },
   },
 });
 export const {
@@ -47,5 +54,7 @@ export const {
   handleSeenMessages,
   uploadUnseenMessages,
   setIsUnseenNotification,
+  setTitle,
+  clearTitle,
 } = headerSlice.actions;
 export default headerSlice.reducer;

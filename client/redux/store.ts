@@ -10,7 +10,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  // blacklist: ["rtc"],
+  blacklist: ["header"],
 };
 
 const rootReducer = combineReducers({

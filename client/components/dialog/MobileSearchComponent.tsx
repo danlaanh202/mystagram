@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
+import LoadingComponent from "../search/LoadingComponent";
 import SearchItem from "../search/SearchItem";
 
 const StyledMobileSearchContainer = styled.div`
-  /* padding:  */
   margin-top: -20px;
   margin-bottom: 32px;
 `;
 
 const MobileSearchComponent = ({ searchText }: { searchText: string }) => {
   const [searchUsers, setSearchUsers] = useState<IUser[]>([]);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(true);
   useEffect(() => {
     const getSearchUsers = async () => {
       try {
@@ -38,6 +38,7 @@ const MobileSearchComponent = ({ searchText }: { searchText: string }) => {
   }, [searchText]);
   return (
     <StyledMobileSearchContainer>
+      {isSearching && <LoadingComponent />}
       {searchUsers.map((item) => (
         <SearchItem key={item._id} searchUser={item} />
       ))}

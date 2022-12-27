@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { IRootState } from "../../redux/store";
 import { IMedia, IPost, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
+import LikeUser from "../image-item/LikeUser";
 import ModalProto from "./ModalProto";
 
 const StyledLikeUsersContainer = styled.div`
@@ -45,44 +46,11 @@ const StyledLikeUsersContainer = styled.div`
     flex: 1;
     overflow-y: scroll;
     .like-users-container {
-      .like-user {
-        padding: 8px 16px;
-        display: flex;
-        align-items: center;
-        &-info {
-          flex: 1;
-          &-username {
-            color: #262626;
-            font-weight: 600;
-          }
-          &-name {
-            color: #8e8e8e;
-          }
-        }
-        &-btn-container {
-          .like-user-btn {
-            color: white;
-            font-weight: 600;
-            background: #0095f6;
-            border-radius: 4px;
-            padding: 6px 24px;
-            cursor: pointer;
-          }
-          .following {
-            background: white;
-            color: #262626;
-            border: 1px solid #dbdbdb;
-          }
-        }
-      }
     }
   }
 `;
-const StyledAvatar = styled(Avatar)`
-  width: 44px !important;
-  height: 44px !important;
-  margin-right: 12px;
-`;
+
+const StyledOpenBtn = styled.div``;
 const LikeUsersModal = ({ post }: { post: IPost }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [likeUsers, setLikeUsers] = useState<IUser[]>([]);
@@ -108,7 +76,7 @@ const LikeUsersModal = ({ post }: { post: IPost }) => {
       open={open}
       setOpen={setOpen}
       openBtn={
-        <div
+        <StyledOpenBtn
           style={{
             padding: "0 8px",
             fontSize: "14px",
@@ -120,7 +88,7 @@ const LikeUsersModal = ({ post }: { post: IPost }) => {
           {post.likes?.length > 1
             ? `${post.likes.length} likes`
             : `${post.likes.length} like`}
-        </div>
+        </StyledOpenBtn>
       }
     >
       <StyledLikeUsersContainer>
@@ -141,29 +109,7 @@ const LikeUsersModal = ({ post }: { post: IPost }) => {
     </ModalProto>
   );
 };
-const LikeUser = ({ lUser }: { lUser: IUser }) => {
-  const user = useSelector((state: IRootState) => state.user.user as IUser);
-  return (
-    <div className="like-user">
-      <StyledAvatar src={(lUser?.avatar as IMedia)?.media_url} />
-      <div className="like-user-info">
-        <div className="like-user-info-username">{lUser.username}</div>
-        <div className="like-user-info-name">{lUser.name}</div>
-      </div>
-      {user._id === lUser._id ? (
-        <></>
-      ) : (
-        <div className="like-user-btn-container">
-          {(user.following as string[])?.includes(lUser._id as string) ? (
-            <button className="like-user-btn following">Following</button>
-          ) : (
-            <button className="like-user-btn">Follow</button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+
 export default LikeUsersModal;
 
 export const CloseIcon = () => {

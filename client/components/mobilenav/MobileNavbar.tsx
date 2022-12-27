@@ -18,6 +18,17 @@ const StyledNavbarContainer = styled.div`
 const StyledNavbarButtonContainer = styled.div`
   flex: 1;
   height: 100%;
+  .add-post-input {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 `;
 const StyledAvatar = styled(Avatar)`
   width: 24px !important;
@@ -61,20 +72,17 @@ const MobileNavbar = () => {
         </Link>
       </StyledNavbarButtonContainer>
       <StyledNavbarButtonContainer>
-        <Link href="/">
-          <a
-            style={{
-              height: "100%",
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+        <div className="add-post-input">
+          <input
+            id="add-post"
+            name="post_image"
+            type="file"
+            style={{ display: "none" }}
+          />
+          <label htmlFor="add-post">
             <AddPostIcon />
-          </a>
-        </Link>
+          </label>
+        </div>
       </StyledNavbarButtonContainer>
       <StyledNavbarButtonContainer>
         <Link href="/accounts/activity">

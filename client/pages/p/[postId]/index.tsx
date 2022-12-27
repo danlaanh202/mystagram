@@ -3,7 +3,7 @@ import Head from "next/head";
 
 import { GetServerSideProps } from "next";
 import axios from "axios";
-import { IPost } from "../../../types";
+import { IPost, IUser } from "../../../types";
 import SwiperItem from "../../../components/image-item/SwiperItem";
 import Layout from "../../../components/Layout";
 import { md } from "../../../utils/responsive";
@@ -39,7 +39,7 @@ const Post = ({ post }: { post: IPost }) => {
   return (
     <StyledPostContainer>
       <Head>
-        <title>Instagram photo by abcxyz</title>
+        <title>Instagram photo by {(post.user as IUser).username}</title>
       </Head>
       <Layout isShowHeader={false} isShowMobileBar={true}>
         {/* <SwiperItem /> */}

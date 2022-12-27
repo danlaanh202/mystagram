@@ -1,4 +1,5 @@
 import Avatar from "@mui/material/Avatar";
+import Link from "next/link";
 import styled from "styled-components";
 import { IMedia, IUser } from "../../types";
 
@@ -28,15 +29,23 @@ const StyledAvatar = styled(Avatar)`
 const SearchItem = ({ searchUser }: { searchUser: IUser }) => {
   return (
     <StyledMobileSearchItem>
-      <div className="item-container">
-        <div className="avatar-container">
-          <StyledAvatar src={(searchUser?.avatar as IMedia)?.media_url || ""} />
-        </div>
-        <div className="info-container">
-          <div className="info-username">{searchUser?.username || "dan"}</div>
-          <div className="info-name">{searchUser?.name || "dien"}</div>
-        </div>
-      </div>
+      <Link href={`/${searchUser.username}`}>
+        <a>
+          <div className="item-container">
+            <div className="avatar-container">
+              <StyledAvatar
+                src={(searchUser?.avatar as IMedia)?.media_url || ""}
+              />
+            </div>
+            <div className="info-container">
+              <div className="info-username">
+                {searchUser?.username || "dan"}
+              </div>
+              <div className="info-name">{searchUser?.name || "dien"}</div>
+            </div>
+          </div>
+        </a>
+      </Link>
     </StyledMobileSearchItem>
   );
 };

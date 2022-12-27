@@ -8,6 +8,8 @@ import { IPost } from "../types";
 import StoryDialog from "./dialog/StoryDialog";
 import { m1000, md } from "../utils/responsive";
 import MobileNavbar from "./mobilenav/MobileNavbar";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useEffect, useState } from "react";
 
 const StyledHome = styled.div`
   background: #fafafa;
@@ -45,6 +47,10 @@ const ReelContainer = styled.div`
 `;
 
 const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
+  const [posts, setPosts] = useState<IPost[]>([]);
+  useEffect(() => {
+    setPosts(initialPosts); //re-init posts state
+  }, []);
   return (
     <StyledHome>
       <Layout isShowMobileBar={true} isShowHeader={true}>
@@ -54,9 +60,32 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
               <ReelItem />
               <ReelItem />
             </ReelContainer>
-            {initialPosts.map((item) => (
-              <Story showCommentInput={true} key={item._id} post={item} />
-            ))}
+            <div id="scrollable-story-div">
+              {/* <InfiniteScroll
+                next={() => {}}
+                hasMore={false}
+                refreshFunction={() => {}}
+                pullDownToRefresh
+                pullDownToRefreshThreshold={50}
+                loader={
+                  <h4
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    Loading...
+                  </h4>
+                }
+                inverse={true}
+                dataLength={10}
+                className="outer-messages"
+                scrollableTarget="scrollable-story-div"
+              > */}
+              {posts.map((item) => (
+                <Story showCommentInput={true} key={item._id} post={item} />
+              ))}
+              {/* </InfiniteScroll> */}
+            </div>
           </MainItems>
           <RightItems />
         </MainContainer>

@@ -47,14 +47,17 @@ const MobileHeader = ({
   rightComp,
   leftCompRouter = "/",
   backRouter = "/",
+  rightFunc = () => {},
 }: {
   leftComp?: ReactNode;
   centerComp: ReactNode;
   rightComp?: ReactNode;
   leftCompRouter?: string;
   backRouter?: string;
+  rightFunc?: () => void;
 }) => {
   const router = useRouter();
+
   return (
     <StyledMobileHeader>
       {leftCompRouter !== "/" ? (
@@ -65,7 +68,14 @@ const MobileHeader = ({
         </div>
       )}
       <div className="center-content">{centerComp && centerComp}</div>
-      <div className="right-content">{rightComp && rightComp}</div>
+      <div
+        className="right-content"
+        onClick={() => {
+          rightFunc();
+        }}
+      >
+        {rightComp && rightComp}
+      </div>
     </StyledMobileHeader>
   );
 };

@@ -1,5 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 import Modal from "@mui/material/Modal";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import {
   LegacyRef,
@@ -12,7 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { socket } from "../pages/_app";
-import { uploadUnseenMessages } from "../redux/headerStatusRedux";
+import { setTitle, uploadUnseenMessages } from "../redux/headerStatusRedux";
 
 import { IMedia, IMessage, IRoom, IUser } from "../types";
 import { publicRequest } from "../utils/requestMethod";
@@ -98,6 +99,7 @@ const Layout = ({
   const [peerId, setPeerId] = useState<string>("");
   const [recipientId, setRecipientId] = useState<string>("");
   const notificationSoundRef = useRef<HTMLAudioElement>(null);
+
   const dispatch = useDispatch();
   const handleClose = () => {
     setOpenCallModal(false);
@@ -135,7 +137,11 @@ const Layout = ({
           _id: data._id as string,
         })
       );
+
       if (notificationSoundRef.current !== null) {
+        dispatch(
+          setTitle(`${(data.user as IUser)?.username} has sent a message`)
+        );
         notificationSoundRef.current.play();
       }
     });

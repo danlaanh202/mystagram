@@ -31,13 +31,17 @@ const StyledMsgContent = styled.div`
     background: #efefef;
     padding: 16px;
     border-radius: 28px;
+    max-width: 70%;
+    word-break: break-all;
   }
   .msg-from-recipient {
+    max-width: 70%;
     align-self: flex-start;
     /* background: #efefef; */
     padding: 16px;
     border-radius: 28px;
     border: 1px solid #efefef;
+    word-break: break-all;
   }
 `;
 const Message = ({
@@ -52,11 +56,11 @@ const Message = ({
   return (
     <StyledMessage>
       <StyledMsg>
-        {user._id !== message.user._id && (
+        {user._id !== (message.user as IUser)._id && (
           <StyledAvatar src={(recipient?.avatar as IMedia)?.media_url} />
         )}
         <StyledMsgContent>
-          {user._id === message.user._id ? (
+          {user._id === (message.user as IUser)._id ? (
             <div className="msg-from-me">
               <div className="content ">{message.message}</div>
             </div>

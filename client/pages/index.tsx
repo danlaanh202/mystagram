@@ -9,10 +9,13 @@ import { GetServerSideProps } from "next";
 import axios from "axios";
 import { IPost, IUser } from "../types";
 import { socket } from "./_app";
+import { publicRequest } from "../utils/requestMethod";
 
 const HomeContainer = styled.div``;
 const index = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const user = useSelector((state: IRootState) => state.user.user);
+  const headerTitle = useSelector((state: IRootState) => state.header.title);
+
   useEffect(() => {
     socket.emit("active", { user: user });
   }, [user]);
@@ -27,8 +30,8 @@ const index = ({ initialPosts }: { initialPosts: IPost[] }) => {
   );
 };
 export const getServerSideProps: GetServerSideProps = async () => {
-  let initialPosts = await axios
-    .get(`${process.env.API_URL}/post/get_posts`, {
+  let initialPosts = await publicRequest
+    .get(`/post/get_posts`, {
       params: {
         limit: "20",
         page: "1",

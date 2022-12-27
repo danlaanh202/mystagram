@@ -80,8 +80,10 @@ function chatIo(io) {
         { new: true }
       ).populate([
         { path: "users", populate: "avatar" },
+
         {
           path: "last_message",
+          populate: "user",
         },
       ]);
 

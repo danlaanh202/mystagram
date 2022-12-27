@@ -15,6 +15,7 @@ const StyledInboxItem = styled.div`
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  overflow: hidden;
   .avtt {
     width: 56px;
     height: 56px;
