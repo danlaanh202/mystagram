@@ -58,12 +58,15 @@ const StyledSearchBar = styled.div`
   }
 `;
 const index = () => {
-  const [showImageSlider, setShowImageSlider] = useState(false);
+  const [showImageSlider, setShowImageSlider] = useState<boolean>(false);
   const [modalIndex, setModalIndex] = useState<number>(-1);
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [showSearchComponent, setShowSearchComponent] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [showSearchComponent, setShowSearchComponent] =
+    useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState<string>("");
   const searchTextDebounce = useDebounce(searchText, 300);
+
   useEffect(() => {
     const getPosts = async () => {
       try {
@@ -82,9 +85,10 @@ const index = () => {
       <Layout isShowMobileBar={true} isShowHeader={false}>
         <StyledSearchBar>
           <input
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSearchText(e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setIsSearching(true);
+              setSearchText(e.target.value);
+            }}
             value={searchText}
             onFocus={() => setShowSearchComponent(true)}
             type="text"
@@ -105,7 +109,11 @@ const index = () => {
         </StyledSearchBar>
         <StyledContainer>
           {showSearchComponent && (
-            <MobileSearchComponent searchText={searchTextDebounce} />
+            <MobileSearchComponent
+              isSearching={isSearching}
+              setIsSearching={setIsSearching}
+              searchText={searchTextDebounce}
+            />
           )}
           <div style={showSearchComponent ? { display: "none" } : {}}>
             <GridExploreItems

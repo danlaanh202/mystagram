@@ -51,7 +51,14 @@ class PostController {
         ],
         lean: true,
       };
-      let posts = await Post.paginate({}, options).then((result) => result);
+      let posts = await Post.paginate(
+        {
+          _id: {
+            $lt: mongoose.Types.ObjectId(req.query.last_post),
+          },
+        },
+        options
+      ).then((result) => result);
       return res.status(200).json(posts);
     } catch (error) {
       return res.status(500).json(error);

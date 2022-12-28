@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import "swiper/css/bundle";
+import "react-multi-carousel/lib/styles.css";
 export const socket = io(`${process.env.API_URL}`);
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();

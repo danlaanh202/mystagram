@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
@@ -10,9 +10,20 @@ const StyledMobileSearchContainer = styled.div`
   margin-bottom: 32px;
 `;
 
-const MobileSearchComponent = ({ searchText }: { searchText: string }) => {
+const MobileSearchComponent = ({
+  searchText,
+  isSearching,
+  setIsSearching,
+}: {
+  searchText: string;
+  isSearching: boolean;
+  setIsSearching: Dispatch<SetStateAction<boolean>>;
+}) => {
   const [searchUsers, setSearchUsers] = useState<IUser[]>([]);
-  const [isSearching, setIsSearching] = useState<boolean>(true);
+  // const [isSearching, setIsSearching] = useState<boolean>(true);
+  useEffect(() => {
+    console.log(isSearching);
+  }, [isSearching]);
   useEffect(() => {
     const getSearchUsers = async () => {
       try {
@@ -39,9 +50,10 @@ const MobileSearchComponent = ({ searchText }: { searchText: string }) => {
   return (
     <StyledMobileSearchContainer>
       {isSearching && <LoadingComponent />}
-      {searchUsers.map((item) => (
-        <SearchItem key={item._id} searchUser={item} />
-      ))}
+      {!isSearching &&
+        searchUsers.map((item) => (
+          <SearchItem key={item._id} searchUser={item} />
+        ))}
     </StyledMobileSearchContainer>
   );
 };

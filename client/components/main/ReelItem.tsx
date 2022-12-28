@@ -12,7 +12,7 @@ const StyledReelItem = styled.div`
       height: 100%;
       border-radius: 100%;
       position: relative;
-      :after {
+      /* :after {
         display: block;
         border-radius: 100%;
         content: "";
@@ -23,7 +23,7 @@ const StyledReelItem = styled.div`
         left: -4%;
         top: -4%;
         background-image: conic-gradient(#00aeef, #fff, #00aeef, #fff, #00aeef);
-      }
+      } */
       .reel-avatar {
         border-radius: 100%;
       }

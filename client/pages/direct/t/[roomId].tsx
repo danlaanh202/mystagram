@@ -173,15 +173,17 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
     });
     setToBottom();
     const getRoomById = async () => {
-      await publicRequest(`/room/get_room_by_id`, {
-        params: {
-          roomId: roomId,
-        },
-      }).then((response) => {
-        response.data?.users.map(
-          (item: IUser) => item._id !== user._id && setRecipient(item)
-        );
-      });
+      await publicRequest
+        .get(`/room/get_room_by_id`, {
+          params: {
+            roomId: roomId,
+          },
+        })
+        .then((response) => {
+          response.data?.users.map(
+            (item: IUser) => item._id !== user._id && setRecipient(item)
+          );
+        });
     };
     setNewMsg([]);
     getRoomById();
