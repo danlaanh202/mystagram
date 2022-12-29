@@ -7,10 +7,11 @@ import Story from "./main/Story";
 import { IPost } from "../types";
 import Carousel from "react-multi-carousel";
 import { m1000, md } from "../utils/responsive";
-
+import RefreshIcon from "@mui/icons-material/Refresh";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useState } from "react";
 import { publicRequest } from "../utils/requestMethod";
+import LoadingComponent from "./search/LoadingComponent";
 
 const responsive = {
   desktop: {
@@ -95,9 +96,29 @@ const ReelContainer = styled.div`
 const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const [posts, setPosts] = useState<IPost[]>(initialPosts);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  // useEffect(() => {
-  //   setPosts(initialPosts); //re-init posts state
-  // }, []);
+
+  const refreshData = async () => {
+    setHasMore(true);
+    try {
+      await publicRequest
+        .get("/post/get_posts", {
+          params: {
+            limit: "20",
+            page: 1,
+          },
+        })
+        .then((res) => {
+          if (res.data.docs.length === 0) {
+            setHasMore(false);
+          }
+
+          setPosts(res.data.docs);
+        });
+    } catch (error) {
+      setHasMore(false);
+      console.log(error);
+    }
+  };
   const getMoreData = async () => {
     try {
       let lastId = posts[posts.length - 1]?._id;
@@ -150,19 +171,45 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
             <InfiniteScroll
               next={getMoreData}
               hasMore={hasMore}
-              refreshFunction={() => {}}
+              refreshFunction={refreshData}
               pullDownToRefresh
               pullDownToRefreshThreshold={50}
-              loader={
-                <h4
+              releaseToRefreshContent={
+                <div
                   style={{
-                    textAlign: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "relative",
+                    marginTop: "10px",
                   }}
                 >
-                  Loading...
-                </h4>
+                  <RefreshIcon />
+                </div>
               }
-              endMessage={<div>Hết story rồi :D</div>}
+              loader={
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "60px",
+                  }}
+                >
+                  <LoadingComponent />
+                </div>
+              }
+              endMessage={
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LoadingComponent />
+                </div>
+              }
               dataLength={posts?.length || 0}
               className="outer-stories"
             >
@@ -179,20 +226,20 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
 };
 
 export default Home;
-const StyledLeftArrow = styled.div`
-  width: 45px;
-  height: 45px;
-`;
-const CustomLeftArrow = () => {
-  // const {
-  //   onMove,
-  //   carouselState: { currentSlide, deviceType },
-  // } = rest;
-  return (
-    <StyledLeftArrow>
-      <div className="left-arrow">
-        <ArrowForwardIosIcon />
-      </div>
-    </StyledLeftArrow>
-  );
-};
+// const StyledLeftArrow = styled.div`
+//   width: 45px;
+//   height: 45px;
+// `;
+// const CustomLeftArrow = () => {
+//   // const {
+//   //   onMove,
+//   //   carouselState: { currentSlide, deviceType },
+//   // } = rest;
+//   return (
+//     <StyledLeftArrow>
+//       <div className="left-arrow">
+//         <ArrowForwardIosIcon />
+//       </div>
+//     </StyledLeftArrow>
+//   );
+// };

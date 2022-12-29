@@ -20,6 +20,7 @@ import ImageSliderModal from "../components/modals/ImageSliderModal";
 import MobileHeader from "../components/header/MobileHeader";
 import { md } from "../utils/responsive";
 import MobileOptionsDialog from "../components/dialog/MobileOptionsDialog";
+import UnfollowModal from "../components/modals/UnfollowModal";
 const StyledUserProfile = styled.div``;
 const StyledContainer = styled.div`
   width: 100%;
@@ -265,6 +266,7 @@ const UserProfile = ({
   const [followLoading, setFollowLoading] = useState(false);
   const [showImageSlider, setShowImageSlider] = useState(false);
   const [modalIndex, setModalIndex] = useState<number>(-1);
+  const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
@@ -371,10 +373,14 @@ const UserProfile = ({
                         </button>
                         <button
                           className="pri-btn"
-                          onClick={() => router.push("/")}
+                          onClick={() => setOpenUnfollowModal(true)}
                         >
                           <div style={{ padding: "0 16px" }}>
-                            <FollowIcon />
+                            <UnfollowModal
+                              open={openUnfollowModal}
+                              setOpen={setOpenUnfollowModal}
+                            />
+                            {/* <FollowIcon /> */}
                           </div>
                         </button>
                       </>
@@ -560,7 +566,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 export default UserProfile;
 
-const FollowIcon = () => {
+export const FollowIcon = () => {
   return (
     <svg
       aria-label="Following"

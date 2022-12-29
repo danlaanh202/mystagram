@@ -22,6 +22,7 @@ const StyledStory = styled.div`
     borderRadius: 0,
     marginTop: 0,
     borderTop: "1px solid transparent",
+    marginBottom: "16px",
   })}
   display: flex;
   flex-direction: column;
@@ -150,7 +151,7 @@ const Story = ({
   };
 
   return (
-    <StyledStory>
+    <StyledStory className="story-container">
       <TopStory post={updatedPost} />
       <div className="image-container">
         <StyledImage
@@ -173,6 +174,7 @@ const Story = ({
           <input
             type="text"
             placeholder="Add a comment"
+            autoComplete="off"
             {...register("comment")}
           />
           <button>Post</button>

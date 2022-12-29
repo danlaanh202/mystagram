@@ -206,7 +206,7 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
       let topId =
         oldMsg[oldMsg.length - 1]?._id ||
         initialMessages.docs[initialMessages.docs.length - 1]._id;
-      console.log(topId);
+
       await publicRequest
         .get("/message/get", {
           params: {

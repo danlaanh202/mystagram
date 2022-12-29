@@ -28,6 +28,19 @@ const StyledPosts = styled.div`
       gap: "4px",
     })}
   }
+  .empty {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    &-text {
+      color: #262626;
+      font-weight: 300;
+      font-size: 28px;
+      line-height: 32px;
+    }
+  }
 `;
 
 const Posts = ({
@@ -53,6 +66,11 @@ const Posts = ({
           />
         ))}
       </div>
+      {(!posts || posts.length === 0) && (
+        <div className="empty">
+          <div className="empty-text">No Posts Yet</div>
+        </div>
+      )}
     </StyledPosts>
   );
 };

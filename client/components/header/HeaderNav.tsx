@@ -15,10 +15,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { publicRequest } from "../../utils/requestMethod";
 import { useDispatch } from "react-redux";
-import {
-  setIsUnseenNotification,
-  setUnseenMessages,
-} from "../../redux/headerStatusRedux";
+import { setUnseenMessages } from "../../redux/headerStatusRedux";
 import { socket } from "../../pages/_app";
 import { md } from "../../utils/responsive";
 
@@ -106,18 +103,18 @@ const HeaderNav = () => {
   }, [router]);
   useEffect(() => {
     const getNumberOfUnseen = async () => {
-      await publicRequest
-        .get("/room/unseen_number", {
-          params: {
-            userId: user?._id,
-          },
-        })
-        .then((resp) => {
-          let unseenMessages = resp.data?.map((item: IMessage) => {
-            return { _id: item._id, room: item.room };
-          });
-          dispatch(setUnseenMessages(unseenMessages));
-        });
+      // await publicRequest
+      //   .get("/room/unseen_number", {
+      //     params: {
+      //       userId: user?._id,
+      //     },
+      //   })
+      //   .then((resp) => {
+      //     let unseenMessages = resp.data?.map((item: IMessage) => {
+      //       return { _id: item._id, room: item.room };
+      //     });
+      //     dispatch(setUnseenMessages(unseenMessages));
+      //   });
     };
 
     if (user) {

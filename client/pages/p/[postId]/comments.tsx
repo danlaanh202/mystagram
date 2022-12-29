@@ -56,7 +56,8 @@ const StyledContainer = styled.div`
 const StyledCommentsContainer = styled.div`
   padding: 16px;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
+
   gap: 8px;
   margin-bottom: 44px;
 `;

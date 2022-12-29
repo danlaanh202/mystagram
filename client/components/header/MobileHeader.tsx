@@ -22,18 +22,18 @@ const StyledMobileHeader = styled.div`
     display: "flex",
   })}
   .left-btn {
-    width: 32px;
+    min-width: 32px;
   }
   .center-content {
     display: flex;
     align-items: center;
     color: #383838;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 16px;
     line-height: 24px;
   }
   .right-content {
-    width: 32px;
+    min-width: 32px;
   }
 `;
 

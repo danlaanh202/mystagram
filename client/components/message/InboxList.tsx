@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -101,12 +102,14 @@ const InboxList = ({
         last_message: {
           ...prevList[pos]?.last_message,
           message: lastMessage?.message as string,
+          created_at: `${new Date(Date.now())}`,
         },
       };
       prevList.splice(pos, 1);
       return [temp, ...prevList];
     });
   }, [lastMessage]);
+  console.log(format(Date.now(), "MM/dd/yyyy/s"));
   useEffect(() => {
     const getInboxList = async () => {
       await publicRequest("/room/get_rooms", {
@@ -146,7 +149,7 @@ const InboxList = ({
       </StyledTopContainer>
       <StyledInboxs>
         {inboxList?.length > 0 &&
-          inboxList?.map((item, index) => (
+          inboxList?.map((item) => (
             <InboxItem
               key={`${item._id}${window.location.pathname}`}
               room={item}

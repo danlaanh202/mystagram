@@ -13,18 +13,21 @@ import DotSpinner from "../loading/DotSpinner";
 const StyledSuggestionItem = styled.div`
   display: flex;
   padding: 8px 0;
+  align-items: center;
   .info-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex: 1;
     margin-left: 16px;
-
     .name-container {
       cursor: pointer;
       .username {
         color: #262626;
         font-weight: 600;
+      }
+      .name {
+        color: #8e8e8e;
       }
       .followed {
         color: #8e8e8e;
@@ -33,22 +36,41 @@ const StyledSuggestionItem = styled.div`
         line-height: 16px;
       }
     }
-    button {
-      font-weight: 600;
-      font-size: 12px;
-      line-height: 16px;
-      cursor: pointer;
-      color: #0095f6;
-    }
   }
 `;
-const StyledAvatar = styled(Avatar)`
-  width: 32px !important;
-  height: 32px !important;
+export interface AvatarProps {
+  isprimary: boolean;
+}
+export interface ButtonProps extends AvatarProps {
+  isFollow: boolean;
+}
+const StyledAvatar = styled(Avatar)<AvatarProps>`
+  width: ${(props) => (props.isprimary ? "44px" : "32px")} !important;
+  height: ${(props) => (props.isprimary ? "44px" : "32px")} !important;
   cursor: pointer;
 `;
-
-const SuggestionItem = ({ currentUser }: { currentUser: IUser }) => {
+const StyledButton = styled.button<ButtonProps>`
+  font-weight: 600;
+  font-size: ${(props) => (props.isprimary ? "14px" : "12px")};
+  line-height: ${(props) => (props.isprimary ? "18px" : "16px")};
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: ${(props) => (props.isprimary ? "70px" : "auto")};
+  color: ${(props) =>
+    props.isprimary ? (props.isFollow ? "#ed4956" : "white") : "#0095f6"};
+  background: ${(props) =>
+    props.isprimary ? (props.isFollow ? "white" : "#0095f6") : "white"};
+  border: ${(props) =>
+    props.isprimary && props.isFollow ? "1px solid #dbdbdb" : ""};
+`;
+const SuggestionItem = ({
+  currentUser,
+  primary = true,
+}: {
+  currentUser: IUser;
+  primary?: boolean;
+}) => {
   const router = useRouter();
   const [followLoading, setFollowLoading] = useState<boolean>(false);
   const [isFollowed, setIsFollowed] = useState<boolean>(false);
@@ -113,19 +135,35 @@ const SuggestionItem = ({ currentUser }: { currentUser: IUser }) => {
     <StyledSuggestionItem>
       <StyledAvatar
         onClick={toUser}
-        src={(currentUser.avatar as IMedia)?.media_url}
+        src={(currentUser?.avatar as IMedia)?.media_url}
+        isprimary={primary}
       />
       <div className="info-container">
         <div className="name-container" onClick={toUser}>
-          <div className="username">{currentUser.username}</div>
+          <div className="username">
+            {currentUser?.username || "insta_user"}
+          </div>
+          {primary && <div className="name">Người dùng instagram</div>}
           <div className="followed">New user</div>
         </div>
         {followLoading ? (
           <DotSpinner />
         ) : isFollowed ? (
-          <button onClick={handleUnfollow}>Unfollow</button>
+          <StyledButton
+            isFollow={isFollowed}
+            isprimary={primary}
+            onClick={handleUnfollow}
+          >
+            Unfollow
+          </StyledButton>
         ) : (
-          <button onClick={handleFollow}>Follow</button>
+          <StyledButton
+            isFollow={isFollowed}
+            isprimary={primary}
+            onClick={handleFollow}
+          >
+            Follow
+          </StyledButton>
         )}
       </div>
     </StyledSuggestionItem>

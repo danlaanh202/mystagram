@@ -39,7 +39,7 @@ export interface IMedia extends ITimeStamps {
   media_url: string;
 }
 
-export interface IPost {
+export interface IPost extends ITimeStamps {
   _id?: string;
   user?: IUser;
   media?: IMedia;
@@ -67,7 +67,7 @@ export interface IFollow extends ITimeStamps {
   user: IUser | string;
   _id?: string;
 }
-export interface IComment {
+export interface IComment extends ITimeStamps {
   _id?: string;
   user: IUser | string;
   post: IPost | string;
@@ -75,7 +75,7 @@ export interface IComment {
   is_reply: boolean;
   reply_comments: IComment[] | string[];
 }
-export interface INotification {
+export interface INotification extends ITimeStamps {
   _id?: string;
   notification_type: string;
   post?: IPost | string;

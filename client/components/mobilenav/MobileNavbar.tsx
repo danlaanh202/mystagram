@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { IRootState } from "../../redux/store";
-import { IUser } from "../../types";
+import { IMedia, IUser } from "../../types";
 import ActivityFeedIcon from "../icons/ActivityFeedIcon";
 import HomeIcon from "../icons/HomeIcon";
 
@@ -112,7 +112,7 @@ const MobileNavbar = () => {
               justifyContent: "center",
             }}
           >
-            <StyledAvatar />
+            <StyledAvatar src={(user.avatar as IMedia)?.media_url} />
           </a>
         </Link>
       </StyledNavbarButtonContainer>
