@@ -24,6 +24,10 @@ const MessageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    message_type: {
+      type: String,
+      default: "message", //message || media || annoucement
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

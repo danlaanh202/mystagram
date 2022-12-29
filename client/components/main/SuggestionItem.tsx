@@ -4,10 +4,18 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { socket } from "../../pages/_app";
 import { IRootState } from "../../redux/store";
 import { editUser } from "../../redux/userRedux";
 import { IUser, IMedia } from "../../types";
+import {
+  handleFollowUtil,
+  handleUnfollowUtil,
+  pushNotification,
+  removeNotification,
+} from "../../utils";
 import { publicRequest } from "../../utils/requestMethod";
+import FollowButton from "../button/FollowButton";
 import DotSpinner from "../loading/DotSpinner";
 
 const StyledSuggestionItem = styled.div`
@@ -82,25 +90,21 @@ const SuggestionItem = ({
   const handleUnfollow = async () => {
     setFollowLoading(true);
     try {
-      await Promise.all([
-        publicRequest.delete("/follow/unfollow", {
-          params: {
-            user_id: currentUser._id,
-            follower_id: user._id,
-          },
-        }),
-        publicRequest.put("/user/update_unfollow", {
-          user_id: currentUser._id,
-          follower_id: user._id,
-        }),
-      ]).then((response) => {
-        setFollowLoading(false);
-        setIsFollowed(false);
-        let [data1, data2] = response.map((item) => item.data);
-        //data2.user is current url user info
-        dispatch(editUser(data2.follower));
-        // setThisUser(data2.user);
-      });
+      handleUnfollowUtil(currentUser._id as string, user._id as string).then(
+        async (response) => {
+          setFollowLoading(false);
+          setIsFollowed(false);
+          let [data1, data2] = response.map((item) => item.data);
+          //data2.user is current url user info
+          dispatch(editUser(data2.follower));
+          // setThisUser(data2.user);
+          removeNotification({
+            type: "follow",
+            myId: user._id as string,
+            otherId: currentUser._id as string,
+          });
+        }
+      );
     } catch (error) {
       // console.log(error);
       setFollowLoading(false);
@@ -109,23 +113,32 @@ const SuggestionItem = ({
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
-      await Promise.all([
-        publicRequest.post("/follow/follow", {
-          user_id: currentUser._id,
-          follower_id: user._id,
-        }),
-        publicRequest.put("/user/update_follow", {
-          user_id: currentUser._id,
-          follower_id: user._id,
-        }),
-      ]).then((response) => {
-        setFollowLoading(false);
-        setIsFollowed(true);
-        let [data1, data2] = response.map((item) => item.data);
-        //data2.user is current url user info
-        dispatch(editUser(data2.follower));
-        // setThisUser(data2.user);
-      });
+      // await Promise.all([
+      //   publicRequest.post("/follow/follow", {
+      //     user_id: currentUser._id,
+      //     follower_id: user._id,
+      //   }),
+      //   publicRequest.put("/user/update_follow", {
+      //     user_id: currentUser._id,
+      //     follower_id: user._id,
+      //   }),
+      // ])
+      handleFollowUtil(currentUser._id as string, user._id as string).then(
+        (response) => {
+          setFollowLoading(false);
+          setIsFollowed(true);
+          let [data1, data2] = response.map((item) => item.data);
+          //data2.user is current url user info
+          dispatch(editUser(data2.follower));
+          // setThisUser(data2.user);
+          pushNotification({
+            socket: socket,
+            type: "follow",
+            myId: user._id as string,
+            otherId: currentUser._id as string,
+          });
+        }
+      );
     } catch (error) {
       // console.log(error);
       setFollowLoading(false);
@@ -146,25 +159,13 @@ const SuggestionItem = ({
           {primary && <div className="name">Người dùng instagram</div>}
           <div className="followed">New user</div>
         </div>
-        {followLoading ? (
-          <DotSpinner />
-        ) : isFollowed ? (
-          <StyledButton
-            isFollow={isFollowed}
-            isprimary={primary}
-            onClick={handleUnfollow}
-          >
-            Unfollow
-          </StyledButton>
-        ) : (
-          <StyledButton
-            isFollow={isFollowed}
-            isprimary={primary}
-            onClick={handleFollow}
-          >
-            Follow
-          </StyledButton>
-        )}
+        <FollowButton
+          followLoading={followLoading}
+          isFollowed={isFollowed}
+          primary={primary}
+          handleUnfollow={handleUnfollow}
+          handleFollow={handleFollow}
+        />
       </div>
     </StyledSuggestionItem>
   );

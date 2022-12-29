@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { IMedia, INotification, IPost, IUser } from "../types";
 import { getShortTime } from "../utils";
+import { publicRequest } from "../utils/requestMethod";
 
 const StyledActivityNotiContainer = styled.div`
   padding: 12px 16px;
@@ -40,10 +41,18 @@ const ActivityNotificationItem = ({
   setSeen: (id: string) => void;
 }) => {
   const router = useRouter();
-  console.log(noti);
+  const seenUpdate = async () => {
+    await publicRequest.put("/noti/seen", { noti_id: noti?._id });
+  };
   return (
     <StyledActivityNotiContainer
-      onClick={() => router.push(`/p/${(noti.post as IPost)._id}`)}
+      onClick={() => {
+        if (!noti.is_seen) {
+          setSeen(noti._id as string);
+          seenUpdate();
+        }
+        router.push(`/p/${(noti.post as IPost)._id}`);
+      }}
     >
       <StyledAvatar
         alt="avatar"

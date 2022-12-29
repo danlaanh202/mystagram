@@ -37,6 +37,9 @@ const StyledAvatar = styled(Avatar)`
 const MobileNavbar = () => {
   const [activeId, setActiveId] = useState(0);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
+  const { isUnseenNotification } = useSelector(
+    (state: IRootState) => state.header
+  );
   return (
     <StyledNavbarContainer>
       <StyledNavbarButtonContainer>
@@ -92,11 +95,27 @@ const MobileNavbar = () => {
               width: "100%",
               cursor: "pointer",
               display: "flex",
+              position: "relative",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <ActivityFeedIcon />
+            {isUnseenNotification && (
+              <div
+                className="new-noti"
+                style={{
+                  position: "absolute",
+                  bottom: "4px",
+                  background: "#ff3040",
+                  width: "4px",
+                  height: "4px",
+                  borderRadius: "100%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                }}
+              ></div>
+            )}
           </a>
         </Link>
       </StyledNavbarButtonContainer>

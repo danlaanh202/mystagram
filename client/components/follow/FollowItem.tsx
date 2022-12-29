@@ -27,23 +27,35 @@ const StyledInfoContainer = styled.div`
   .l-btn {
     color: #262626;
     font-weight: 600;
-    /* max-height: 30px; */
     padding: 4px 8px;
     border: 1px solid #dbdbdb;
     border-radius: 4px;
     cursor: pointer;
   }
 `;
-const FollowItem = ({ follow }: { follow: IFollow }) => {
+const FollowItem = ({
+  follow,
+  isFollowers = true,
+}: {
+  follow: IFollow;
+  isFollowers: boolean;
+}) => {
+  console.log(follow);
   return (
     <StyledFollowItem>
       <StyledAvatar />
       <StyledInfoContainer>
         <div className="l-info">
           <div className="l-info_username">
-            {(follow.follow_by as IUser)?.username}
+            {isFollowers
+              ? (follow.follow_by as IUser)?.username
+              : (follow.user as IUser)?.username}
           </div>
-          <div className="l-info_name">{(follow.follow_by as IUser)?.name}</div>
+          <div className="l-info_name">
+            {isFollowers
+              ? (follow.follow_by as IUser)?.name
+              : (follow.user as IUser)?.name}
+          </div>
         </div>
         <button className="l-btn">Remove</button>
       </StyledInfoContainer>

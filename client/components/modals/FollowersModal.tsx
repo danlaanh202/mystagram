@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IFollow, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
@@ -84,7 +78,7 @@ const FollowersModal = ({
         </div>
         <div className="bottom">
           {followers?.map((item) => (
-            <FollowItem key={item._id} follow={item} />
+            <FollowItem isFollowers={true} key={item._id} follow={item} />
           ))}
         </div>
       </StyledFollowersContainer>

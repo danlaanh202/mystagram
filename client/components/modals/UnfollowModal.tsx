@@ -2,6 +2,8 @@ import Avatar from "@mui/material/Avatar";
 import { Dispatch, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import { FollowIcon } from "../../pages/[username]";
+import { IUser } from "../../types";
+import { md } from "../../utils/responsive";
 import ModalProto from "./ModalProto";
 const StyledUnfollowModalContainer = styled.div`
   position: absolute;
@@ -13,6 +15,9 @@ const StyledUnfollowModalContainer = styled.div`
   border-radius: 12px;
   display: flex;
   flex-direction: column;
+  ${md({
+    width: "80%",
+  })}
   .avatar-container {
     margin: 32px 16px 16px;
     display: flex;
@@ -43,9 +48,13 @@ const StyledButton = styled.button`
 const UnfollowModal = ({
   open,
   setOpen,
+  handleUnfollow,
+  otherUser,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  handleUnfollow: () => {};
+  otherUser: IUser;
 }) => {
   return (
     <ModalProto openBtn={<FollowIcon />} open={open} setOpen={setOpen}>
@@ -53,8 +62,16 @@ const UnfollowModal = ({
         <div className="avatar-container">
           <StyledAvatar />
         </div>
-        <div className="unfollow-text">Unfollow @moingay1trangsach.vn?</div>
-        <StyledButton className="unfollow-btn">Unfollow</StyledButton>
+        <div className="unfollow-text">Unfollow @{otherUser?.username}?</div>
+        <StyledButton
+          className="unfollow-btn"
+          onClick={() => {
+            handleUnfollow();
+            setOpen(false);
+          }}
+        >
+          Unfollow
+        </StyledButton>
         <StyledButton onClick={() => setOpen(false)} className="cancel-btn">
           Cancel
         </StyledButton>

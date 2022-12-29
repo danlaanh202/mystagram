@@ -63,18 +63,6 @@ const people = () => {
               suggestionUser.map((item) => (
                 <SuggestionItem key={item._id} currentUser={item} />
               ))}
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
-            <SuggestionItem currentUser={suggestionUser[0]} />
           </div>
         </Layout>
       </StyledPeopleContainer>

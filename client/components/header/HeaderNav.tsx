@@ -103,18 +103,19 @@ const HeaderNav = () => {
   }, [router]);
   useEffect(() => {
     const getNumberOfUnseen = async () => {
-      // await publicRequest
-      //   .get("/room/unseen_number", {
-      //     params: {
-      //       userId: user?._id,
-      //     },
-      //   })
-      //   .then((resp) => {
-      //     let unseenMessages = resp.data?.map((item: IMessage) => {
-      //       return { _id: item._id, room: item.room };
-      //     });
-      //     dispatch(setUnseenMessages(unseenMessages));
-      //   });
+      await publicRequest
+        .get("/room/unseen_number", {
+          params: {
+            userId: user?._id,
+          },
+        })
+        .then((resp) => {
+          let unseenMessages = resp.data?.map((item: IMessage) => {
+            return { _id: item._id, room: item.room };
+          });
+
+          dispatch(setUnseenMessages(unseenMessages));
+        });
     };
 
     if (user) {

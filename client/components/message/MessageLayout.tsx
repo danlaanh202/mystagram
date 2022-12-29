@@ -15,7 +15,7 @@ const StyledInboxContainer = styled.div`
   height: calc(100% - 100px);
   display: flex;
   ${m1000({
-    margin: "0 auto",
+    margin: "0 auto 0",
     height: "100%",
   })}
 `;
