@@ -1,7 +1,10 @@
 import Avatar from "@mui/material/Avatar";
+import { formatDistance, formatDistanceStrict } from "date-fns";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { IMedia, INotification, IPost, IUser } from "../types";
+import { getShortTime } from "../utils";
+import { publicRequest } from "../utils/requestMethod";
 
 const StyledActivityNotiContainer = styled.div`
   padding: 12px 16px;
@@ -18,6 +21,8 @@ const StyledActivityNotiContainer = styled.div`
     }
     &-type {
       color: #262626;
+      display: flex;
+      gap: 8px;
     }
   }
   .right-btn {
@@ -36,12 +41,23 @@ const ActivityNotificationItem = ({
   setSeen: (id: string) => void;
 }) => {
   const router = useRouter();
-
+  const seenUpdate = async () => {
+    await publicRequest.put("/noti/seen", { noti_id: noti?._id });
+  };
   return (
     <StyledActivityNotiContainer
-      onClick={() => router.push(`/p/${(noti.post as IPost)._id}`)}
+      onClick={() => {
+        if (!noti.is_seen) {
+          setSeen(noti._id as string);
+          seenUpdate();
+        }
+        router.push(`/p/${(noti.post as IPost)._id}`);
+      }}
     >
-      <StyledAvatar />
+      <StyledAvatar
+        alt="avatar"
+        src={((noti.notification_from as IUser).avatar as IMedia)?.media_url}
+      />
       <div className="notification">
         <div
           className="notification-username"
@@ -50,9 +66,19 @@ const ActivityNotificationItem = ({
           {(noti.notification_from as IUser).username}
         </div>
         <div className="notification-type">
-          {noti.notification_type === "like"
-            ? " liked your photo"
-            : `commented: ${""}`}
+          <span>
+            {noti.notification_type === "like"
+              ? " liked your photo"
+              : `commented: ${""}`}
+          </span>
+          <div className="date">
+            {getShortTime(
+              formatDistanceStrict(
+                new Date(noti?.created_at as string),
+                Date.now()
+              )
+            )}
+          </div>
         </div>
       </div>
       <div className="right-btn">

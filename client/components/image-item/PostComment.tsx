@@ -1,4 +1,5 @@
 import Avatar from "@mui/material/Avatar";
+import { formatDistance, formatDistanceStrict } from "date-fns";
 import styled from "styled-components";
 import { IComment, IMedia, IUser } from "../../types";
 
@@ -59,7 +60,13 @@ const PostComment = ({ comment }: { comment: IComment }) => {
             {comment?.comment}
           </div>
           <div className="b-comment">
-            <div className="b-comment-date">56m</div>
+            <div className="b-comment-date">
+              {formatDistanceStrict(
+                new Date(comment?.created_at as string),
+                Date.now(),
+                { addSuffix: true }
+              )}
+            </div>
             <div className="b-comment-nor-btn">Reply</div>
           </div>
         </StyledCommentContentContainer>

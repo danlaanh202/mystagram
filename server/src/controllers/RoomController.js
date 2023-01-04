@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Message = require("../models/Message.model");
+
 const Room = require("../models/Room.model");
 
 class RoomController {
@@ -38,6 +40,7 @@ class RoomController {
   async createRoom(req, res) {
     const my_user = mongoose.Types.ObjectId(req.body.my_user);
     const mongoUser = mongoose.Types.ObjectId(req.body.recipient);
+
     // this room need 2 body : my_user and recipient
     const newRoom = new Room({
       users: [my_user, mongoUser],
@@ -58,7 +61,21 @@ class RoomController {
       if (alreadyRoom) {
         return res.status(200).json(alreadyRoom);
       }
-      const savedNewRoom = await newRoom.save().populate([
+      const savedNewRoom = await newRoom.save();
+      const newMessage = new Message({
+        is_seen: false,
+        user: my_user,
+        room: savedNewRoom._id,
+        message: "Start Conversation",
+      });
+      const savedLastMessage = await newMessage.save();
+      const savedRoom = await Room.findOneAndUpdate(
+        { _id: savedNewRoom._id },
+        {
+          last_message: savedLastMessage._id,
+        },
+        { new: true }
+      ).populate([
         {
           path: "users",
           populate: "avatar",
@@ -67,7 +84,7 @@ class RoomController {
           path: "last_message",
         },
       ]);
-      return res.status(200).json(savedNewRoom);
+      return res.status(200).json(savedRoom);
     } catch (error) {
       return res.status(500).json(error);
     }

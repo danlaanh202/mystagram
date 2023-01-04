@@ -3,6 +3,7 @@ import Avatar from "@mui/material/Avatar";
 import { IMedia, IMessage, IUser } from "../../types";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../redux/store";
+import { md } from "../../utils/responsive";
 const StyledMessage = styled.div`
   margin-bottom: 8px;
 `;
@@ -31,17 +32,25 @@ const StyledMsgContent = styled.div`
     background: #efefef;
     padding: 16px;
     border-radius: 28px;
-    max-width: 70%;
+    max-width: 236px;
     word-break: break-all;
+    max-height: 340px;
+    ${md({
+      maxWidth: "70%",
+    })}
   }
   .msg-from-recipient {
-    max-width: 70%;
+    max-width: 236px;
     align-self: flex-start;
     /* background: #efefef; */
     padding: 16px;
     border-radius: 28px;
     border: 1px solid #efefef;
     word-break: break-all;
+    max-height: 340px;
+    ${md({
+      maxWidth: "70%",
+    })}
   }
 `;
 const Message = ({

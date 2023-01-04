@@ -45,6 +45,7 @@ const ReelItem = () => {
       <div className="reel-item">
         <div className="reel-image-container">
           <Image
+            draggable={false}
             src="/avatar-mock.png"
             width={64}
             height={64}

@@ -13,6 +13,9 @@ import Story from "../../../components/main/Story";
 const StyledPostContainer = styled.div`
   background: #fafafa;
   min-height: 100vh;
+  ${md({
+    background: "white",
+  })}
 `;
 const StyledContainer = styled.div`
   width: 100%;
@@ -24,12 +27,16 @@ const StyledContainer = styled.div`
   })}
   .story-comp {
     /* margin-top:; */
-
     margin-bottom: 44px;
     display: none;
     ${md({
       display: "block",
     })};
+    .story-container {
+      ${md({
+        border: "none",
+      })}
+    }
   }
   .pc-comp {
     ${md({ display: "none" })}

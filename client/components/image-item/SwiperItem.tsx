@@ -14,6 +14,9 @@ import { useSelector } from "react-redux";
 import { CloseIcon } from "../modals/LikeUsersModal";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { m1000, md } from "../../utils/responsive";
+import { socket } from "../../pages/_app";
+import { pushNotification, removeNotification } from "../../utils";
+import { format } from "date-fns";
 const StyledItemContainer = styled.div`
   height: calc(100vh - 60px);
   display: flex;
@@ -264,6 +267,13 @@ const SwiperItem = ({
           .then((response) => {
             if (setUpdatedPost) {
               setUpdatedPost(response.data.post);
+              pushNotification({
+                type: "like",
+                socket: socket,
+                postId: post._id,
+                myId: user._id as string,
+                otherId: (post.user as IUser)._id as string,
+              });
             }
           });
       } else {
@@ -274,9 +284,23 @@ const SwiperItem = ({
               post_id: post._id,
             },
           })
-          .then((response) => {
+          .then(async (response) => {
             if (setUpdatedPost) {
               setUpdatedPost(response.data.post);
+              removeNotification({
+                type: "like",
+                postId: post._id,
+                myId: user._id as string,
+                otherId: (post.user as IUser)._id as string,
+              });
+              // await publicRequest.delete("/noti/undo_notification", {
+              //   params: {
+              //     post_id: post._id,
+              //     noti_type: "like",
+              //     noti_from: user._id,
+              //     noti_to: (post.user as IUser)._id,
+              //   },
+              // });
             }
           });
       }
@@ -297,6 +321,23 @@ const SwiperItem = ({
             ...prev,
             response.data.comment as IComment,
           ]);
+          if (user._id !== (post.user as IUser)._id) {
+            // socket.emit("push_noti", {
+            //   type: "comment",
+            //   postId: post._id,
+            //   notificationFrom: user._id,
+            //   notificationTo: (post.user as IUser)._id,
+            //   commentId: response.data.comment._id,
+            // });
+            pushNotification({
+              type: "comment",
+              socket: socket,
+              postId: post._id,
+              myId: user._id as string,
+              otherId: (post.user as IUser)._id as string,
+              commentId: response.data.comment._id,
+            });
+          }
         })
         .then(() => {
           reset();
@@ -388,7 +429,12 @@ const SwiperItem = ({
                   {likeLength} likes
                 </div>
               </div>
-              <div className="story-date">APRIL 2, 2021</div>
+              <div
+                className="story-date"
+                style={{ textTransform: "uppercase" }}
+              >
+                {format(new Date(post.created_at as string), "PP")}
+              </div>
             </div>
           </div>
           <form

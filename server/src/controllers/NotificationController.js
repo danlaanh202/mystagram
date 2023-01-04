@@ -85,16 +85,35 @@ class NotificationController {
       return res.status(500).json(error);
     }
   }
-  async deleteLikeNotification(req, res) {
+  async deleteNotification(req, res) {
     try {
-      const deletedNotification = await Notification.findOneAndDelete({
-        post: mongoose.Types.ObjectId(req.query.post_id),
-        notification_type: req.query.noti_type,
-        notification_from: mongoose.Types.ObjectId(req.query.noti_from),
-        notification_to: mongoose.Types.ObjectId(req.query.noti_to),
-        // comment: mongoose.Types.ObjectId(req.query.comment_id),
-      });
-      return res.status(200).json(deletedNotification);
+      if (req.query.noti_type === "comment") {
+        const deletedNotification = await Notification.findOneAndDelete({
+          post: mongoose.Types.ObjectId(req.query.post_id),
+          notification_type: req.query.noti_type,
+          notification_from: mongoose.Types.ObjectId(req.query.noti_from),
+          notification_to: mongoose.Types.ObjectId(req.query.noti_to),
+          comment: mongoose.Types.ObjectId(req.query.comment_id),
+        });
+        return res.status(200).json(deletedNotification);
+      }
+      if (req.query.noti_type === "like") {
+        const deletedNotification = await Notification.findOneAndDelete({
+          post: mongoose.Types.ObjectId(req.query.post_id),
+          notification_type: req.query.noti_type,
+          notification_from: mongoose.Types.ObjectId(req.query.noti_from),
+          notification_to: mongoose.Types.ObjectId(req.query.noti_to),
+        });
+        return res.status(200).json(deletedNotification);
+      }
+      if (req.query.noti_type === "follow") {
+        const deletedNotification = await Notification.findOneAndDelete({
+          notification_type: req.query.noti_type,
+          notification_from: mongoose.Types.ObjectId(req.query.noti_from),
+          notification_to: mongoose.Types.ObjectId(req.query.noti_to),
+        });
+        return res.status(200).json(deletedNotification);
+      }
     } catch (error) {
       return res.status(500).json(error);
     }

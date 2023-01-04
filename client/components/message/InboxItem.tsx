@@ -7,6 +7,8 @@ import { IMedia, IRoom, IUser } from "../../types";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { handleSeenMessages } from "../../redux/headerStatusRedux";
+import { format, formatDistanceStrict } from "date-fns";
+import { getShortTime } from "../../utils";
 
 const StyledInboxItem = styled.div`
   padding: 8px 20px;
@@ -69,6 +71,7 @@ const InboxItem = ({
   const [recipient, setRecipient] = useState<IUser>();
   const [isSeen, setIsSeen] = useState(true);
   const dispatch = useDispatch();
+  // console.log(room.last_message);
   useEffect(() => {
     room.users?.every((item: IUser, index) => {
       if (item._id !== user._id) {
@@ -111,12 +114,21 @@ const InboxItem = ({
           {recipient?.name}
         </div>
         <div className="last-message">
-          {room?.last_message ? (
+          {room?.last_message?._id ? (
             <>
               <div className={`msg ${isSeen ? "" : "msg-noti"}`}>
-                {room.last_message.message}
+                {room.last_message?.message}
               </div>
-              <div className="date">2d</div>
+              <div className="date">
+                {(room.last_message?._id &&
+                  getShortTime(
+                    formatDistanceStrict(
+                      new Date(room.last_message?.created_at as string),
+                      Date.now()
+                    )
+                  )) ||
+                  "1s"}
+              </div>
             </>
           ) : (
             <div className="msg">You haven't chatted yet</div>

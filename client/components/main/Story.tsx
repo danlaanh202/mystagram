@@ -4,13 +4,14 @@ import { IPost, IUser } from "../../types";
 import BottomStory from "./BottomStory";
 import TopStory from "./TopStory";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { publicRequest, pushNotification } from "../../utils/requestMethod";
+import { publicRequest } from "../../utils/requestMethod";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 import ImageSliderModal from "../modals/ImageSliderModal";
 import { socket } from "../../pages/_app";
 import { md } from "../../utils/responsive";
+import { pushNotification, removeNotification } from "../../utils";
 
 const StyledStory = styled.div`
   background: white;
@@ -22,6 +23,7 @@ const StyledStory = styled.div`
     borderRadius: 0,
     marginTop: 0,
     borderTop: "1px solid transparent",
+    marginBottom: "16px",
   })}
   display: flex;
   flex-direction: column;
@@ -88,11 +90,19 @@ const Story = ({
         .then((response) => {
           setUpdatedPost(response.data.post);
           if (user._id !== (post.user as IUser)._id) {
-            socket.emit("push_noti", {
+            // socket.emit("push_noti", {
+            //   type: "comment",
+            //   postId: post._id,
+            //   notificationFrom: user._id,
+            //   notificationTo: (post.user as IUser)._id,
+            //   commentId: response.data.comment._id,
+            // });
+            pushNotification({
+              socket: socket,
               type: "comment",
               postId: post._id,
-              notificationFrom: user._id,
-              notificationTo: (post.user as IUser)._id,
+              myId: user._id as string,
+              otherId: (post.user as IUser)._id as string,
               commentId: response.data.comment._id,
             });
           }
@@ -114,11 +124,18 @@ const Story = ({
           .then((response) => {
             setUpdatedPost(response.data.post);
             if (user._id !== (post.user as IUser)._id) {
-              socket.emit("push_noti", {
+              // socket.emit("push_noti", {
+              //   type: "like",
+              //   postId: post._id,
+              //   notificationFrom: user._id,
+              //   notificationTo: (post.user as IUser)._id,
+              // });
+              pushNotification({
                 type: "like",
+                socket: socket,
                 postId: post._id,
-                notificationFrom: user._id,
-                notificationTo: (post.user as IUser)._id,
+                myId: user._id as string,
+                otherId: (post.user as IUser)._id as string,
               });
             }
           });
@@ -132,16 +149,21 @@ const Story = ({
           })
           .then(async (response) => {
             setUpdatedPost(response.data.post);
-            await publicRequest
-              .delete("/noti/undo_like_notification", {
-                params: {
-                  post_id: post._id,
-                  noti_type: "like",
-                  noti_from: user._id,
-                  noti_to: (post.user as IUser)._id,
-                },
-              })
-              .then((response) => console.log(response.data));
+            // await publicRequest
+            //   .delete("/noti/undo_notification", {
+            //     params: {
+            //       post_id: post._id,
+            //       noti_type: "like",
+            //       noti_from: user._id,
+            //       noti_to: (post.user as IUser)._id,
+            //     },
+            //   })
+            removeNotification({
+              postId: post._id,
+              myId: user._id as string,
+              otherId: (post.user as IUser)._id as string,
+              type: "like",
+            }).then((response) => console.log(response.data));
           });
       }
     } catch (error) {
@@ -150,7 +172,7 @@ const Story = ({
   };
 
   return (
-    <StyledStory>
+    <StyledStory className="story-container">
       <TopStory post={updatedPost} />
       <div className="image-container">
         <StyledImage
@@ -173,6 +195,7 @@ const Story = ({
           <input
             type="text"
             placeholder="Add a comment"
+            autoComplete="off"
             {...register("comment")}
           />
           <button>Post</button>

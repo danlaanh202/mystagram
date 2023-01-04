@@ -20,6 +20,14 @@ import ImageSliderModal from "../components/modals/ImageSliderModal";
 import MobileHeader from "../components/header/MobileHeader";
 import { md } from "../utils/responsive";
 import MobileOptionsDialog from "../components/dialog/MobileOptionsDialog";
+import UnfollowModal from "../components/modals/UnfollowModal";
+import {
+  handleFollowUtil,
+  handleUnfollowUtil,
+  pushNotification,
+  removeNotification,
+} from "../utils";
+import { socket } from "./_app";
 const StyledUserProfile = styled.div``;
 const StyledContainer = styled.div`
   width: 100%;
@@ -265,25 +273,48 @@ const UserProfile = ({
   const [followLoading, setFollowLoading] = useState(false);
   const [showImageSlider, setShowImageSlider] = useState(false);
   const [modalIndex, setModalIndex] = useState<number>(-1);
+  const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
-      await Promise.all([
-        publicRequest.post("/follow/follow", {
-          user_id: currentUser._id,
-          follower_id: user._id,
-        }),
-        publicRequest.put("/user/update_follow", {
-          user_id: currentUser._id,
-          follower_id: user._id,
-        }),
-      ]).then((response) => {
-        setFollowLoading(false);
-        let [data1, data2] = response.map((item) => item.data);
-        //data2.user is current url user info
-        dispatch(editUser(data2.follower));
-        setThisUser(data2.user);
-      });
+      handleFollowUtil(currentUser._id as string, user._id as string).then(
+        (response) => {
+          setFollowLoading(false);
+          let [data1, data2] = response.map((item) => item.data);
+          //data2.user is current url user info
+          dispatch(editUser(data2.follower));
+          setThisUser(data2.user);
+          pushNotification({
+            socket: socket,
+            type: "follow",
+            myId: user._id as string,
+            otherId: currentUser._id as string,
+          });
+        }
+      );
+    } catch (error) {
+      // console.log(error);
+      setFollowLoading(false);
+    }
+  };
+  const handleUnfollow = async () => {
+    setFollowLoading(true);
+    try {
+      handleUnfollowUtil(currentUser._id as string, user._id as string).then(
+        async (response) => {
+          setFollowLoading(false);
+          setIsFollowed(false);
+          let [data1, data2] = response.map((item) => item.data);
+          //data2.user is current url user info
+          dispatch(editUser(data2.follower));
+          setThisUser(data2.user);
+          removeNotification({
+            type: "follow",
+            myId: user._id as string,
+            otherId: currentUser._id as string,
+          }).then((resp) => console.log(resp));
+        }
+      );
     } catch (error) {
       // console.log(error);
       setFollowLoading(false);
@@ -371,7 +402,7 @@ const UserProfile = ({
                         </button>
                         <button
                           className="pri-btn"
-                          onClick={() => router.push("/")}
+                          onClick={() => setOpenUnfollowModal(true)}
                         >
                           <div style={{ padding: "0 16px" }}>
                             <FollowIcon />
@@ -414,7 +445,7 @@ const UserProfile = ({
                       </FollowersModal>
                     </div>
                     <div className="c-item">
-                      <FollowingModal>
+                      <FollowingModal currentUser={thisUser || currentUser}>
                         <div>
                           <span>
                             {thisUser?.following?.length ||
@@ -473,7 +504,10 @@ const UserProfile = ({
                     ) : isFollowed ? (
                       <>
                         <button className="rb-btn msg-btn">Message</button>
-                        <button className="rb-btn">
+                        <button
+                          className="rb-btn"
+                          onClick={() => setOpenUnfollowModal(true)}
+                        >
                           <FollowIcon />
                         </button>
                       </>
@@ -528,6 +562,14 @@ const UserProfile = ({
           posts={posts}
         />
       )}
+      {openUnfollowModal && (
+        <UnfollowModal
+          open={openUnfollowModal}
+          setOpen={setOpenUnfollowModal}
+          handleUnfollow={handleUnfollow}
+          otherUser={thisUser || currentUser}
+        />
+      )}
     </StyledUserProfile>
   );
 };
@@ -560,7 +602,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 export default UserProfile;
 
-const FollowIcon = () => {
+export const FollowIcon = () => {
   return (
     <svg
       aria-label="Following"

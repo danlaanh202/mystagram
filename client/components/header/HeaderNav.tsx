@@ -15,10 +15,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { publicRequest } from "../../utils/requestMethod";
 import { useDispatch } from "react-redux";
-import {
-  setIsUnseenNotification,
-  setUnseenMessages,
-} from "../../redux/headerStatusRedux";
+import { setUnseenMessages } from "../../redux/headerStatusRedux";
 import { socket } from "../../pages/_app";
 import { md } from "../../utils/responsive";
 
@@ -116,6 +113,7 @@ const HeaderNav = () => {
           let unseenMessages = resp.data?.map((item: IMessage) => {
             return { _id: item._id, room: item.room };
           });
+
           dispatch(setUnseenMessages(unseenMessages));
         });
     };

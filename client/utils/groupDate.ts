@@ -5,14 +5,14 @@ export function groupDateOfMessages(data: IMessage[]) {
 
   data.forEach(function (val: any) {
     // console.log(formatDate)
-    var date = val.created_at.split("T")[0];
+    var date = val.created_at?.split("T")[0];
     if (date in groups) {
       groups[date].push(val);
     } else {
       groups[date] = new Array(val);
     }
   });
-  //   let groupedArray = []
+  let groupedArray = [];
 
   for (let key in groups) {
     console.log(key);

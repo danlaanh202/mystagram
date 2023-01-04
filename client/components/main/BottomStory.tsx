@@ -1,4 +1,10 @@
-import ReactShowMoreText from "react-show-more-text";
+import {
+  compareAsc,
+  format,
+  formatDistance,
+  formatDistanceStrict,
+  subDays,
+} from "date-fns";
 import styled from "styled-components";
 import { IComment, IPost, IUser } from "../../types";
 import CommentIcon from "../icons/CommentIcon";
@@ -11,6 +17,7 @@ import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import LikeUsersModal from "../modals/LikeUsersModal";
 import { md } from "../../utils/responsive";
+
 const StyledBottomStory = styled.div`
   padding: 8px;
   .pc-comp {
@@ -73,6 +80,13 @@ const PostContentContainer = styled.div`
           display: "none",
         })}
       }
+    }
+    .date-created {
+      font-weight: 400;
+      font-size: 10px;
+      line-height: 12px;
+      color: #8e8e8e;
+      margin-bottom: 12px;
     }
     .comment {
       margin-bottom: 4px;
@@ -193,6 +207,11 @@ const BottomStory = ({
                 View all {post.comments.length} comments
               </span>
             </div>
+          </div>
+          <div className="date-created" style={{ textTransform: "uppercase" }}>
+            {formatDistance(new Date(post?.created_at as string), Date.now(), {
+              addSuffix: true,
+            })}
           </div>
           {additionComment?.length > 0 &&
             additionComment.map((item: IComment, index) => (

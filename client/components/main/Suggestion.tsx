@@ -32,7 +32,7 @@ const Suggestion = ({ initialNewUsers }: { initialNewUsers?: IUser[] }) => {
       </div>
       <div className="suggestion">
         {initialNewUsers?.map((item, index) => (
-          <SuggestionItem key={item._id} currentUser={item} />
+          <SuggestionItem primary={false} key={item._id} currentUser={item} />
         ))}
       </div>
       <div>
