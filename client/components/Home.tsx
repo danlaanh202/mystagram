@@ -95,9 +95,7 @@ const ReelContainer = styled.div`
 const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const [posts, setPosts] = useState<IPost[]>(initialPosts);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  // useEffect(() => {
-  //   setPosts(initialPosts); //re-init posts state
-  // }, []);
+
   const getMoreData = async () => {
     try {
       let lastId = posts[posts.length - 1]?._id;

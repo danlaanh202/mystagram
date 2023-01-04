@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BackIcon } from "../../../components/message/InboxList";
 import { md } from "../../../utils/responsive";
+import { groupDateOfMessages } from "../../../utils/groupDate";
 
 const StyledMessageContainer = styled.div`
   flex-direction: column;
@@ -137,10 +138,10 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [inboxList, setInboxList] = useState<IRoom[]>([]);
   const [recipient, setRecipient] = useState<IUser>();
-  const [newMsg, setNewMsg] = useState<IMessage[]>([]);
-  const [oldMsg, setOldMsg] = useState<IMessage[]>([]);
+
   const [lastMessage, setLastMessage] = useState<ITempLastMsg>();
   const [hasMore, setHasMore] = useState(true);
+  const [messages, setMessages] = useState<IMessage[]>(initialMessages.docs);
   const {
     handleSubmit,
     register,
@@ -160,13 +161,12 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
         message: data.message,
         room_id: roomId,
       });
-      setNewMsg((prev: IMessage[]) => [
+      setMessages((prev: IMessage[]) => [
         { user: user, message: data.message, uuid: uuid } as IMessage,
         ...prev,
       ]);
     }
   };
-
   useEffect(() => {
     socket.emit("join_conversation", {
       room_id: roomId,
@@ -185,13 +185,12 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
           );
         });
     };
-    setNewMsg([]);
+
     getRoomById();
   }, [roomId]);
-
   useEffect(() => {
     socket.on("receive_message", (msg: IMessage) => {
-      setNewMsg((prev: IMessage[]) => [msg, ...prev]);
+      setMessages((prev: IMessage[]) => [msg, ...prev]);
     });
   }, [socket]);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -203,10 +202,8 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
   };
   const fetchData = async () => {
     try {
-      let topId =
-        oldMsg[oldMsg.length - 1]?._id ||
-        initialMessages.docs[initialMessages.docs.length - 1]._id;
-      console.log(topId);
+      let topId = messages[messages.length - 1]?._id;
+
       await publicRequest
         .get("/message/get", {
           params: {
@@ -218,13 +215,17 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
           if (resp.data.docs.length === 0) {
             setHasMore(false);
           }
-          setOldMsg((prev) => [...prev, ...resp.data.docs]);
+          setMessages((prev) => [...prev, ...resp.data.docs]);
         });
     } catch (error) {
       setHasMore(false);
       console.log(error);
     }
   };
+  useEffect(() => {
+    console.log(groupDateOfMessages(messages));
+    console.log(messages);
+  }, [messages]);
   return (
     <StyledMessageContainer>
       <Head>
@@ -286,29 +287,17 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
                 </h4>
               }
               inverse={true}
-              dataLength={
-                (oldMsg?.length || 0) +
-                (initialMessages?.docs?.length || 0) +
-                (newMsg?.length || 0) +
-                1
-              }
+              dataLength={(messages.length || 0) + 1}
               className="outer-messages"
               scrollableTarget="scrollableDiv"
             >
               <BottomDiv ref={bottomRef}></BottomDiv>
-              {newMsg?.length > 0 &&
-                newMsg?.map((item) => (
-                  <Message
-                    recipient={recipient}
-                    key={item.uuid || item._id}
-                    message={item}
-                  />
-                ))}
-              {initialMessages?.docs?.map((item) => (
-                <Message recipient={recipient} key={item._id} message={item} />
-              ))}
-              {oldMsg?.map((item) => (
-                <Message recipient={recipient} key={item._id} message={item} />
+              {messages.map((item, index) => (
+                <Message
+                  recipient={recipient}
+                  key={item.uuid || item._id}
+                  message={item}
+                />
               ))}
             </InfiniteScroll>
           </StyledMessages>
