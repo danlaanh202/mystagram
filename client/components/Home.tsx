@@ -4,24 +4,31 @@ import Layout from "./Layout";
 import ReelItem from "./main/ReelItem";
 import RightItems from "./main/RightItems";
 import Story from "./main/Story";
-import { IPost } from "../types";
+import { IPost, IUser } from "../types";
 import Carousel from "react-multi-carousel";
 import { m1000, md } from "../utils/responsive";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { publicRequest } from "../utils/requestMethod";
 import LoadingComponent from "./search/LoadingComponent";
+import CreateStoryItem from "./main/CreateStoryItem";
+
+import CreateStoryDialog from "./dialog/CreateStoryDialog";
+import useWindowSize from "../hooks/useWindowSize";
+import { IRootState } from "../redux/store";
+import { useSelector } from "react-redux";
+import { groupStories } from "../utils";
 
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 5,
+    items: 6,
     slidesToSlide: 3, // optional, default to 1.
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
-    items: 5,
+    items: 6,
     slidesToSlide: 2, // optional, default to 1.
   },
   mobile: {
@@ -96,7 +103,8 @@ const ReelContainer = styled.div`
 const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const [posts, setPosts] = useState<IPost[]>(initialPosts);
   const [hasMore, setHasMore] = useState<boolean>(true);
-
+  const [windowWidth, windowHeight] = useWindowSize();
+  const user = useSelector((state: IRootState) => state.user.user as IUser);
   const refreshData = async () => {
     setHasMore(true);
     try {
@@ -141,6 +149,19 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    const getStories = async () => {
+      await publicRequest
+        .get("/story/get", {
+          params: {
+            followingIds: [user._id, ...(user.following as string[])],
+          },
+        })
+        .then((res) => console.log(groupStories(res.data)));
+    };
+    getStories();
+  }, []);
+
   return (
     <StyledHome>
       <Layout isShowMobileBar={true} isShowHeader={true}>
@@ -150,8 +171,9 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
               <Carousel
                 containerClass="carousel-container"
                 responsive={responsive}
-                slidesToSlide={5}
+                slidesToSlide={7}
               >
+                {windowWidth <= 500 && <CreateStoryDialog />}
                 <ReelItem />
                 <ReelItem />
                 <ReelItem />

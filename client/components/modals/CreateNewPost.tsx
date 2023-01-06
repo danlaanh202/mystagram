@@ -195,7 +195,7 @@ const CreateNewPost = () => {
   };
   const handlePost = async () => {
     try {
-      uploadImage("post_image")
+      uploadImage({ preset: "post_image", is_post: true })
         .then(
           async (res) =>
             await publicRequest.post("/post/upload", {

@@ -138,9 +138,8 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [inboxList, setInboxList] = useState<IRoom[]>([]);
   const [recipient, setRecipient] = useState<IUser>();
-
   const [lastMessage, setLastMessage] = useState<ITempLastMsg>();
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(initialMessages.hasNextPage);
   const [messages, setMessages] = useState<IMessage[]>(initialMessages.docs);
   const {
     handleSubmit,
@@ -162,12 +161,19 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
         room_id: roomId,
       });
       setMessages((prev: IMessage[]) => [
-        { user: user, message: data.message, uuid: uuid } as IMessage,
+        {
+          user: user,
+          message: data.message,
+          uuid: uuid,
+          created_at: new Date().toISOString(),
+        } as IMessage,
         ...prev,
       ]);
     }
   };
   useEffect(() => {
+    setMessages(initialMessages.docs);
+    setHasMore(initialMessages.hasNextPage);
     socket.emit("join_conversation", {
       room_id: roomId,
     });
@@ -185,7 +191,6 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
           );
         });
     };
-
     getRoomById();
   }, [roomId]);
   useEffect(() => {
@@ -203,7 +208,6 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
   const fetchData = async () => {
     try {
       let topId = messages[messages.length - 1]?._id;
-
       await publicRequest
         .get("/message/get", {
           params: {
@@ -219,13 +223,11 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
         });
     } catch (error) {
       setHasMore(false);
-      console.log(error);
     }
   };
-  useEffect(() => {
-    console.log(groupDateOfMessages(messages));
-    console.log(messages);
-  }, [messages]);
+  // useEffect(() => {
+  //   setMessages((messages));
+  // }, [messages]);
   return (
     <StyledMessageContainer>
       <Head>
@@ -286,19 +288,38 @@ const MessagePage = ({ initialMessages }: { initialMessages: IDocs }) => {
                   Loading...
                 </h4>
               }
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>Yay! You have seen it all</b>
+                </p>
+              }
               inverse={true}
               dataLength={(messages.length || 0) + 1}
               className="outer-messages"
               scrollableTarget="scrollableDiv"
             >
               <BottomDiv ref={bottomRef}></BottomDiv>
-              {messages.map((item, index) => (
-                <Message
-                  recipient={recipient}
-                  key={item.uuid || item._id}
-                  message={item}
-                />
-              ))}
+              {messages?.map((item, index) => {
+                if (
+                  (item.created_at as string).split("T")[0] ===
+                  (messages[index + 1]?.created_at as string)?.split("T")[0]
+                )
+                  return (
+                    <Message
+                      recipient={recipient}
+                      key={item.uuid || item._id}
+                      message={item}
+                    />
+                  );
+                return (
+                  <Message
+                    recipient={recipient}
+                    key={item.uuid || item._id}
+                    message={item}
+                    date={messages[index]?.created_at as string}
+                  />
+                );
+              })}
             </InfiniteScroll>
           </StyledMessages>
           <StyledInputContainer>

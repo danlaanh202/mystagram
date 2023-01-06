@@ -108,7 +108,7 @@ const InboxList = ({
       return [temp, ...prevList];
     });
   }, [lastMessage]);
-  console.log(format(Date.now(), "MM/dd/yyyy/s"));
+  // console.log(format(Date.now(), "MM/dd/yyyy/s"));
   useEffect(() => {
     const getInboxList = async () => {
       await publicRequest("/room/get_rooms", {

@@ -61,6 +61,8 @@ export interface IMessage extends ITimeStamps {
   _id?: string;
   uuid?: string;
   is_seen?: boolean;
+  date?: string;
+  type?: "annouce";
 }
 export interface IFollow extends ITimeStamps {
   follow_by: IUser | string;
@@ -95,4 +97,10 @@ export interface IDocs {
   prevPage?: null | number;
   totalDocs: number;
   totalPages: number;
+}
+
+export interface IStory extends ITimeStamps {
+  _id?: string;
+  media: string | IMedia;
+  poster: string | IUser;
 }

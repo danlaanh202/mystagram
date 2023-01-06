@@ -4,8 +4,17 @@ import { IMedia, IMessage, IUser } from "../../types";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../redux/store";
 import { md } from "../../utils/responsive";
+import { format } from "date-fns";
 const StyledMessage = styled.div`
   margin-bottom: 8px;
+  .date-annouce {
+    width: 100%;
+    text-align: center;
+    color: rgb(142, 142, 142);
+    font-size: 12px;
+    line-height: 16px;
+    margin: 8px 0;
+  }
 `;
 const StyledMsg = styled.div`
   display: flex;
@@ -56,14 +65,22 @@ const StyledMsgContent = styled.div`
 const Message = ({
   message,
   recipient,
+  date = "",
 }: {
   message: IMessage;
   recipient?: IUser;
+  date?: string;
 }) => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
 
   return (
     <StyledMessage>
+      {date !== "" && (
+        <div className="date-annouce">
+          {format(new Date(date as string), "MMMM dd,yyyy h:mmaaa")}
+        </div>
+      )}
+
       <StyledMsg>
         {user._id !== (message.user as IUser)._id && (
           <StyledAvatar src={(recipient?.avatar as IMedia)?.media_url} />

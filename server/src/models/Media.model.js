@@ -10,6 +10,22 @@ const MediaSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    is_post: {
+      type: Boolean,
+      default: false,
+    },
+    is_story: {
+      type: Boolean,
+      default: false,
+    },
+    is_message: {
+      type: Boolean,
+      default: false,
+    },
+    is_avatar: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: {

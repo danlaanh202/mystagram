@@ -1,3 +1,4 @@
+import { IStory } from "../types";
 import { publicRequest } from "./requestMethod";
 export function getShortTime(str: string) {
   let splitTime = str.split(" ");
@@ -117,3 +118,18 @@ export async function removeNotification({
     });
   }
 }
+interface IGroup {
+  [key: string]: IStory[];
+}
+export const groupStories = (data: IStory[]) => {
+  let groups: IGroup = {};
+  data.forEach((item: any, index) => {
+    let id = item._id;
+    if (id in groups) {
+      groups[id].push(item);
+    } else {
+      groups[id] = new Array(item);
+    }
+  });
+  return groups;
+};

@@ -9,6 +9,7 @@ const followRouter = require("./follow.route");
 const commentRouter = require("./comment.route");
 const likeRouter = require("./like.route");
 const notiRouter = require("./notification.route");
+const storyRouter = require("./story.route");
 function route(app) {
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
@@ -21,5 +22,6 @@ function route(app) {
   app.use("/comment", commentRouter);
   app.use("/like", likeRouter);
   app.use("/noti", notiRouter);
+  app.use("/story", storyRouter);
 }
 module.exports = route;

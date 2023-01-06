@@ -13,6 +13,9 @@ class CloudinaryController {
         media_url: uploadedResponse.url,
         user: mongoose.Types.ObjectId(req.body.userId),
         is_avatar: req.body?.is_avatar,
+        is_post: req.body?.is_post,
+        is_message: req.body?.is_message,
+        is_story: req.body?.is_story,
       }).save();
       return res.status(200).json(uploadedMedia);
     } catch (error) {

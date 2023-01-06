@@ -197,18 +197,20 @@ const EditProfile = () => {
     }
   };
   const changeAvatar = async () => {
-    await uploadImage("avatar", true).then(async (resp) => {
-      await publicRequest
-        .put("/user/change_avatar", {
-          userId: user._id,
-          media: resp?.data._id,
-        })
-        .then((response) => {
-          console.log(response.data);
-          //dispatch updateUser
-          dispatch(editUser(response.data));
-        });
-    });
+    await uploadImage({ preset: "avatar", is_avatar: true }).then(
+      async (resp) => {
+        await publicRequest
+          .put("/user/change_avatar", {
+            userId: user._id,
+            media: resp?.data._id,
+          })
+          .then((response) => {
+            console.log(response.data);
+            //dispatch updateUser
+            dispatch(editUser(response.data));
+          });
+      }
+    );
   };
   useEffect(() => {
     if (previewSource !== "") {

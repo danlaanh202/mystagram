@@ -32,17 +32,29 @@ export default function useUploadMedia() {
     };
   };
 
-  const uploadImage = async (
-    preset: string = "",
-    is_avatar: boolean = false
-  ) => {
+  const uploadImage = async ({
+    preset,
+    is_avatar,
+    is_post,
+    is_story,
+    is_message,
+  }: {
+    preset: string;
+    is_avatar?: boolean;
+    is_post?: boolean;
+    is_message?: boolean;
+    is_story?: boolean;
+  }) => {
     try {
       return await axios
         .post(`${process.env.API_URL}/cloudinary/upload`, {
           img: previewSource, //64EncodedImage
           preset: preset,
           userId: user._id,
-          is_avatar: is_avatar,
+          is_avatar: is_avatar || false,
+          is_post: is_post || false,
+          is_story: is_story || false,
+          is_message: is_message || false,
         })
         .then((response) => {
           console.log(response);
