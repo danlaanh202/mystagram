@@ -29,8 +29,12 @@ const StyledStory = styled.div`
   flex-direction: column;
   .image-container {
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     span {
       position: unset !important;
+      width: 100% !important;
     }
   }
   .comment-container {
@@ -54,7 +58,7 @@ const StyledStory = styled.div`
   }
 `;
 const StyledImage = styled(Image)`
-  object-fit: contain;
+  object-fit: cover;
   width: 100% !important;
   position: relative !important;
   height: unset !important;
@@ -149,21 +153,13 @@ const Story = ({
           })
           .then(async (response) => {
             setUpdatedPost(response.data.post);
-            // await publicRequest
-            //   .delete("/noti/undo_notification", {
-            //     params: {
-            //       post_id: post._id,
-            //       noti_type: "like",
-            //       noti_from: user._id,
-            //       noti_to: (post.user as IUser)._id,
-            //     },
-            //   })
+
             removeNotification({
               postId: post._id,
               myId: user._id as string,
               otherId: (post.user as IUser)._id as string,
               type: "like",
-            }).then((response) => console.log(response.data));
+            }).then((response) => console.log(response?.data));
           });
       }
     } catch (error) {

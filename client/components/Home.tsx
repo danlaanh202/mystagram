@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+
 import Layout from "./Layout";
 import ReelItem from "./main/ReelItem";
 import RightItems from "./main/RightItems";
 import Story from "./main/Story";
-import { IPost, IUser } from "../types";
+import { IPost, IStory, IUser } from "../types";
 import Carousel from "react-multi-carousel";
 import { m1000, md } from "../utils/responsive";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -12,13 +12,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect, useState } from "react";
 import { publicRequest } from "../utils/requestMethod";
 import LoadingComponent from "./search/LoadingComponent";
-import CreateStoryItem from "./main/CreateStoryItem";
-
 import CreateStoryDialog from "./dialog/CreateStoryDialog";
 import useWindowSize from "../hooks/useWindowSize";
 import { IRootState } from "../redux/store";
 import { useSelector } from "react-redux";
-import { groupStories } from "../utils";
+import { groupStoriesFunc } from "../utils";
+import StoriesDialog from "./dialog/StoriesDialog";
+import { useRouter } from "next/router";
 
 const responsive = {
   desktop: {
@@ -48,7 +48,6 @@ const MainContainer = styled.div`
   padding: 8px 0;
   display: flex;
   gap: 32px;
-
   ${md({
     padding: 0,
     marginBottom: "44px",
@@ -78,7 +77,6 @@ const ReelContainer = styled.div`
       background: white;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
         0 2px 4px -2px rgb(0 0 0 / 0.1);
-
       ${md({
         display: "none",
         transition: "0s",
@@ -100,11 +98,17 @@ const ReelContainer = styled.div`
   })}
 `;
 
+export interface IGroupStories {
+  [key: string]: IStory[];
+}
+
 const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const [posts, setPosts] = useState<IPost[]>(initialPosts);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [windowWidth, windowHeight] = useWindowSize();
   const user = useSelector((state: IRootState) => state.user.user as IUser);
+  const [groupsStories, setGroupsStories] = useState<IGroupStories>({});
+  const [activeSlider, setActiveSlider] = useState(-1);
   const refreshData = async () => {
     setHasMore(true);
     try {
@@ -157,93 +161,103 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
             followingIds: [user._id, ...(user.following as string[])],
           },
         })
-        .then((res) => console.log(groupStories(res.data)));
+        .then((res) => setGroupsStories(groupStoriesFunc(res.data)));
     };
     getStories();
   }, []);
-
+  useEffect(() => {
+    Object.entries(groupsStories).map(([k, v]) =>
+      console.log("k", k, "\n v", v)
+    );
+  }, [groupsStories]);
+  const router = useRouter();
+  useEffect(() => {
+    if (router.asPath === "/") setActiveSlider(-1);
+  }, [router]);
   return (
-    <StyledHome>
-      <Layout isShowMobileBar={true} isShowHeader={true}>
-        <MainContainer>
-          <MainItems>
-            <ReelContainer>
-              <Carousel
-                containerClass="carousel-container"
-                responsive={responsive}
-                slidesToSlide={7}
+    <>
+      <StyledHome>
+        <Layout isShowMobileBar={true} isShowHeader={true}>
+          <MainContainer>
+            <MainItems>
+              <ReelContainer>
+                <Carousel
+                  containerClass="carousel-container"
+                  responsive={responsive}
+                  slidesToSlide={7}
+                >
+                  {windowWidth <= 500 && <CreateStoryDialog />}
+                  {Object.entries(groupsStories).map(
+                    ([k, v], index: number) => (
+                      <div onClick={() => setActiveSlider(index)}>
+                        <ReelItem story={v[0]} />
+                      </div>
+                    )
+                  )}
+                </Carousel>
+              </ReelContainer>
+              <InfiniteScroll
+                next={getMoreData}
+                hasMore={hasMore}
+                refreshFunction={refreshData}
+                pullDownToRefresh
+                pullDownToRefreshThreshold={50}
+                releaseToRefreshContent={
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "relative",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <RefreshIcon />
+                  </div>
+                }
+                loader={
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "60px",
+                    }}
+                  >
+                    <LoadingComponent />
+                  </div>
+                }
+                endMessage={
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LoadingComponent />
+                  </div>
+                }
+                dataLength={posts?.length || 0}
+                className="outer-stories"
               >
-                {windowWidth <= 500 && <CreateStoryDialog />}
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-                <ReelItem />
-              </Carousel>
-            </ReelContainer>
-            <InfiniteScroll
-              next={getMoreData}
-              hasMore={hasMore}
-              refreshFunction={refreshData}
-              pullDownToRefresh
-              pullDownToRefreshThreshold={50}
-              releaseToRefreshContent={
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative",
-                    marginTop: "10px",
-                  }}
-                >
-                  <RefreshIcon />
-                </div>
-              }
-              loader={
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "60px",
-                  }}
-                >
-                  <LoadingComponent />
-                </div>
-              }
-              endMessage={
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <LoadingComponent />
-                </div>
-              }
-              dataLength={posts?.length || 0}
-              className="outer-stories"
-            >
-              {posts.map((item) => (
-                <Story showCommentInput={true} key={item._id} post={item} />
-              ))}
-            </InfiniteScroll>
-          </MainItems>
-          <RightItems />
-        </MainContainer>
-      </Layout>
-    </StyledHome>
+                {posts.map((item) => (
+                  <Story showCommentInput={true} key={item._id} post={item} />
+                ))}
+              </InfiniteScroll>
+            </MainItems>
+            <RightItems />
+          </MainContainer>
+        </Layout>
+      </StyledHome>
+      {activeSlider !== -1 && (
+        <StoriesDialog
+          activeSlider={activeSlider}
+          groupsStories={groupsStories}
+          setActiveSlider={setActiveSlider}
+        />
+      )}
+    </>
   );
 };
 

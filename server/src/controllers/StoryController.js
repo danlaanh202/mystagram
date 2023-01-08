@@ -1,4 +1,5 @@
 const Story = require("../models/Story.model");
+const User = require("../models/User.model");
 
 class StoryController {
   async createStory(req, res) {
@@ -30,6 +31,30 @@ class StoryController {
           path: "media",
         },
       ]);
+      return res.status(200).json(stories);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+  async getStoryOfUsername(req, res) {
+    try {
+      const user = await User.find({
+        username: req.query.username,
+      });
+      const stories = await Story.find({
+        poster: user[0]._id,
+      }).populate([
+        {
+          path: "poster",
+          populate: {
+            path: "avatar",
+          },
+        },
+        {
+          path: "media",
+        },
+      ]);
+
       return res.status(200).json(stories);
     } catch (error) {
       return res.status(500).json(error);

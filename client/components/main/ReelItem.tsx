@@ -1,6 +1,9 @@
 import Avatar from "@mui/material/Avatar";
-import Image from "next/image";
+import { useRouter } from "next/router";
+import { Dispatch, SetStateAction } from "react";
+
 import styled from "styled-components";
+import { IMedia, IStory, IUser } from "../../types";
 
 const StyledReelItem = styled.div`
   width: 58px;
@@ -40,15 +43,19 @@ const StyledAvatar = styled(Avatar)`
     user-select: none;
   }
 `;
-const ReelItem = () => {
+const ReelItem = ({ story }: { story: IStory }) => {
   return (
     <StyledReelItem>
       <div className="reel-item">
         <div className="reel-image-container">
-          <StyledAvatar draggable={false} className="reel-avatar" />
+          <StyledAvatar
+            draggable={false}
+            className="reel-avatar"
+            src={((story.poster as IUser).avatar as IMedia)?.media_url}
+          />
         </div>
         <div className="reel-name-container">
-          <div className="reel-name">dan_dienx12</div>
+          <div className="reel-name">{(story.poster as IUser).username}</div>
         </div>
       </div>
     </StyledReelItem>

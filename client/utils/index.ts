@@ -121,10 +121,10 @@ export async function removeNotification({
 interface IGroup {
   [key: string]: IStory[];
 }
-export const groupStories = (data: IStory[]) => {
+export const groupStoriesFunc = (data: IStory[]) => {
   let groups: IGroup = {};
   data.forEach((item: any, index) => {
-    let id = item._id;
+    let id = item.poster._id;
     if (id in groups) {
       groups[id].push(item);
     } else {
