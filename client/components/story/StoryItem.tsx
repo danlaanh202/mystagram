@@ -32,12 +32,28 @@ const StyledStoryContainer = styled.div`
       .grid-bar-item {
         height: 100%;
         width: 100%;
-        background: rgba(255, 255, 255, 0.35);
+        background-image: -webkit-linear-gradient(
+          left,
+          rgba(255, 255, 255, 0.5) 0%,
+          rgba(255, 255, 255, 0.5) 50%,
+          rgba(88, 89, 104, 0.5) 50.001%,
+          rgba(88, 89, 104, 0.5) 100%
+        );
         border-radius: 4px;
+        background-repeat: no-repeat;
+        background-size: 200%;
+        background-color: #666;
+        background-position: 100% 50%;
+        animation-timing-function: linear;
+        animation-delay: 0.2s;
+        animation-duration: 4s;
       }
-      .active {
-        background: #ffffff;
-      }
+    }
+    .active {
+      animation-name: Loader;
+    }
+    .pause {
+      animation-play-state: paused;
     }
     .info-container {
       display: flex;
@@ -154,6 +170,7 @@ const StoryItem = ({
   disableLeftBtn?: boolean;
 }) => {
   const router = useRouter();
+  const [isPause, setIsPause] = useState(false);
   useEffect(() => {
     if (stories.length > 0) {
       let urlId = window.location.pathname.split("/")[3];
@@ -180,7 +197,10 @@ const StoryItem = ({
         >
           {stories.map((item, index) => (
             <div
-              className={`grid-bar-item ${activeId === index ? "active" : ""}`}
+              onAnimationEnd={() => controlStory(1)}
+              className={`grid-bar-item ${activeId === index ? "active" : ""} ${
+                isPause ? "pause" : ""
+              }`}
             ></div>
           ))}
         </div>
@@ -207,14 +227,16 @@ const StoryItem = ({
             <button
               className="mb-btn"
               onClick={() => {
-                // window.location.href = "/";
                 router.push("/");
               }}
             >
               <CloseIcon />
             </button>
-            <button className="pc-btn">
-              <PlayIcon />
+            <button
+              className="pc-btn"
+              onClick={() => setIsPause((prev) => !prev)}
+            >
+              {isPause ? <PlayIcon /> : <PauseIcon />}
             </button>
             <button className="pc-btn">
               <MuteIcon />
@@ -222,7 +244,11 @@ const StoryItem = ({
           </div>
         </div>
       </div>
-      <div className="image-container">
+      <div
+        className="image-container"
+        onMouseDown={() => setIsPause(true)}
+        onMouseUp={() => setIsPause(false)}
+      >
         <img src={(stories[activeId]?.media as IMedia)?.media_url} alt="" />
         <div className="control-layer">
           <button
@@ -240,6 +266,8 @@ const StoryItem = ({
       <div className="footer">
         <div className="input-container">
           <input
+            onFocus={() => setIsPause(true)}
+            onBlur={() => setIsPause(false)}
             type="text"
             placeholder="Send message"
             className="send-input"

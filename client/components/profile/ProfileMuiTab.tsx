@@ -116,6 +116,7 @@ export default function ProfileMuiTab({
       </Box>
       <TabPanel value={value} index={0}>
         <Posts
+          currentUsername={currentUsername}
           setModalIndex={setModalIndex}
           setOpenSlider={setShowImageSlider}
           posts={posts}

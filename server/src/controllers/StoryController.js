@@ -20,6 +20,7 @@ class StoryController {
         poster: {
           $in: req.query.followingIds,
         },
+        created_at: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
       }).populate([
         {
           path: "poster",

@@ -97,7 +97,7 @@ export default function CreateStoryDialog() {
             })
         )
         .then((response) => {
-          console.log(response.data);
+          handleClose();
         });
     } catch (error) {}
   };

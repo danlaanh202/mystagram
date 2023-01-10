@@ -49,16 +49,21 @@ const StyledSliderContainer = styled.div`
     width: 100vw;
     height: 90vh;
     margin-top: 20px;
+    ${md({
+      height: "100vh",
+      marginTop: 0,
+    })}
     .slick-list {
       height: 100%;
-
       .slick-track {
         height: 100%;
+        /* display: flex;
+        justify-content: center;  */
         ${md({
           display: "flex",
         })}
         .slick-slide {
-          width: 400px;
+          width: 500px;
           ${md({
             width: "100vw",
           })}
@@ -92,15 +97,16 @@ export default function StoriesDialog({
     setOpen(false);
   };
   const settings = {
-    className: "center",
+    className: "center variable-width",
     centerMode: true,
     infinite: false,
-    slidesToShow: 5,
     speed: 500,
     initialSlide: activeSlider,
-    arrows: true,
+    arrows: false,
+    slideToShow: 1,
     variableWidth: true,
-    draggable: false,
+    variableHeight: true,
+    draggable: true,
     responsive: [
       {
         breakpoint: 500,
@@ -141,10 +147,14 @@ export default function StoriesDialog({
                 disableLeftBtn={activeSlider === 0}
               />
             ))}
-            <div className=""></div>
-            <div className=""></div>
-            <div className=""></div>
-            <div className=""></div>
+            {/* {Object.entries(groupsStories)?.length < 5 && (
+              <>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </>
+            )} */}
           </Slider>
           <div className="close-btn" onClick={() => setActiveSlider(-1)}>
             <CloseIcon />

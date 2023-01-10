@@ -68,6 +68,15 @@ button {
   animation: rainbow 6s ease infinite;
 }
 
+@keyframes Loader {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
 /* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

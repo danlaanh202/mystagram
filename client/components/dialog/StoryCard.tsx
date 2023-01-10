@@ -12,11 +12,11 @@ interface IProps {
 }
 const StyledCardContainer = styled.div<IProps>`
   height: 100%;
+  /* width: 100%; */
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 20px;
-  width: 100%;
   ${md({
     margin: 0,
   })}
@@ -71,6 +71,9 @@ const StoryCard = ({
       }
     }
     if (type === 1) {
+      if (disableRightBtn) {
+        return;
+      }
       if (activeId === stories.length - 1) {
         setActiveSlider((prev) => prev + 1);
       } else {

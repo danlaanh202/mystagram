@@ -73,8 +73,15 @@ const storyId = ({ initialStories }: { initialStories: IStory[] }) => {
   }, []);
   const controlStory = (type: -1 | 1) => {
     if (type === -1) {
+      if (activeId === 0) {
+        return;
+      }
       setActiveId((prev) => prev - 1);
     } else if (type === 1) {
+      if (activeId === stories.length - 1) {
+        return;
+      }
+
       setActiveId((prev) => prev + 1);
     }
   };

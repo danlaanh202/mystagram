@@ -480,7 +480,6 @@ const UserProfile = ({
                 <div className="right-prof-container">
                   <div className="right-prof-username-container">
                     <div className="username">
-                      {" "}
                       {(thisUser?.username as string) || currentUser.username}
                     </div>
                     {currentUser._id !== user?._id && (
@@ -531,7 +530,6 @@ const UserProfile = ({
               </div>
               <div className="info-description">
                 <div className="info-name">
-                  {" "}
                   {(thisUser?.name as string) || currentUser.name}
                 </div>
                 <div className="info-desc-content">

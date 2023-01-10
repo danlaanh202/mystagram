@@ -196,6 +196,7 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
                   )}
                 </Carousel>
               </ReelContainer>
+
               <InfiniteScroll
                 next={getMoreData}
                 hasMore={hasMore}
@@ -262,20 +263,3 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
 };
 
 export default Home;
-// const StyledLeftArrow = styled.div`
-//   width: 45px;
-//   height: 45px;
-// `;
-// const CustomLeftArrow = () => {
-//   // const {
-//   //   onMove,
-//   //   carouselState: { currentSlide, deviceType },
-//   // } = rest;
-//   return (
-//     <StyledLeftArrow>
-//       <div className="left-arrow">
-//         <ArrowForwardIosIcon />
-//       </div>
-//     </StyledLeftArrow>
-//   );
-// };

@@ -1,6 +1,7 @@
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { IRootState } from "../../redux/store";
@@ -37,9 +38,16 @@ const StyledAvatar = styled(Avatar)`
 const MobileNavbar = () => {
   const [activeId, setActiveId] = useState(0);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
+  const router = useRouter();
   const { isUnseenNotification } = useSelector(
     (state: IRootState) => state.header
   );
+  useEffect(() => {
+    let url = router.asPath.split("/");
+    if (url[1] === "") setActiveId(0);
+    else if (url[1] === "direct") setActiveId(1);
+    else if (url[1] === "explore") setActiveId(3);
+  }, [router]);
   return (
     <StyledNavbarContainer>
       <StyledNavbarButtonContainer>
