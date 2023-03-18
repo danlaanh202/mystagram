@@ -96,6 +96,7 @@ const SearchInput = () => {
             searchUsers={searchUsers}
             searchText={searchText}
             isSearching={isSearching}
+            setOpen={setOpen}
           />
         )}
       </StyledSearch>

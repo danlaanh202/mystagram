@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { IUser } from "../../types";
 
@@ -59,10 +60,12 @@ const SearchDropdown = ({
   searchUsers,
   isSearching,
   searchText,
+  setOpen,
 }: {
   searchUsers: IUser[];
   isSearching: boolean;
   searchText: string;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
 }) => {
   return (
     <StyledDropdownContainer>
@@ -79,7 +82,13 @@ const SearchDropdown = ({
               >
                 {searchUsers?.length > 0 &&
                   searchUsers.map((item: IUser) => (
-                    <DropdownItem key={item._id} searchUser={item} />
+                    <DropdownItem
+                      clearDropdown={() => {
+                        if (setOpen) setOpen(false);
+                      }}
+                      key={item._id}
+                      searchUser={item}
+                    />
                   ))}
               </div>
             ) : (

@@ -1,4 +1,5 @@
 import Avatar from "@mui/material/Avatar";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import { IMedia, IUser } from "../../types";
@@ -31,20 +32,33 @@ const StyledAvatar = styled(Avatar)`
   width: 44px !important;
   height: 44px !important;
 `;
-const DropdownItem = ({ searchUser }: { searchUser: IUser }) => {
+const DropdownItem = ({
+  searchUser,
+  clearDropdown = () => {},
+}: {
+  searchUser: IUser;
+  clearDropdown: () => void;
+}) => {
   const router = useRouter();
   return (
-    <StyledDropdownItem onClick={() => router.push(`/${searchUser.username}`)}>
-      <div className="item-container">
-        <div className="avatar-container">
-          <StyledAvatar src={(searchUser.avatar as IMedia)?.media_url} />
+    <Link href={`/${searchUser.username}`}>
+      <StyledDropdownItem
+        onClick={() => {
+          clearDropdown();
+          //   router.push(`/${searchUser.username}`);
+        }}
+      >
+        <div className="item-container">
+          <div className="avatar-container">
+            <StyledAvatar src={(searchUser.avatar as IMedia)?.media_url} />
+          </div>
+          <div className="info-container">
+            <div className="info-username">{searchUser.username}</div>
+            <div className="info-name">{searchUser.name}</div>
+          </div>
         </div>
-        <div className="info-container">
-          <div className="info-username">{searchUser.username}</div>
-          <div className="info-name">{searchUser.name}</div>
-        </div>
-      </div>
-    </StyledDropdownItem>
+      </StyledDropdownItem>
+    </Link>
   );
 };
 

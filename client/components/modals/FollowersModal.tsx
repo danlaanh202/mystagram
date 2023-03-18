@@ -78,7 +78,12 @@ const FollowersModal = ({
         </div>
         <div className="bottom">
           {followers?.map((item) => (
-            <FollowItem isFollowers={true} key={item._id} follow={item} />
+            <FollowItem
+              modalOff={() => setOpen(false)}
+              isFollowers={true}
+              key={item._id}
+              follow={item}
+            />
           ))}
         </div>
       </StyledFollowersContainer>
