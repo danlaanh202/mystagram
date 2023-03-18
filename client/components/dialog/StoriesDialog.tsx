@@ -1,4 +1,4 @@
-import Slider from "react-slick";
+import Slider, { Settings } from "react-slick";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
@@ -119,7 +119,7 @@ export default function StoriesDialog({
       },
     ],
   };
-  const sliderRef = useRef(null);
+  const sliderRef = useRef<any>(null);
 
   useEffect(() => {
     console.log(sliderRef.current);
@@ -134,9 +134,10 @@ export default function StoriesDialog({
         TransitionComponent={Transition}
       >
         <StyledSliderContainer>
-          <Slider {...settings} ref={sliderRef}>
+          <Slider {...(settings as any)} ref={sliderRef}>
             {Object.entries(groupsStories).map(([k, v], index) => (
               <StoryCard
+                key={v[0]._id}
                 id={index}
                 stories={v}
                 setActiveSlider={setActiveSlider}

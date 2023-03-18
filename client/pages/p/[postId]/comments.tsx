@@ -68,7 +68,7 @@ const StyledAvatar = styled(Avatar)`
   height: 32px;
   margin: 0 16px;
 `;
-const comments = ({
+const CommentOfPost = ({
   initialComments,
 
   post,
@@ -201,4 +201,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-export default comments;
+export default CommentOfPost;

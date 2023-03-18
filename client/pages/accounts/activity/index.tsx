@@ -28,7 +28,7 @@ const StyledActContainer = styled.div`
   margin: 0 auto;
   /* min-height: 100vh; */
 `;
-const index = () => {
+const Activity = () => {
   const dispatch = useDispatch();
   const [notis, setNotis] = useState<INotification[]>([]);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
@@ -93,4 +93,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Activity;

@@ -11,7 +11,7 @@ const StyledInbox = styled.div`
   overflow: hidden;
 `;
 
-const index = () => {
+const DirectInbox = () => {
   const [inboxList, setInboxList] = useState<IRoom[]>([]);
 
   return (
@@ -30,4 +30,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default DirectInbox;

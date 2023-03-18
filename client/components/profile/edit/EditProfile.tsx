@@ -282,8 +282,8 @@ const EditProfile = () => {
                 {...register("username")}
               />
               <p className="item-description">
-                In most cases, you'll be able to change your username back to
-                _dan2907_5ds for another 14 days. Learn more
+                In most cases, you&apos;ll be able to change your username back
+                to _dan2907_5ds for another 14 days. Learn more
               </p>
             </div>
           </RightContainer>
@@ -326,8 +326,8 @@ const EditProfile = () => {
               <div className="item-secondary-label">Personal infomation</div>
               <p className="item-description">
                 Provide your personal information, even if the account is used
-                for a business, a pet or something else. This won't be a part of
-                your public profile.
+                for a business, a pet or something else. This won&apos;t be a
+                part of your public profile.
               </p>
             </div>
           </RightContainer>

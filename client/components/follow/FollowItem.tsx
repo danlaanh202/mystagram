@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import Avatar from "@mui/material/Avatar";
 import { IFollow, IUser } from "../../types";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../redux/store";
 const StyledFollowItem = styled.div`
   width: 100%;
   padding: 8px 16px;
@@ -40,7 +42,9 @@ const FollowItem = ({
   follow: IFollow;
   isFollowers: boolean;
 }) => {
-  console.log(follow);
+  console.log("Follow", follow);
+  const user = useSelector((state: IRootState) => state.user.user as IUser);
+  console.log("Logged user", user);
   return (
     <StyledFollowItem>
       <StyledAvatar />

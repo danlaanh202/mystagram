@@ -131,7 +131,7 @@ const InboxItem = ({
               </div>
             </>
           ) : (
-            <div className="msg">You haven't chatted yet</div>
+            <div className="msg">You haven&apos;t chatted yet</div>
           )}
         </div>
       </div>

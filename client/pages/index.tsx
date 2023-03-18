@@ -12,7 +12,7 @@ import { socket } from "./_app";
 import { publicRequest } from "../utils/requestMethod";
 
 const HomeContainer = styled.div``;
-const index = ({ initialPosts }: { initialPosts: IPost[] }) => {
+const Pages = ({ initialPosts }: { initialPosts: IPost[] }) => {
   const user = useSelector((state: IRootState) => state.user.user);
 
   useEffect(() => {
@@ -44,4 +44,4 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   };
 };
-export default index;
+export default Pages;

@@ -201,7 +201,7 @@ const CreateNewPost = () => {
             await publicRequest.post("/post/upload", {
               caption: caption || "",
               user_id: user._id,
-              media_id: (res?.data as IMedia)._id,
+              media_id: (res?.data as IMedia)?._id,
             })
         )
         .then((res) => setOpenModal(false));

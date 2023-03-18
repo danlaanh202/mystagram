@@ -158,7 +158,7 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
       await publicRequest
         .get("/story/get", {
           params: {
-            followingIds: [user._id, ...(user.following as string[])],
+            followingIds: [user?._id, ...(user?.following as string[])],
           },
         })
         .then((res) => setGroupsStories(groupStoriesFunc(res.data)));
@@ -189,7 +189,10 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
                   {windowWidth <= 500 && <CreateStoryDialog />}
                   {Object.entries(groupsStories).map(
                     ([k, v], index: number) => (
-                      <div onClick={() => setActiveSlider(index)}>
+                      <div
+                        key={v[0]._id}
+                        onClick={() => setActiveSlider(index)}
+                      >
                         <ReelItem story={v[0]} />
                       </div>
                     )

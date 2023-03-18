@@ -1,6 +1,6 @@
+const mongoose = require("mongoose");
 const cloudinary = require("../utils/cloudinary");
 const Media = require("../models/Media.model");
-const mongoose = require("mongoose");
 class CloudinaryController {
   async uploadImage(req, res) {
     try {

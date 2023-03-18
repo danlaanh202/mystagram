@@ -104,3 +104,4 @@ export interface IStory extends ITimeStamps {
   media: string | IMedia;
   poster: string | IUser;
 }
+export type severityType = "success" | "error";

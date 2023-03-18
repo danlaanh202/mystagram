@@ -197,6 +197,7 @@ const StoryItem = ({
         >
           {stories.map((item, index) => (
             <div
+              key={item._id}
               onAnimationEnd={() => controlStory(1)}
               className={`grid-bar-item ${activeId === index ? "active" : ""} ${
                 isPause ? "pause" : ""

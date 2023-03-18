@@ -54,7 +54,7 @@ const StyledStoryContainer = styled.div`
     transform: rotate(180deg);
   }
 `;
-const storyId = ({ initialStories }: { initialStories: IStory[] }) => {
+const StoryId = ({ initialStories }: { initialStories: IStory[] }) => {
   const router = useRouter();
   const [stories, setStories] = useState<IStory[]>(initialStories);
   const [activeId, setActiveId] = useState(0);
@@ -144,4 +144,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-export default storyId;
+export default StoryId;

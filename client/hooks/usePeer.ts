@@ -5,7 +5,7 @@ export default function usePeer() {
   const [myPeerId, setMyPeerId] = useState<string>("");
   useEffect(() => {
     import("peerjs").then(({ default: Peer }) => {
-      const peer = new Peer(undefined, {
+      const peer = new Peer(undefined as any, {
         path: "/peer",
         host: "/",
         port: 4001,

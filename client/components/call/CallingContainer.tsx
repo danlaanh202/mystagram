@@ -23,6 +23,9 @@ declare global {
     mozRequestFullscreen?: () => Promise<void>;
     webkitRequestFullscreen?: () => Promise<void>;
   }
+  interface Element {
+    ALLOW_KEYBOARD_INPUT: any;
+  }
 }
 const StyledCallingContainer = styled.div`
   position: relative;
@@ -170,12 +173,12 @@ export default function CallingContainer({
   const router = useRouter();
   const [isCalling, setIsCalling] = useState<boolean>(true);
 
-  const localVideoRef = useRef<HTMLVideoElement>();
-  const remoteVideoRef = useRef<HTMLVideoElement>();
+  const localVideoRef = useRef<any>(null);
+  const remoteVideoRef = useRef<any>(null);
 
   useEffect(() => {
     if (isCalling) {
-      if (localStream && localStream.id) {
+      if (localStream && localStream.id && localVideoRef) {
         localVideoRef.current.srcObject = localStream;
         localVideoRef.current.onloadmetadata = () => {
           localVideoRef.current.play();
@@ -186,7 +189,7 @@ export default function CallingContainer({
   useEffect(() => {
     // console.log(remoteStream);
     if (isCalling) {
-      if (remoteStream && remoteStream.id) {
+      if (remoteStream && remoteStream.id && remoteVideoRef) {
         remoteVideoRef.current.srcObject = remoteStream;
         remoteVideoRef.current.onloadmetadata = () => {
           remoteVideoRef.current.play();
@@ -218,9 +221,8 @@ export default function CallingContainer({
       } else if (document.documentElement["mozRequestFullscreen"]) {
         document.documentElement["mozRequestFullscreen"]();
       } else if (document.documentElement["webkitRequestFullscreen"]) {
-        document.documentElement["webkitRequestFullscreen"](
-          Element["ALLOW_KEYBOARD_INPUT"]
-        );
+        document.documentElement["webkitRequestFullscreen"];
+        // Element["ALLOW_KEYBOARD_INPUT"]();
       }
     } else {
       if (document["cancelFullscreen"]) {

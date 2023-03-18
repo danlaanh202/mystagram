@@ -120,7 +120,7 @@ const StyledIntro = styled.div`
   margin-bottom: 12px;
 `;
 const schema = yup.object({});
-const index = () => {
+const EmailSignup = () => {
   const {
     handleSubmit,
     register,
@@ -229,4 +229,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default EmailSignup;

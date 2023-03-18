@@ -13,7 +13,7 @@ const LikesDetailContainer = styled.div``;
 const StyledPagesContainer = styled.div`
   margin-bottom: 44px;
 `;
-const liked_by = ({
+const LikedBy = ({
   initialLikes,
   postId,
 }: {
@@ -34,7 +34,9 @@ const liked_by = ({
         <StyledPagesContainer>
           <MobileHeader centerComp={<>Likes</>} />
           {initialLikes?.length > 0 &&
-            initialLikes.map((item) => <LikeUser lUser={item} />)}
+            initialLikes.map((item) => (
+              <LikeUser key={item._id} lUser={item} />
+            ))}
         </StyledPagesContainer>
       </Layout>
     </LikesDetailContainer>
@@ -56,4 +58,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-export default liked_by;
+export default LikedBy;

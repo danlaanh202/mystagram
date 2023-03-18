@@ -57,7 +57,7 @@ const StyledSearchBar = styled.div`
     }
   }
 `;
-const index = () => {
+const Explore = () => {
   const [showImageSlider, setShowImageSlider] = useState<boolean>(false);
   const [modalIndex, setModalIndex] = useState<number>(-1);
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -137,4 +137,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Explore;

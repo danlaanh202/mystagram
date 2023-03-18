@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Alert, Snackbar, TextField } from "@mui/material";
 import * as yup from "yup";
 import Head from "next/head";
 import Link from "next/link";
@@ -13,6 +13,8 @@ import { login as loginFunc } from "../utils/auth";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Spinner from "../components/loading/Spinner";
+import useSnackbar from "../hooks/useSnackbar";
+import { AlertColor } from "@mui/lab";
 const StyledLoginPages = styled.div`
   background: #fafafa;
   height: 100vh;
@@ -111,7 +113,7 @@ const schema = yup.object({
     .matches(/^[a-z0-9_-]{3,16}$/, "Username is not valid"),
   password: yup.string().min(6, "Password must be longer than 6"),
 });
-const login = () => {
+const Login = () => {
   const {
     handleSubmit,
     register,
@@ -123,16 +125,19 @@ const login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [open, msg, severity, handleShow, handleClose] = useSnackbar();
   const onSubmitHandler = async (data: ILoginUser) => {
     setLoading(true);
     try {
       loginFunc(dispatch, data).then((res) => {
         if (res === "done") {
           setLoading(false);
+          handleShow("đăng nhập thành công!", "success");
           router.push("/");
         }
       });
     } catch (error) {
+      handleShow("Đăng nhập không thành công", "error");
       setLoading(false);
     }
   };
@@ -185,14 +190,28 @@ const login = () => {
       </StyledLoginFormContainer>
       <StyledLoginFormContainer>
         <p>
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/accounts/emailsignup">
             <a className="sign-up-link">Sign up</a>
           </Link>
         </p>
       </StyledLoginFormContainer>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={severity as AlertColor}
+          sx={{ width: "100%" }}
+        >
+          {msg}
+        </Alert>
+      </Snackbar>
     </StyledLoginPages>
   );
 };
 
-export default login;
+export default Login;

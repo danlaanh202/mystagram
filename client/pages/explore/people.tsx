@@ -31,7 +31,7 @@ const StyledPeopleContainer = styled.div`
     })}
   }
 `;
-const people = () => {
+const People = () => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [suggestionUser, setSuggestionUser] = useState<IUser[]>([]);
   useEffect(() => {
@@ -70,4 +70,4 @@ const people = () => {
   );
 };
 
-export default people;
+export default People;

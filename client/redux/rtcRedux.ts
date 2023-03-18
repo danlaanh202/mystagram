@@ -3,8 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const rtcSlice = createSlice({
   name: "rtc",
   initialState: {
-    localStream: {},
-    remoteStream: {},
+    localStream: {} as any,
+    remoteStream: {} as any,
     peerId: "",
     isCallerAnswer: false,
   },

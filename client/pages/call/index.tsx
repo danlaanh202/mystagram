@@ -140,7 +140,7 @@ const StyledAvatar = styled(Avatar)`
   height: 72px !important;
   margin-bottom: 16px;
 `;
-const index = () => {
+const Call = () => {
   const { localStream, isCallerAnswer } = useSelector(
     (state: IRootState) => state.rtc
   );
@@ -150,7 +150,7 @@ const index = () => {
   const dispatch = useDispatch();
   const [myPeer, myPeerId] = usePeer();
   const [isAnswered, setIsAnswered] = useState(false);
-  const localVideoRef = useRef<HTMLVideoElement>();
+  const localVideoRef = useRef<any>(null);
   const [notMeUser, setNotMeUser] = useState<IUser>();
   const [loadingJoinCall, setLoadingJoinCall] = useState(false);
   const [isAudio, setIsAudio] = useState(true);
@@ -355,7 +355,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Call;
 
 const CameraOffIcon = () => {
   return (

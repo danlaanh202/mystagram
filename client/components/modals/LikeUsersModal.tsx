@@ -102,7 +102,7 @@ const LikeUsersModal = ({ post }: { post: IPost }) => {
         <div className="bottom">
           <div className="like-users-container">
             {likeUsers?.length > 0 &&
-              likeUsers.map((item) => <LikeUser lUser={item} />)}
+              likeUsers.map((item) => <LikeUser key={item._id} lUser={item} />)}
           </div>
         </div>
       </StyledLikeUsersContainer>

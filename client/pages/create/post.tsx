@@ -65,7 +65,7 @@ const StyledAvatar = styled(Avatar)`
   height: 32px !important;
   margin-right: 12px;
 `;
-const post = () => {
+const CreatePost = () => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [caption, setCaption] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -181,4 +181,4 @@ const ShareButton = ({
     </StyledShareButton>
   );
 };
-export default post;
+export default CreatePost;

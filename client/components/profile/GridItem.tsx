@@ -75,11 +75,10 @@ const GridItem = ({
   post: IPost;
   onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
-  // console.log(post);
   const router = useRouter();
   return (
     <StyledGridItem>
-      <StyledImage src={(post.media as IMedia).media_url} layout="fill" />
+      <StyledImage src={(post.media as IMedia)?.media_url} layout="fill" />
       <div
         onClick={() => {
           router.push(`/p/${post._id}`);
