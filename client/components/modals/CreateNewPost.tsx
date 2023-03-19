@@ -15,6 +15,7 @@ import { IRootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { IMedia, IUser } from "../../types";
 import { m1000 } from "../../utils/responsive";
+import Spinner from "../loading/Spinner";
 const StyledCreateNewPost = styled.div`
   position: absolute;
   top: 50%;
@@ -189,11 +190,14 @@ const CreateNewPost = () => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [openModal, setOpenModal] = useState(false);
   const [caption, setCaption] = useState<String>("");
+  const [loading, setLoading] = useState(false);
   const resetState = () => {
     setCaption("");
     handleDeleteImage();
   };
   const handlePost = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       uploadImage({ preset: "post_image", is_post: true })
         .then(
@@ -204,9 +208,12 @@ const CreateNewPost = () => {
               media_id: (res?.data as IMedia)?._id,
             })
         )
-        .then((res) => setOpenModal(false));
+        .then((res) => {
+          setLoading(false);
+          setOpenModal(false);
+        });
     } catch (error) {
-      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -246,7 +253,11 @@ const CreateNewPost = () => {
               </div>
               <div className="top-title">Create New Post</div>
               <button onClick={handlePost} className="top-share">
-                Share
+                {loading ? (
+                  <Spinner width={14} height={14} color="black" />
+                ) : (
+                  "share"
+                )}
               </button>
             </div>
             <div className="bottom">

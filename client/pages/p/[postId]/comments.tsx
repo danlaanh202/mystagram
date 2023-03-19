@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import styled from "styled-components";
 import MobileHeader from "../../../components/header/MobileHeader";
-import PostComment from "../../../components/image-item/PostComment";
+
 import Layout from "../../../components/Layout";
 import { IComment, IMedia, IPost, IUser } from "../../../types";
 import { publicRequest } from "../../../utils/requestMethod";
@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { socket } from "../../_app";
 import { pushNotification } from "../../../utils";
+import PostComment from "../../../components/loading/image-item/PostComment";
 const StyledCommentPageContainer = styled.div``;
 const StyledContainer = styled.div`
   .comment-input-container {

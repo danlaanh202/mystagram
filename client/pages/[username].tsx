@@ -149,7 +149,6 @@ const StyledTopContainer = styled.div`
         border-radius: 4px;
         cursor: pointer;
         margin-left: 20px;
-
         div {
           font-weight: 500;
           font-size: 14px;

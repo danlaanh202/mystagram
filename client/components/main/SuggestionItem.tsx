@@ -14,9 +14,7 @@ import {
   pushNotification,
   removeNotification,
 } from "../../utils";
-import { publicRequest } from "../../utils/requestMethod";
 import FollowButton from "../button/FollowButton";
-import DotSpinner from "../loading/DotSpinner";
 
 const StyledSuggestionItem = styled.div`
   display: flex;
@@ -113,16 +111,6 @@ const SuggestionItem = ({
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
-      // await Promise.all([
-      //   publicRequest.post("/follow/follow", {
-      //     user_id: currentUser._id,
-      //     follower_id: user._id,
-      //   }),
-      //   publicRequest.put("/user/update_follow", {
-      //     user_id: currentUser._id,
-      //     follower_id: user._id,
-      //   }),
-      // ])
       handleFollowUtil(currentUser._id as string, user._id as string).then(
         (response) => {
           setFollowLoading(false);

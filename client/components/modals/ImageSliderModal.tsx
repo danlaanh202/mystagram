@@ -18,6 +18,9 @@ const ImageSliderModal = ({
   setModalIndex: Dispatch<SetStateAction<number>>;
   setUpdatedPost?: Dispatch<SetStateAction<IPost>>;
 }) => {
+  const offModal = () => {
+    setOpen(false);
+  };
   return (
     <ModalProto open={open} setOpen={setOpen}>
       <ImageSlider
@@ -25,6 +28,7 @@ const ImageSliderModal = ({
         posts={posts}
         modalIndex={modalIndex}
         setUpdatedPost={setUpdatedPost}
+        offModal={offModal}
       />
     </ModalProto>
   );

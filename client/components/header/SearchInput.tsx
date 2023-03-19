@@ -40,6 +40,9 @@ const StyledSearch = styled.div`
     top: 50%;
     transform: translateY(-50%);
     color: #b79a9b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 

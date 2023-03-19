@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { IPost } from "../../types";
-import SwiperItem from "../image-item/SwiperItem";
+import SwiperItem from "../loading/image-item/SwiperItem";
 
 const StyledImageSlider = styled.div`
   position: absolute;
@@ -42,11 +42,13 @@ const ImageSlider = ({
   posts,
   setModalIndex,
   setUpdatedPost,
+  offModal = () => {},
 }: {
   modalIndex: number;
   posts: IPost[] | IPost;
   setModalIndex: Dispatch<SetStateAction<number>>;
   setUpdatedPost?: Dispatch<SetStateAction<IPost>>;
+  offModal?: () => void;
 }) => {
   return (
     <>
@@ -65,6 +67,7 @@ const ImageSlider = ({
             <SwiperItem
               post={posts[modalIndex]}
               setUpdatedPost={setUpdatedPost}
+              offModal={offModal}
             />
           </StyledImageSlider>
           {modalIndex !== (posts as IPost[]).length - 1 && (

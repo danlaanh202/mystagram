@@ -14,11 +14,11 @@ import { publicRequest } from "../utils/requestMethod";
 import LoadingComponent from "./search/LoadingComponent";
 import CreateStoryDialog from "./dialog/CreateStoryDialog";
 import useWindowSize from "../hooks/useWindowSize";
-import { IRootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { groupStoriesFunc } from "../utils";
 import StoriesDialog from "./dialog/StoriesDialog";
 import { useRouter } from "next/router";
+import { IRootState } from "../redux/store";
 
 const responsive = {
   desktop: {
@@ -163,7 +163,9 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
         })
         .then((res) => setGroupsStories(groupStoriesFunc(res.data)));
     };
-    getStories();
+    if (user._id) {
+      getStories();
+    }
   }, []);
   useEffect(() => {
     Object.entries(groupsStories).map(([k, v]) =>
@@ -180,25 +182,27 @@ const Home = ({ initialPosts }: { initialPosts: IPost[] }) => {
         <Layout isShowMobileBar={true} isShowHeader={true}>
           <MainContainer>
             <MainItems>
-              <ReelContainer>
-                <Carousel
-                  containerClass="carousel-container"
-                  responsive={responsive}
-                  slidesToSlide={7}
-                >
-                  {windowWidth <= 500 && <CreateStoryDialog />}
-                  {Object.entries(groupsStories).map(
-                    ([k, v], index: number) => (
-                      <div
-                        key={v[0]._id}
-                        onClick={() => setActiveSlider(index)}
-                      >
-                        <ReelItem story={v[0]} />
-                      </div>
-                    )
-                  )}
-                </Carousel>
-              </ReelContainer>
+              {Object.entries(groupsStories)?.length > 0 && (
+                <ReelContainer>
+                  <Carousel
+                    containerClass="carousel-container"
+                    responsive={responsive}
+                    slidesToSlide={7}
+                  >
+                    {windowWidth <= 500 && <CreateStoryDialog />}
+                    {Object.entries(groupsStories).map(
+                      ([k, v], index: number) => (
+                        <div
+                          key={v[0]._id}
+                          onClick={() => setActiveSlider(index)}
+                        >
+                          <ReelItem story={v[0]} />
+                        </div>
+                      )
+                    )}
+                  </Carousel>
+                </ReelContainer>
+              )}
 
               <InfiniteScroll
                 next={getMoreData}

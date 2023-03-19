@@ -4,11 +4,12 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 import axios from "axios";
 import { IPost, IUser } from "../../../types";
-import SwiperItem from "../../../components/image-item/SwiperItem";
+
 import Layout from "../../../components/Layout";
 import { md } from "../../../utils/responsive";
 import MobileHeader from "../../../components/header/MobileHeader";
 import Story from "../../../components/main/Story";
+import SwiperItem from "../../../components/loading/image-item/SwiperItem";
 
 const StyledPostContainer = styled.div`
   background: #fafafa;

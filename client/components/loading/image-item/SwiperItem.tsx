@@ -1,22 +1,27 @@
 import Avatar from "@mui/material/Avatar";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { IComment, IMedia, IPost, IUser } from "../../types";
-import { publicRequest } from "../../utils/requestMethod";
-import CommentIcon from "../icons/CommentIcon";
-import HeartIcon from "../icons/HeartIcon";
-import SaveIcon from "../icons/SaveIcon";
-import ShareIcon from "../icons/ShareIcon";
+
 import PostComment from "./PostComment";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { IRootState } from "../../redux/store";
-import { useSelector } from "react-redux";
-import { CloseIcon } from "../modals/LikeUsersModal";
+
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { m1000, md } from "../../utils/responsive";
-import { socket } from "../../pages/_app";
-import { pushNotification, removeNotification } from "../../utils";
+
 import { format } from "date-fns";
+import { m1000, md } from "../../../utils/responsive";
+import { IComment, IMedia, IPost, IUser } from "../../../types";
+import { useSelector } from "react-redux";
+
+import { publicRequest } from "../../../utils/requestMethod";
+import { pushNotification, removeNotification } from "../../../utils";
+import { socket } from "../../../pages/_app";
+import HeartIcon from "../../icons/HeartIcon";
+import CommentIcon from "../../icons/CommentIcon";
+import ShareIcon from "../../icons/ShareIcon";
+import SaveIcon from "../../icons/SaveIcon";
+import { CloseIcon } from "../../modals/LikeUsersModal";
+import Link from "next/link";
+import { IRootState } from "../../../redux/store";
 const StyledItemContainer = styled.div`
   height: calc(100vh - 60px);
   display: flex;
@@ -199,22 +204,26 @@ const StyledAvatar = styled(Avatar)`
   margin-right: 12px;
   width: 32px !important;
   height: 32px !important;
+  cursor: pointer;
 `;
 const StyledSmallAvatar = styled(Avatar)`
   width: 19px !important;
   height: 19px !important;
+  cursor: pointer;
 `;
 const SwiperItem = ({
   post,
   setUpdatedPost,
+  offModal = () => {},
 }: {
   post: IPost;
   setUpdatedPost?: Dispatch<SetStateAction<IPost>>;
+  offModal?: () => void;
 }) => {
-  const [comments, setComments] = useState<IComment[]>([]);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
+  const [comments, setComments] = useState<IComment[]>([]);
   const [openLikesModal, setOpenLikesModal] = useState<boolean>(false);
-  const [likeLength, setLikeLength] = useState<number>(post.likes.length || 0);
+  const [likeLength, setLikeLength] = useState<number>(post?.likes.length || 0);
   const [isLiked, setIsLiked] = useState(
     (post?.likes as string[])?.includes(user?._id as string)
   );
@@ -262,7 +271,7 @@ const SwiperItem = ({
         await publicRequest
           .post("/like/like_post", {
             user_id: user._id,
-            post_id: post._id,
+            post_id: post?._id,
           })
           .then((response) => {
             if (setUpdatedPost) {
@@ -270,9 +279,9 @@ const SwiperItem = ({
               pushNotification({
                 type: "like",
                 socket: socket,
-                postId: post._id,
+                postId: post?._id,
                 myId: user._id as string,
-                otherId: (post.user as IUser)._id as string,
+                otherId: (post?.user as IUser)._id as string,
               });
             }
           });
@@ -281,7 +290,7 @@ const SwiperItem = ({
           .delete("/like/unlike_post", {
             params: {
               user_id: user._id,
-              post_id: post._id,
+              post_id: post?._id,
             },
           })
           .then(async (response) => {
@@ -289,16 +298,16 @@ const SwiperItem = ({
               setUpdatedPost(response.data.post);
               removeNotification({
                 type: "like",
-                postId: post._id,
+                postId: post?._id,
                 myId: user._id as string,
-                otherId: (post.user as IUser)._id as string,
+                otherId: (post?.user as IUser)._id as string,
               });
               // await publicRequest.delete("/noti/undo_notification", {
               //   params: {
-              //     post_id: post._id,
+              //     post_id: post?._id,
               //     noti_type: "like",
               //     noti_from: user._id,
-              //     noti_to: (post.user as IUser)._id,
+              //     noti_to: (post?.user as IUser)._id,
               //   },
               // });
             }
@@ -313,7 +322,7 @@ const SwiperItem = ({
       await publicRequest
         .post("/comment/comment", {
           user_id: user._id,
-          post_id: post._id,
+          post_id: post?._id,
           comment: data.comment,
         })
         .then((response) => {
@@ -321,20 +330,20 @@ const SwiperItem = ({
             ...prev,
             response.data.comment as IComment,
           ]);
-          if (user._id !== (post.user as IUser)._id) {
+          if (user._id !== (post?.user as IUser)._id) {
             // socket.emit("push_noti", {
             //   type: "comment",
-            //   postId: post._id,
+            //   postId: post?._id,
             //   notificationFrom: user._id,
-            //   notificationTo: (post.user as IUser)._id,
+            //   notificationTo: (post?.user as IUser)._id,
             //   commentId: response.data.comment._id,
             // });
             pushNotification({
               type: "comment",
               socket: socket,
-              postId: post._id,
+              postId: post?._id,
               myId: user._id as string,
-              otherId: (post.user as IUser)._id as string,
+              otherId: (post?.user as IUser)._id as string,
               commentId: response.data.comment._id,
             });
           }
@@ -352,15 +361,15 @@ const SwiperItem = ({
       <StyledItemContainer>
         <div className="left-container">
           <div className="image-container">
-            <img src={(post.media as IMedia)?.media_url} alt="" />
+            <img src={(post?.media as IMedia)?.media_url} alt="" />
           </div>
         </div>
         <div className="r-container">
           <div className="r-top">
             <div className="r-top-header">
-              <StyledAvatar src={(post.user?.avatar as IMedia)?.media_url} />
+              <StyledAvatar src={(post?.user?.avatar as IMedia)?.media_url} />
               <div className="r-top-username">
-                {(post.user as IUser)?.username}
+                {(post?.user as IUser)?.username}
               </div>
             </div>
             <div className="r-top-icon">
@@ -370,12 +379,12 @@ const SwiperItem = ({
           <div className="r-center">
             <div className="r-center-info-container">
               <div className="r-center-l">
-                <StyledAvatar src={(post.user?.avatar as IMedia)?.media_url} />
+                <StyledAvatar src={(post?.user?.avatar as IMedia)?.media_url} />
               </div>
               <div className="r-center-r">
                 <div className="r-center-r-caption">
                   <span className="r-center-r-username">
-                    {(post.user as IUser)?.username}
+                    {(post?.user as IUser)?.username}
                   </span>
                   {post?.caption}
                 </div>
@@ -433,7 +442,7 @@ const SwiperItem = ({
                 className="story-date"
                 style={{ textTransform: "uppercase" }}
               >
-                {format(new Date(post.created_at as string), "PP")}
+                {format(new Date(post?.created_at as string), "PP")}
               </div>
             </div>
           </div>
@@ -454,6 +463,7 @@ const SwiperItem = ({
       </StyledItemContainer>
       {openLikesModal && (
         <LikeUsersModal
+          offModal={offModal}
           post={post}
           open={openLikesModal}
           setOpen={setOpenLikesModal}
@@ -517,15 +527,23 @@ const StyledLikeUsersContainer = styled.div`
         align-items: center;
         &-info {
           flex: 1;
+
           &-username {
             color: #262626;
             font-weight: 600;
+            span {
+              cursor: pointer;
+            }
           }
           &-name {
             color: #8e8e8e;
+            span {
+              cursor: pointer;
+            }
           }
         }
         &-btn-container {
+          justify-self: flex-end;
           .like-user-btn {
             color: white;
             font-weight: 600;
@@ -548,10 +566,12 @@ const LikeUsersModal = ({
   post,
   open,
   setOpen,
+  offModal = () => {},
 }: {
   post: IPost;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  offModal?: () => void;
 }) => {
   const [likeUsers, setLikeUsers] = useState<IUser[]>([]);
   useEffect(() => {
@@ -560,7 +580,7 @@ const LikeUsersModal = ({
         await publicRequest
           .get("/like/get_like_users", {
             params: {
-              post_id: post._id,
+              post_id: post?._id,
             },
           })
           .then((response) => setLikeUsers(response.data));
@@ -570,6 +590,7 @@ const LikeUsersModal = ({
       getLikeUsers();
     }
   }, [post, open]);
+
   return (
     <StyledComponentContainer>
       <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -585,7 +606,7 @@ const LikeUsersModal = ({
             <div className="like-users-container">
               {likeUsers?.length > 0 &&
                 likeUsers.map((item) => (
-                  <LikeUser key={item._id} lUser={item} />
+                  <LikeUser offModal={offModal} key={item._id} lUser={item} />
                 ))}
             </div>
           </div>
@@ -594,14 +615,29 @@ const LikeUsersModal = ({
     </StyledComponentContainer>
   );
 };
-const LikeUser = ({ lUser }: { lUser: IUser }) => {
+const LikeUser = ({
+  lUser,
+  offModal = () => {},
+}: {
+  lUser: IUser;
+  offModal?: () => void;
+}) => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
+
   return (
     <div className="like-user">
       <StyledAvatar src={(lUser?.avatar as IMedia)?.media_url} />
       <div className="like-user-info">
-        <div className="like-user-info-username">{lUser.username}</div>
-        <div className="like-user-info-name">{lUser.name}</div>
+        <Link href={`/${lUser.username}`}>
+          <div onClick={offModal} className="like-user-info-username">
+            <span>{lUser.username}</span>
+          </div>
+        </Link>
+        <Link href={`/${lUser.username}`}>
+          <div onClick={offModal} className="like-user-info-name">
+            <span>{lUser.name}</span>
+          </div>
+        </Link>
       </div>
       {user._id === lUser._id ? (
         <></>

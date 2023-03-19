@@ -1,7 +1,7 @@
 import Avatar from "@mui/material/Avatar";
 import { formatDistance, formatDistanceStrict } from "date-fns";
 import styled from "styled-components";
-import { IComment, IMedia, IUser } from "../../types";
+import { IComment, IMedia, IUser } from "../../../types";
 
 const StyledPostComment = styled.div`
   padding-top: 12px;

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import ActivityNotificationItem from "../../../components/ActivityNotificationItem";
 import MobileHeader from "../../../components/header/MobileHeader";
 import NotificationItem from "../../../components/header/NotificationItem";
 import Layout from "../../../components/Layout";

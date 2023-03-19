@@ -1,12 +1,15 @@
 import Avatar from "@mui/material/Avatar";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { IRootState } from "../../redux/store";
 import { IMedia, IUser } from "../../types";
+import { logout } from "../../utils/auth";
 import { publicRequest } from "../../utils/requestMethod";
 import { m1000 } from "../../utils/responsive";
-
 import Suggestion from "./Suggestion";
 
 const RightContainer = styled.div`
@@ -21,6 +24,7 @@ const RightContainer = styled.div`
     align-items: center;
     margin: 16px 0 10px 0;
     .avatar-container {
+      cursor: pointer;
       .avatar {
         width: 64px;
         height: 64px;
@@ -33,6 +37,7 @@ const RightContainer = styled.div`
       margin-left: 16px;
 
       .name-container {
+        cursor: pointer;
         .username {
           color: #262626;
           font-weight: 600;
@@ -54,6 +59,8 @@ const RightContainer = styled.div`
   }
 `;
 const RightItems = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const [initialNewUsers, setInitialNewUsers] = useState<IUser[]>();
   useEffect(() => {
@@ -74,15 +81,32 @@ const RightItems = () => {
   return (
     <RightContainer>
       <div className="self">
-        <div className="avatar-container">
-          <Avatar src={(user.avatar as IMedia)?.media_url} className="avatar" />
-        </div>
+        <Link href={`/${user.username}`}>
+          <div className="avatar-container">
+            <Avatar
+              src={(user.avatar as IMedia)?.media_url}
+              className="avatar"
+            />
+          </div>
+        </Link>
+
         <div className="info-container">
           <div className="name-container">
-            <div className="username">{user?.username}</div>
-            <div className="name">{user?.name}</div>
+            <Link href={`/${user.username}`}>
+              <div className="username">{user?.username}</div>
+            </Link>
+            <Link href={`/${user.username}`}>
+              <div className="name">{user?.name}</div>
+            </Link>
           </div>
-          <button>Switch</button>
+          <button
+            onClick={() => {
+              logout(dispatch);
+              router.push("/login");
+            }}
+          >
+            Switch
+          </button>
         </div>
       </div>
       <Suggestion initialNewUsers={initialNewUsers} />

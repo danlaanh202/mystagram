@@ -5,10 +5,11 @@ import Layout from "../../../components/Layout";
 import { GetServerSideProps } from "next";
 import { publicRequest } from "../../../utils/requestMethod";
 import { IUser } from "../../../types";
-import LikeUser from "../../../components/image-item/LikeUser";
+
 import { useRouter } from "next/router";
 import useWindowSize from "../../../hooks/useWindowSize";
 import { useEffect } from "react";
+import LikeUser from "../../../components/loading/image-item/LikeUser";
 const LikesDetailContainer = styled.div``;
 const StyledPagesContainer = styled.div`
   margin-bottom: 44px;

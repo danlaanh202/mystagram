@@ -39,7 +39,7 @@ const FollowButton = ({
           isprimary={primary}
           onClick={handleUnfollow}
         >
-          Unfollow
+          Following
         </StyledButton>
       ) : (
         <StyledButton
