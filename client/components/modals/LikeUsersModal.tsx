@@ -1,12 +1,8 @@
-import Avatar from "@mui/material/Avatar";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { IRootState } from "../../redux/store";
-import { IMedia, IPost, IUser } from "../../types";
+import { IPost, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
 import LikeUser from "../loading/image-item/LikeUser";
-
 import ModalProto from "./ModalProto";
 
 const StyledLikeUsersContainer = styled.div`

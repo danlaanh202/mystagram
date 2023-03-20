@@ -1,17 +1,14 @@
 import Avatar from "@mui/material/Avatar";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-
 import PostComment from "./PostComment";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-
+import { CloseIcon } from "../../modals/LikeUsersModal";
 import { format } from "date-fns";
 import { m1000, md } from "../../../utils/responsive";
 import { IComment, IMedia, IPost, IUser } from "../../../types";
 import { useSelector } from "react-redux";
-
 import { publicRequest } from "../../../utils/requestMethod";
 import { pushNotification, removeNotification } from "../../../utils";
 import { socket } from "../../../pages/_app";
@@ -19,9 +16,10 @@ import HeartIcon from "../../icons/HeartIcon";
 import CommentIcon from "../../icons/CommentIcon";
 import ShareIcon from "../../icons/ShareIcon";
 import SaveIcon from "../../icons/SaveIcon";
-import { CloseIcon } from "../../modals/LikeUsersModal";
 import Link from "next/link";
 import { IRootState } from "../../../redux/store";
+import callApi from "../../../utils/callApi";
+
 const StyledItemContainer = styled.div`
   height: calc(100vh - 60px);
   display: flex;
@@ -180,22 +178,49 @@ const StyledItemContainer = styled.div`
     }
     .comment-container {
       border-radius: 0 0 12px 12px;
-      border-top: 1px solid #dbdbdb;
       display: flex;
       overflow: hidden;
-
-      input {
-        padding: 16px 12px;
-        border: none;
-        outline: none;
-        flex: 1;
+      flex-direction: column;
+      border-top: 1px solid #dbdbdb;
+      .is_reply {
+        padding: 4px 12px;
+        position: relative;
+        .top-reply-to {
+          padding-right: 12px;
+          margin: 2px 0;
+        }
+        .top-comment {
+          color: #8e8e8e;
+          margin: 2px 0;
+        }
+        .close-icon {
+          position: absolute;
+          right: 12px;
+          top: 4px;
+          cursor: pointer;
+          svg {
+            width: 12px;
+            height: 12px;
+            margin: auto;
+          }
+        }
       }
-      button {
-        color: #0095f6;
-        font-weight: 600;
-        cursor: pointer;
-        padding: 0 12px;
-        width: 64px;
+      .input-container {
+        border-top: 1px solid #dbdbdb;
+        display: flex;
+        input {
+          padding: 16px 12px;
+          border: none;
+          outline: none;
+          flex: 1;
+        }
+        button {
+          color: #0095f6;
+          font-weight: 600;
+          cursor: pointer;
+          padding: 0 12px;
+          width: 64px;
+        }
       }
     }
   }
@@ -224,6 +249,8 @@ const SwiperItem = ({
   const [comments, setComments] = useState<IComment[]>([]);
   const [openLikesModal, setOpenLikesModal] = useState<boolean>(false);
   const [likeLength, setLikeLength] = useState<number>(post?.likes.length || 0);
+  const [isReply, setIsReply] = useState(false);
+  const [replyComment, setReplyComment] = useState<IComment>();
   const [isLiked, setIsLiked] = useState(
     (post?.likes as string[])?.includes(user?._id as string)
   );
@@ -264,7 +291,10 @@ const SwiperItem = ({
     };
     getComments();
   }, [post]);
-
+  const touchReply = (replyComment: IComment) => {
+    setIsReply(true);
+    setReplyComment(replyComment);
+  };
   const toggleLike = async (isLike: boolean) => {
     try {
       if (!isLike) {
@@ -302,14 +332,6 @@ const SwiperItem = ({
                 myId: user._id as string,
                 otherId: (post?.user as IUser)._id as string,
               });
-              // await publicRequest.delete("/noti/undo_notification", {
-              //   params: {
-              //     post_id: post?._id,
-              //     noti_type: "like",
-              //     noti_from: user._id,
-              //     noti_to: (post?.user as IUser)._id,
-              //   },
-              // });
             }
           });
       }
@@ -317,45 +339,56 @@ const SwiperItem = ({
       console.log(error);
     }
   };
+
   const onCommentHandler = async (data: { comment: string }) => {
     try {
-      await publicRequest
-        .post("/comment/comment", {
-          user_id: user._id,
-          post_id: post?._id,
-          comment: data.comment,
-        })
-        .then((response) => {
-          setComments((prev: IComment[]) => [
-            ...prev,
-            response.data.comment as IComment,
-          ]);
-          if (user._id !== (post?.user as IUser)._id) {
-            // socket.emit("push_noti", {
-            //   type: "comment",
-            //   postId: post?._id,
-            //   notificationFrom: user._id,
-            //   notificationTo: (post?.user as IUser)._id,
-            //   commentId: response.data.comment._id,
-            // });
-            pushNotification({
-              type: "comment",
-              socket: socket,
-              postId: post?._id,
-              myId: user._id as string,
-              otherId: (post?.user as IUser)._id as string,
-              commentId: response.data.comment._id,
-            });
-          }
-        })
-        .then(() => {
-          reset();
-          setToBottom();
-        });
+      if (!isReply) {
+        await callApi
+          .comment(
+            user?._id as string,
+            post?._id as string,
+            data.comment as string
+          )
+          .then((response) => {
+            setComments((prev: IComment[]) => [
+              ...prev,
+              response.data.comment as IComment,
+            ]);
+            if (user?._id !== (post?.user as IUser)._id) {
+              pushNotification({
+                type: "comment",
+                socket: socket,
+                postId: post?._id,
+                myId: user._id as string,
+                otherId: (post?.user as IUser)._id as string,
+                commentId: response.data.comment._id,
+              });
+            }
+          })
+          .then(() => {
+            reset();
+            setToBottom();
+          });
+      } else {
+        await callApi
+          .replyComment(
+            user._id as string,
+            post?._id as string,
+            data?.comment as string,
+            replyComment?._id as string
+          )
+          .then((response) => {
+            console.log(response.data);
+            reset();
+            setIsReply(false);
+            setReplyComment({} as IComment);
+          });
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <>
       <StyledItemContainer>
@@ -394,7 +427,11 @@ const SwiperItem = ({
               <div className="r-center-sb" ref={bottomRef}></div>
               <div>
                 {comments?.map((item) => (
-                  <PostComment key={item._id} comment={item} />
+                  <PostComment
+                    touchReply={touchReply}
+                    key={item._id}
+                    comment={item}
+                  />
                 ))}
               </div>
             </div>
@@ -452,12 +489,33 @@ const SwiperItem = ({
             )}
             className="comment-container"
           >
-            <input
-              type="text"
-              placeholder="Add a comment"
-              {...register("comment")}
-            />
-            <button>Post</button>
+            {isReply && (
+              <div className="is_reply">
+                <div
+                  className="close-icon"
+                  onClick={() => {
+                    setIsReply(false);
+                  }}
+                >
+                  <CloseIcon />
+                </div>
+                <div className="top-reply-to">
+                  Đang trả lời{" "}
+                  <span style={{ fontWeight: 600 }}>
+                    {(replyComment?.user as IUser)?.username}
+                  </span>
+                </div>
+                <div className="top-comment">"{replyComment?.comment}"</div>
+              </div>
+            )}
+            <div className="input-container">
+              <input
+                type="text"
+                placeholder="Add a comment"
+                {...register("comment")}
+              />
+              <button>Post</button>
+            </div>
           </form>
         </div>
       </StyledItemContainer>

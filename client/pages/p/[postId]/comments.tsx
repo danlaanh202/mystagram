@@ -71,11 +71,9 @@ const StyledAvatar = styled(Avatar)`
 `;
 const CommentOfPost = ({
   initialComments,
-
   post,
 }: {
   initialComments: IComment[];
-
   post: IPost;
 }) => {
   const user = useSelector((state: IRootState) => state.user.user as IUser);
@@ -107,13 +105,6 @@ const CommentOfPost = ({
             response.data.comment as IComment,
           ]);
           if (user._id !== (post.user as IUser)._id) {
-            // socket.emit("push_noti", {
-            //   type: "comment",
-            //   postId: post._id,
-            //   notificationFrom: user._id,
-            //   notificationTo: (post.user as IUser)._id,
-            //   commentId: response.data.comment._id,
-            // });
             pushNotification({
               type: "comment",
               socket: socket,
@@ -126,8 +117,6 @@ const CommentOfPost = ({
         })
         .then(() => {
           setCommentText("");
-          // reset();
-          // setToBottom();
         });
     } catch (error) {
       console.log(error);

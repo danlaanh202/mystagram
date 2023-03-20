@@ -17,12 +17,21 @@ const CommentSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    reply_comments: {
-      type: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Comment" }],
+    reply_to: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Comment",
     },
     media: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Media",
+    },
+    number_of_likes: {
+      type: Number,
+      default: 0,
+    },
+    number_of_reply: {
+      type: Number,
+      default: 0,
     },
   },
   {

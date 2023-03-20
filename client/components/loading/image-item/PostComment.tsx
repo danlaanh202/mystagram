@@ -1,7 +1,10 @@
 import Avatar from "@mui/material/Avatar";
 import { formatDistance, formatDistanceStrict } from "date-fns";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IComment, IMedia, IUser } from "../../../types";
+import callApi from "../../../utils/callApi";
+import ReplyComment from "./ReplyComment";
 
 const StyledPostComment = styled.div`
   padding-top: 12px;
@@ -43,40 +46,134 @@ const StyledCommentContentContainer = styled.div`
     }
   }
 `;
-const PostComment = ({ comment }: { comment: IComment }) => {
+const PostComment = ({
+  comment,
+  touchReply = () => {},
+}: {
+  comment: IComment;
+  touchReply?: (replyComment: IComment) => void;
+}) => {
+  const [showReplyComment, setShowReplyComment] = useState(false);
+  const [replies, setReplies] = useState<IComment[]>([]);
+  const [page, setPage] = useState(1);
+  const [isShowAll, setIsShowAll] = useState(false);
+  useEffect(() => {
+    if (showReplyComment) {
+      callApi.getReplyComments(comment._id as string, page).then((res) => {
+        if (res.data.totalPages === page) {
+          //fix this
+          setIsShowAll(true);
+        } else {
+          setReplies((prev) => [...prev, ...res.data.docs]);
+        }
+      });
+    } else {
+      setReplies([]);
+      setPage(1);
+      setIsShowAll(false);
+    }
+  }, [showReplyComment, page]);
   return (
-    <StyledPostComment>
-      <div className="modal-comment-container">
-        <div className="avatar-container">
-          <StyledAvatar
-            src={((comment.user as IUser)?.avatar as IMedia)?.media_url}
-          />
-        </div>
-        <StyledCommentContentContainer>
-          <div className="t-comment">
-            <span className="t-comment-username">
-              {(comment.user as IUser)?.username}
-            </span>
-            {comment?.comment}
+    <>
+      <StyledPostComment>
+        <div className="modal-comment-container">
+          <div className="avatar-container">
+            <StyledAvatar
+              src={((comment.user as IUser)?.avatar as IMedia)?.media_url}
+            />
           </div>
-          <div className="b-comment">
-            <div className="b-comment-date">
-              {formatDistanceStrict(
-                new Date(comment?.created_at as string),
-                Date.now(),
-                { addSuffix: true }
-              )}
+          <StyledCommentContentContainer>
+            <div className="t-comment">
+              <span className="t-comment-username">
+                {(comment.user as IUser)?.username}
+              </span>
+              {comment?.comment}
             </div>
-            <div className="b-comment-nor-btn">Reply</div>
+            <div className="b-comment">
+              <div className="b-comment-date">
+                {formatDistanceStrict(
+                  new Date(comment?.created_at as string),
+                  Date.now(),
+                  { addSuffix: true }
+                )}
+              </div>
+              <div
+                className="b-comment-nor-btn"
+                onClick={() => {
+                  touchReply(comment);
+                }}
+              >
+                Reply
+              </div>
+            </div>
+          </StyledCommentContentContainer>
+        </div>
+        <div className="modal-like-container">
+          <LikeIcon />
+        </div>
+      </StyledPostComment>
+      {comment.number_of_reply && (
+        <StyledReplyCommentContainer className="">
+          <div
+            className="view-reply"
+            onClick={() => {
+              if (!showReplyComment) {
+                setShowReplyComment(true);
+              }
+              if (showReplyComment && isShowAll) {
+                setShowReplyComment(false);
+              } else if (showReplyComment && !isShowAll) {
+                setPage((prev) => prev + 1);
+              }
+            }}
+          >
+            <>
+              <div className="view-reply-slash"></div>
+              <span className="view-reply-content">
+                {!showReplyComment &&
+                  `View replies (${comment.number_of_reply})`}
+                {showReplyComment &&
+                  replies?.length < comment.number_of_reply &&
+                  `View replies (${comment.number_of_reply - replies.length})`}
+                {showReplyComment &&
+                  replies?.length === comment.number_of_reply &&
+                  "Hide replies"}
+              </span>
+            </>
           </div>
-        </StyledCommentContentContainer>
-      </div>
-      <div className="modal-like-container">
-        <LikeIcon />
-      </div>
-    </StyledPostComment>
+          {showReplyComment &&
+            replies?.length > 0 &&
+            replies.map((item, index) => (
+              <ReplyComment key={item._id} comment={item} />
+            ))}
+        </StyledReplyCommentContainer>
+      )}
+    </>
   );
 };
+
+const StyledReplyCommentContainer = styled.div`
+  margin: 16px 0 0 54px;
+  .view-reply {
+    &-slash {
+      cursor: pointer;
+      border-bottom: 1px solid #8e8e8e;
+      display: inline-block;
+      height: 0;
+      width: 24px;
+      position: relative;
+      vertical-align: middle;
+    }
+    &-content {
+      cursor: pointer;
+      padding: 0 12px;
+      color: #8e8e8e;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+  }
+`;
 const LikeIcon = () => {
   return (
     <svg

@@ -41,7 +41,7 @@ export function pushNotification({
   commentId,
   type,
 }: {
-  type: "follow" | "like" | "comment";
+  type: "follow" | "like" | "comment" | "reply_comment";
   socket: any;
   myId: string;
   otherId: string;
