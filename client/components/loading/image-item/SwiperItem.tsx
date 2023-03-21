@@ -16,7 +16,6 @@ import HeartIcon from "../../icons/HeartIcon";
 import CommentIcon from "../../icons/CommentIcon";
 import ShareIcon from "../../icons/ShareIcon";
 import SaveIcon from "../../icons/SaveIcon";
-
 import { IRootState } from "../../../redux/store";
 import callApi from "../../../utils/callApi";
 import Link from "next/link";
@@ -261,6 +260,10 @@ const SwiperItem = ({
     setLikeLength((prev: number) => (isLiked ? prev - 1 : prev + 1));
     setIsLiked((prev: boolean) => !prev);
   };
+
+  useEffect(() => {
+    socket.emit("join_post", { post_id: post._id });
+  }, [post]);
   const setToBottom = () => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -344,32 +347,26 @@ const SwiperItem = ({
   const onCommentHandler = async (data: { comment: string }) => {
     try {
       if (!isReply) {
-        await callApi
-          .comment(
-            user?._id as string,
-            post?._id as string,
-            data.comment as string
-          )
-          .then((response) => {
-            setComments((prev: IComment[]) => [
-              ...prev,
-              response.data.comment as IComment,
-            ]);
-            if (user?._id !== (post?.user as IUser)._id) {
-              pushNotification({
-                type: "comment",
-                socket: socket,
-                postId: post?._id,
-                myId: user._id as string,
-                otherId: (post?.user as IUser)._id as string,
-                commentId: response.data.comment._id,
-              });
-            }
-          })
-          .then(() => {
-            reset();
-            setToBottom();
-          });
+        socket.emit("comment", {
+          user_id: user?._id as string,
+          post_id: post?._id as string,
+          comment: data.comment as string,
+        });
+        setComments((prev: IComment[]) => [
+          ...prev,
+          {
+            comment: data.comment,
+            is_reply: false,
+            post: post._id,
+            user: user,
+            number_of_reply: 0,
+            number_of_likes: 0,
+            _id: "abcxyz",
+            created_at: new Date(),
+          } as IComment,
+        ]);
+        reset();
+        setToBottom();
       } else {
         await callApi
           .replyComment(
@@ -389,6 +386,10 @@ const SwiperItem = ({
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    socket.on("receive_comment", (data) => console.log(data));
+  }, [socket]);
 
   return (
     <>

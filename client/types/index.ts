@@ -75,7 +75,7 @@ export interface IComment extends ITimeStamps {
   post: IPost | string;
   comment: string;
   is_reply: boolean;
-  reply_comments: IComment[] | string[];
+  reply_to?: string | IComment;
   number_of_likes?: number;
   number_of_reply?: number;
 }

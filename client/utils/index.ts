@@ -51,7 +51,6 @@ export function pushNotification({
   if (type === "follow") {
     socket.emit("push_noti", {
       type: type,
-
       notificationFrom: myId,
       notificationTo: otherId,
     });

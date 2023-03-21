@@ -4,6 +4,7 @@ const Room = require("../models/Room.model");
 const Notification = require("../models/Notification.model");
 const db = require("../models");
 const CommentServices = require("../services/CommentServices");
+const NotificationServices = require("../services/NotificationServices");
 const callSockets = {};
 const sockets = {};
 function chatIo(io) {
@@ -139,48 +140,69 @@ function chatIo(io) {
         .to(`${callSockets[recipientId]?.id}`)
         .emit("call_ended", true);
     });
+
+    //Comment and reply comment
+    socket.on("join_post", ({ post_id }) => {
+      socket.join(post_id);
+    });
+    socket.on("comment", async ({ user_id, post_id, comment }) => {
+      try {
+        const { cmt, post } = await CommentServices.comment({
+          user_id,
+          post_id,
+          comment,
+        });
+        socket.to(post_id).emit("receive_comment", { cmt, post });
+        const savedNotification = await NotificationServices.createNotification(
+          {
+            type: "comment",
+            postId: post_id,
+            notificationFrom: user_id,
+            notificationTo: post.user._id,
+            commentId: cmt._id,
+          }
+        );
+        io.to(`${sockets[post.user._id].id}`).emit(
+          "get_new_noti",
+          savedNotification
+        );
+        //after comment we create notification
+      } catch (error) {
+        console.log("lỗi comment");
+      }
+    });
+    socket.on("reply_comment", async (_data) => {
+      try {
+        const replyCmt = await CommentServices.replyComment(_data);
+        socket.to(_data.post_id).emit("receive_reply_comment", replyCmt);
+        //after reply comment we create notification
+      } catch (error) {
+        console.log("reply_comment");
+      }
+    });
+
     socket.on(
       "push_noti",
       async ({ type, postId, notificationFrom, notificationTo, commentId }) => {
-        const newNotification = new Notification({
-          notification_type: type,
-          post: mongoose.Types.ObjectId(postId),
-          notification_from: mongoose.Types.ObjectId(notificationFrom),
-          user: mongoose.Types.ObjectId(notificationTo),
-          comment: mongoose.Types.ObjectId(commentId),
-        });
         try {
-          const savedNotification = await (
-            await newNotification.save()
-          ).populate([
-            {
-              path: "notification_from",
-              populate: {
-                path: "avatar",
-              },
-            },
-            {
-              path: "post",
-              populate: {
-                path: "media",
-              },
-            },
-          ]);
+          const savedNotification =
+            await NotificationServices.createNotification({
+              type,
+              postId,
+              notificationFrom,
+              notificationTo,
+              commentId,
+            });
           io.to(`${sockets[notificationTo].id}`).emit(
             "get_new_noti",
             savedNotification
           );
-        } catch (error) {}
+        } catch (error) {
+          console.log("Lỗi push_noti");
+        }
       }
     );
-    //Comment and reply comment
-    socket.on("comment", async ({ user_id, post_id, cmt: comment }) => {
-      const { comment, post } = await CommentServices.comment({
-        user_id,
-        post_id,
-        cmt,
-      });
-    });
+
     socket.on("disconnect", () => {
       if (!socket.userId) return;
       delete callSockets[socket.userId];

@@ -60,7 +60,6 @@ const PostComment = ({
   useEffect(() => {
     if (showReplyComment) {
       callApi.getReplyComments(comment._id as string, page).then((res) => {
-        console.log(res.data);
         if (res.data.totalPages === page) {
           setReplies((prev) => [...res.data.docs.reverse(), ...prev]);
           setIsShowAll(true);

@@ -26,7 +26,7 @@ module.exports = new (class CommentServices {
         _data.post_id,
         savedComment
       );
-      return { comment: savedComment, post: updatedPost };
+      return { cmt: savedComment, post: updatedPost };
     } catch (error) {
       throw new Error("lỗi ở comment services");
     }
