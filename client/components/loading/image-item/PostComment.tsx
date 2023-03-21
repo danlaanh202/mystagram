@@ -60,11 +60,12 @@ const PostComment = ({
   useEffect(() => {
     if (showReplyComment) {
       callApi.getReplyComments(comment._id as string, page).then((res) => {
+        console.log(res.data);
         if (res.data.totalPages === page) {
-          //fix this
+          setReplies((prev) => [...res.data.docs.reverse(), ...prev]);
           setIsShowAll(true);
         } else {
-          setReplies((prev) => [...prev, ...res.data.docs]);
+          setReplies((prev) => [...res.data.docs.reverse(), ...prev]);
         }
       });
     } else {
@@ -112,7 +113,7 @@ const PostComment = ({
           <LikeIcon />
         </div>
       </StyledPostComment>
-      {comment.number_of_reply && (
+      {(comment.number_of_reply as number) > 0 && (
         <StyledReplyCommentContainer className="">
           <div
             className="view-reply"
@@ -133,14 +134,15 @@ const PostComment = ({
                 {!showReplyComment &&
                   `View replies (${comment.number_of_reply})`}
                 {showReplyComment &&
-                  replies?.length < comment.number_of_reply &&
-                  `View replies (${comment.number_of_reply - replies.length})`}
-                {showReplyComment &&
-                  replies?.length === comment.number_of_reply &&
-                  "Hide replies"}
+                  !isShowAll &&
+                  `View replies (${
+                    (comment.number_of_reply as number) - replies.length
+                  })`}
+                {showReplyComment && isShowAll && "Hide replies"}
               </span>
             </>
           </div>
+
           {showReplyComment &&
             replies?.length > 0 &&
             replies.map((item, index) => (

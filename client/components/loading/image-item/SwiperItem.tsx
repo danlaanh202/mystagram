@@ -16,9 +16,10 @@ import HeartIcon from "../../icons/HeartIcon";
 import CommentIcon from "../../icons/CommentIcon";
 import ShareIcon from "../../icons/ShareIcon";
 import SaveIcon from "../../icons/SaveIcon";
-import Link from "next/link";
+
 import { IRootState } from "../../../redux/store";
 import callApi from "../../../utils/callApi";
+import Link from "next/link";
 
 const StyledItemContainer = styled.div`
   height: calc(100vh - 60px);

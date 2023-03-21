@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Message = require("../models/Message.model");
 const Room = require("../models/Room.model");
 const Notification = require("../models/Notification.model");
+const db = require("../models");
+const CommentServices = require("../services/CommentServices");
 const callSockets = {};
 const sockets = {};
 function chatIo(io) {
@@ -16,6 +18,7 @@ function chatIo(io) {
       socket.userId = user._id;
       callSockets[socket.userId] = socket;
     });
+
     socket.on("create_room", async ({ my_user, recipient }) => {
       const my_user_id = mongoose.Types.ObjectId(my_user);
       const mongoUser = mongoose.Types.ObjectId(recipient);
@@ -47,9 +50,11 @@ function chatIo(io) {
         },
       ]);
     });
+
     socket.on("join_conversation", ({ room_id }) => {
       socket.join(room_id);
     });
+
     socket.on("send_message", async ({ user_id, message, room_id }) => {
       const savedMessage = await (
         await new Message({
@@ -168,6 +173,14 @@ function chatIo(io) {
         } catch (error) {}
       }
     );
+    //Comment and reply comment
+    socket.on("comment", async ({ user_id, post_id, cmt: comment }) => {
+      const { comment, post } = await CommentServices.comment({
+        user_id,
+        post_id,
+        cmt,
+      });
+    });
     socket.on("disconnect", () => {
       if (!socket.userId) return;
       delete callSockets[socket.userId];

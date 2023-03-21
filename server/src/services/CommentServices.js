@@ -85,6 +85,7 @@ module.exports = new (class CommentServices {
       const options = {
         limit: 3,
         offset: (page - 1) * 3,
+        sort: { created_at: -1 },
         populate: {
           path: "user",
           populate: {
@@ -94,7 +95,7 @@ module.exports = new (class CommentServices {
       };
       return await db.Comment.paginate(
         {
-          comment_id: mongoose.Types.ObjectId(comment_id),
+          reply_to: mongoose.Types.ObjectId(comment_id),
           is_reply: true,
         },
         options
