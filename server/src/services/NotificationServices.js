@@ -21,6 +21,9 @@ module.exports = new (class {
           },
         },
         {
+          path: "comment",
+        },
+        {
           path: "post",
           populate: {
             path: "media",

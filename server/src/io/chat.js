@@ -177,6 +177,20 @@ function chatIo(io) {
       try {
         const replyCmt = await CommentServices.replyComment(_data);
         socket.to(_data.post_id).emit("receive_reply_comment", replyCmt);
+        if (_data.user_id !== replyCmt.reply_to.user._id.toString()) {
+          const savedNotification =
+            await NotificationServices.createNotification({
+              type: "reply_comment",
+              postId: _data.post_id,
+              notificationFrom: _data.user_id,
+              notificationTo: replyCmt.reply_to.user._id.toString(),
+              commentId: replyCmt._id.toString(),
+            });
+          io.to(`${sockets[replyCmt.reply_to.user._id].id}`).emit(
+            "get_new_noti",
+            savedNotification
+          );
+        }
         //after reply comment we create notification
       } catch (error) {
         console.log("reply_comment");

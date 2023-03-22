@@ -53,12 +53,23 @@ module.exports = new (class CommentServices {
       });
       const replyComment = await (
         await newReplyComment.save()
-      ).populate({
-        path: "user",
-        populate: {
-          path: "avatar",
+      ).populate([
+        {
+          path: "user",
+          populate: {
+            path: "avatar",
+          },
         },
-      });
+        {
+          path: "reply_to",
+          populate: {
+            path: "user",
+            populate: {
+              path: "avatar",
+            },
+          },
+        },
+      ]);
       await this.increaseNumberOfComment(_data.comment_id, 1);
       return replyComment;
     } catch (error) {
