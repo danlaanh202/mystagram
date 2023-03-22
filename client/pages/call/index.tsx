@@ -158,16 +158,13 @@ const Call = () => {
   }, []);
   useEffect(() => {
     if (myPeer) {
-      // const getUserMedia =
-      //   navigator.getUserMedia ||
-      //   navigator.webkitGetUserMedia ||
-      //   navigator.mozGetUserMedia;
       if (router.query.peer_id) {
         navigator.mediaDevices
           .getUserMedia(rtc.constraints)
           .then((stream) => {
             dispatch(setLocalStream(stream));
             const call = myPeer.call(router.query.peer_id, stream);
+            console.log(call);
             call.on("stream", (incomingStream: MediaStream) => {
               dispatch(setRemoteStream(incomingStream));
             });
