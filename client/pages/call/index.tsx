@@ -1,6 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 import Head from "next/head";
-import { LegacyRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as rtc from "../../utils/rtc";
 
@@ -13,11 +13,7 @@ import { useSelector } from "react-redux";
 import { socket } from "../_app";
 import { useDispatch } from "react-redux";
 import usePeer from "../../hooks/usePeer";
-import {
-  setCallerAnswer,
-  setLocalStream,
-  setRemoteStream,
-} from "../../redux/rtcRedux";
+import { setLocalStream, setRemoteStream } from "../../redux/rtcRedux";
 import { IMedia, IUser } from "../../types";
 import { publicRequest } from "../../utils/requestMethod";
 import CallLoadingBar from "../../components/loading/CallLoadingBar";
@@ -162,12 +158,16 @@ const Call = () => {
   }, []);
   useEffect(() => {
     if (myPeer) {
+      // const getUserMedia =
+      //   navigator.getUserMedia ||
+      //   navigator.webkitGetUserMedia ||
+      //   navigator.mozGetUserMedia;
       if (router.query.peer_id) {
         navigator.mediaDevices
           .getUserMedia(rtc.constraints)
           .then((stream) => {
             dispatch(setLocalStream(stream));
-            const call = myPeer.call(router.query.peer_id, localStream);
+            const call = myPeer.call(router.query.peer_id, stream);
             call.on("stream", (incomingStream: MediaStream) => {
               dispatch(setRemoteStream(incomingStream));
             });
@@ -202,10 +202,12 @@ const Call = () => {
       const videoTrack = (localStream as MediaStream).getVideoTracks();
       setIsVideo(videoTrack[0].enabled);
 
-      localVideoRef.current.srcObject = localStream;
-      localVideoRef.current.onloadmetadata = () => {
-        localVideoRef.current.play();
-      };
+      if (localVideoRef && localVideoRef.current) {
+        localVideoRef.current.srcObject = localStream;
+        localVideoRef.current.onloadmetadata = () => {
+          localVideoRef.current.play();
+        };
+      }
     }
   }, [localStream]);
   useEffect(() => {

@@ -71,5 +71,5 @@ peerServer.on("connection", (client) => {
   console.log("peer client", client.id);
 });
 peerServer.on("disconnect", (client) => {
-  console.log("peer client leave");
+  console.log("peer client leave " + client.id);
 });

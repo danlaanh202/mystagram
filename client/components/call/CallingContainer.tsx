@@ -23,9 +23,9 @@ declare global {
     mozRequestFullscreen?: () => Promise<void>;
     webkitRequestFullscreen?: () => Promise<void>;
   }
-  interface Element {
-    ALLOW_KEYBOARD_INPUT: any;
-  }
+  // interface Element {
+  //   ALLOW_KEYBOARD_INPUT: any;
+  // }
 }
 const StyledCallingContainer = styled.div`
   position: relative;
@@ -221,7 +221,7 @@ export default function CallingContainer({
       } else if (document.documentElement["mozRequestFullscreen"]) {
         document.documentElement["mozRequestFullscreen"]();
       } else if (document.documentElement["webkitRequestFullscreen"]) {
-        document.documentElement["webkitRequestFullscreen"];
+        document.documentElement["webkitRequestFullscreen"]();
         // Element["ALLOW_KEYBOARD_INPUT"]();
       }
     } else {

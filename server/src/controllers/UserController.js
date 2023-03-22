@@ -1,83 +1,34 @@
 const mongoose = require("mongoose");
 const User = require("../models/User.model");
-
+const UserServices = require("../services/UserServices");
 class UserController {
   async getUser(req, res, next) {
     try {
-      const user = await User.findOne({
-        $or: [
-          { username: req.query.username },
-          { _id: mongoose.Types.ObjectId(req.query.user_id) },
-        ],
-      }).populate("avatar");
+      const user = await UserServices.getUser(req.query);
       return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json(error);
     }
   }
   async getUsers(req, res) {
-    const options = {
-      sort: { _id: -1 },
-      page: parseInt(req.query.page) | 1,
-      limit: parseInt(req.query.limit) | 20,
-      populate: [{ path: "avatar" }],
-      lean: true,
-    };
     try {
-      const users = await User.paginate({}, options).then((res) => res);
+      const users = await UserServices.getUsers(req.query);
       return res.status(200).json(users);
     } catch (error) {
       return res.status(500).json(error);
     }
   }
   async getSuggestionUsers(req, res) {
-    const options = {
-      sort: { _id: -1 },
-      page: parseInt(req.query.page) | 1,
-      limit: parseInt(req.query.limit) | 5,
-      populate: [{ path: "avatar" }],
-      lean: true,
-    };
     try {
-      if (req.query.following?.length > 0) {
-        let temp = req.query.following?.map((item) =>
-          mongoose.Types.ObjectId(item)
-        );
-
-        const notInArray = [
-          ...temp,
-          mongoose.Types.ObjectId(req.query.user_id),
-        ];
-
-        const suggestionUsers = await User.paginate(
-          { _id: { $nin: notInArray } },
-          options
-        );
-        // console.log("cec");
-        return res.status(200).json(suggestionUsers);
-      }
-      const suggestionUsers = await User.paginate(
-        { _id: { $ne: mongoose.Types.ObjectId(req.query.user_id) } },
-        options
-      );
-      return res.status(200).json(suggestionUsers);
+      const docs = await UserServices.getSuggestionUsers(req.query); //with mongoose-paginate-v2
+      return res.status(200).json(docs);
     } catch (error) {
       return res.status(500).json(error);
     }
   }
   async editUser(req, res) {
     try {
-      const updatedUser = await User.findByIdAndUpdate(
-        req.body.userId,
-        {
-          name: req.body.name,
-          username: req.body.username,
-          website: req.body.website,
-          bio: req.body.bio,
-          email: req.body.email,
-        },
-        { new: true }
-      ).populate("avatar");
+      const updatedUser = await UserServices.editUser(req.body);
       return res.status(200).json(updatedUser);
     } catch (error) {
       return res.status(500).json(error);
