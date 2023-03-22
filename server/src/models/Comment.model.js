@@ -33,6 +33,9 @@ const CommentSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    uuid: {
+      type: String,
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

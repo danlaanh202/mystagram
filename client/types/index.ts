@@ -78,6 +78,7 @@ export interface IComment extends ITimeStamps {
   reply_to?: string | IComment;
   number_of_likes?: number;
   number_of_reply?: number;
+  uuid?: string;
 }
 export interface INotification extends ITimeStamps {
   _id?: string;

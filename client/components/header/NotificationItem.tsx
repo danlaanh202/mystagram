@@ -159,6 +159,8 @@ const NotificationItem = ({
           {(noti.notification_from as IUser).username}
         </div>
         <div className="notification-type">
+          {noti.notification_type === "reply_comment" &&
+            ` replied your comment: ${(noti.comment as IComment)?.comment}`}
           {noti.notification_type === "like" && " liked your photo"}
 
           {noti.notification_type === "comment" &&

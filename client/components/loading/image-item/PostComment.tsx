@@ -2,6 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import { formatDistance, formatDistanceStrict } from "date-fns";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { socket } from "../../../pages/_app";
 import { IComment, IMedia, IUser } from "../../../types";
 import callApi from "../../../utils/callApi";
 import ReplyComment from "./ReplyComment";
@@ -57,6 +58,7 @@ const PostComment = ({
   const [replies, setReplies] = useState<IComment[]>([]);
   const [page, setPage] = useState(1);
   const [isShowAll, setIsShowAll] = useState(false);
+  const [moreReceiveComment, setMoreReceiveComment] = useState(0);
   useEffect(() => {
     if (showReplyComment) {
       callApi.getReplyComments(comment._id as string, page).then((res) => {
@@ -73,6 +75,23 @@ const PostComment = ({
       setIsShowAll(false);
     }
   }, [showReplyComment, page]);
+  useEffect(() => {
+    socket.on("receive_reply_comment", (data) => {
+      console.log(data);
+      if (
+        data.reply_to._id === comment._id ||
+        data.reply_to.uuid === comment.uuid
+      ) {
+        if (!showReplyComment) {
+          setMoreReceiveComment((prev: number) => prev + 1);
+        }
+        if (showReplyComment) {
+          setMoreReceiveComment((prev: number) => prev + 1);
+          setReplies((prev) => [data, ...prev]);
+        }
+      }
+    });
+  }, [socket]);
   return (
     <>
       <StyledPostComment>
@@ -112,12 +131,13 @@ const PostComment = ({
           <LikeIcon />
         </div>
       </StyledPostComment>
-      {(comment.number_of_reply as number) > 0 && (
+      {(comment.number_of_reply as number | 0) + moreReceiveComment > 0 && (
         <StyledReplyCommentContainer className="">
           <div
             className="view-reply"
             onClick={() => {
               if (!showReplyComment) {
+                setReplies([] as IComment[]);
                 setShowReplyComment(true);
               }
               if (showReplyComment && isShowAll) {
@@ -131,11 +151,14 @@ const PostComment = ({
               <div className="view-reply-slash"></div>
               <span className="view-reply-content">
                 {!showReplyComment &&
-                  `View replies (${comment.number_of_reply})`}
+                  `View replies (${
+                    (comment.number_of_reply as number) + moreReceiveComment
+                  })`}
                 {showReplyComment &&
                   !isShowAll &&
                   `View replies (${
-                    (comment.number_of_reply as number) - replies.length
+                    (((comment.number_of_reply as number) +
+                      moreReceiveComment) as number) - replies.length
                   })`}
                 {showReplyComment && isShowAll && "Hide replies"}
               </span>

@@ -145,15 +145,16 @@ function chatIo(io) {
     socket.on("join_post", ({ post_id }) => {
       socket.join(post_id);
     });
-    socket.on("comment", async ({ user_id, post_id, comment }) => {
+    socket.on("comment", async ({ user_id, post_id, comment, uuid }) => {
       try {
         const { cmt, post } = await CommentServices.comment({
           user_id,
           post_id,
           comment,
+          uuid,
         });
         socket.to(post_id).emit("receive_comment", { cmt, post });
-        console.log(cmt, post.user._id.toString());
+
         if (user_id !== post.user._id.toString()) {
           const savedNotification =
             await NotificationServices.createNotification({
@@ -176,7 +177,7 @@ function chatIo(io) {
     socket.on("reply_comment", async (_data) => {
       try {
         const replyCmt = await CommentServices.replyComment(_data);
-        socket.to(_data.post_id).emit("receive_reply_comment", replyCmt);
+        io.to(_data.post_id).emit("receive_reply_comment", replyCmt);
         if (_data.user_id !== replyCmt.reply_to.user._id.toString()) {
           const savedNotification =
             await NotificationServices.createNotification({

@@ -10,7 +10,11 @@ import { m1000, md } from "../../../utils/responsive";
 import { IComment, IMedia, IPost, IUser } from "../../../types";
 import { useSelector } from "react-redux";
 import { publicRequest } from "../../../utils/requestMethod";
-import { pushNotification, removeNotification } from "../../../utils";
+import {
+  generateId,
+  pushNotification,
+  removeNotification,
+} from "../../../utils";
 import { socket } from "../../../pages/_app";
 import HeartIcon from "../../icons/HeartIcon";
 import CommentIcon from "../../icons/CommentIcon";
@@ -251,6 +255,7 @@ const SwiperItem = ({
   const [likeLength, setLikeLength] = useState<number>(post?.likes.length || 0);
   const [isReply, setIsReply] = useState(false);
   const [replyComment, setReplyComment] = useState<IComment>();
+  const [replyCommentIndex, setReplyCommentIndex] = useState(-1);
   const [isLiked, setIsLiked] = useState(
     (post?.likes as string[])?.includes(user?._id as string)
   );
@@ -347,10 +352,13 @@ const SwiperItem = ({
   const onCommentHandler = async (data: { comment: string }) => {
     try {
       if (!isReply) {
+        let generatedId = generateId();
+        console.log(generatedId);
         socket.emit("comment", {
           user_id: user?._id as string,
           post_id: post?._id as string,
           comment: data.comment as string,
+          uuid: generatedId,
         });
         setComments((prev: IComment[]) => [
           ...prev,
@@ -361,26 +369,26 @@ const SwiperItem = ({
             user: user,
             number_of_reply: 0,
             number_of_likes: 0,
-            _id: "abcxyz",
+            uuid: generatedId,
+            _id: generatedId,
             created_at: new Date(),
           } as IComment,
         ]);
         reset();
         setToBottom();
       } else {
-        await callApi
-          .replyComment(
-            user._id as string,
-            post?._id as string,
-            data?.comment as string,
-            replyComment?._id as string
-          )
-          .then((response) => {
-            console.log(response.data);
-            reset();
-            setIsReply(false);
-            setReplyComment({} as IComment);
-          });
+        let generatedId = generateId();
+        socket.emit("reply_comment", {
+          user_id: user._id,
+          post_id: post?._id,
+          comment: data?.comment,
+          comment_id: replyComment?._id,
+          uuid: generatedId,
+        });
+
+        reset();
+        setIsReply(false);
+        setReplyComment({} as IComment);
       }
     } catch (error) {
       console.log(error);
@@ -388,7 +396,9 @@ const SwiperItem = ({
   };
 
   useEffect(() => {
-    socket.on("receive_comment", (data) => console.log(data));
+    socket.on("receive_comment", (data) =>
+      setComments((prev: IComment[]) => [...prev, data.cmt])
+    );
   }, [socket]);
 
   return (
@@ -428,7 +438,7 @@ const SwiperItem = ({
             <div className="r-center-comments">
               <div className="r-center-sb" ref={bottomRef}></div>
               <div>
-                {comments?.map((item) => (
+                {comments?.map((item, index: number) => (
                   <PostComment
                     touchReply={touchReply}
                     key={item._id}

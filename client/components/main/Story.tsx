@@ -94,13 +94,6 @@ const Story = ({
         .then((response) => {
           setUpdatedPost(response.data.post);
           if (user._id !== (post.user as IUser)._id) {
-            // socket.emit("push_noti", {
-            //   type: "comment",
-            //   postId: post._id,
-            //   notificationFrom: user._id,
-            //   notificationTo: (post.user as IUser)._id,
-            //   commentId: response.data.comment._id,
-            // });
             pushNotification({
               socket: socket,
               type: "comment",
@@ -128,12 +121,6 @@ const Story = ({
           .then((response) => {
             setUpdatedPost(response.data.post);
             if (user._id !== (post.user as IUser)._id) {
-              // socket.emit("push_noti", {
-              //   type: "like",
-              //   postId: post._id,
-              //   notificationFrom: user._id,
-              //   notificationTo: (post.user as IUser)._id,
-              // });
               pushNotification({
                 type: "like",
                 socket: socket,

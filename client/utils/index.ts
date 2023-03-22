@@ -1,4 +1,5 @@
 import { IStory } from "../types";
+import { v4 as uuidv4 } from "uuid";
 import { publicRequest } from "./requestMethod";
 export function getShortTime(str: string) {
   let splitTime = str.split(" ");
@@ -131,4 +132,8 @@ export const groupStoriesFunc = (data: IStory[]) => {
     }
   });
   return groups;
+};
+
+export const generateId = (): string => {
+  return uuidv4();
 };

@@ -13,6 +13,7 @@ module.exports = new (class CommentServices {
         post: _data.post_id,
         comment: _data.comment,
         media: _data.media_url,
+        uuid: _data.uuid,
       });
       const savedComment = await (
         await newComment.save()
@@ -50,6 +51,7 @@ module.exports = new (class CommentServices {
         reply_to: _data.comment_id,
         media: _data.media_id,
         is_reply: true,
+        uuid: _data.uuid,
       });
       const replyComment = await (
         await newReplyComment.save()
