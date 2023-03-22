@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Message = require("../models/Message.model");
 const Room = require("../models/Room.model");
-const Notification = require("../models/Notification.model");
+
 const db = require("../models");
 const CommentServices = require("../services/CommentServices");
 const NotificationServices = require("../services/NotificationServices");
@@ -153,19 +153,21 @@ function chatIo(io) {
           comment,
         });
         socket.to(post_id).emit("receive_comment", { cmt, post });
-        const savedNotification = await NotificationServices.createNotification(
-          {
-            type: "comment",
-            postId: post_id,
-            notificationFrom: user_id,
-            notificationTo: post.user._id,
-            commentId: cmt._id,
-          }
-        );
-        io.to(`${sockets[post.user._id].id}`).emit(
-          "get_new_noti",
-          savedNotification
-        );
+        console.log(cmt, post.user._id.toString());
+        if (user_id !== post.user._id.toString()) {
+          const savedNotification =
+            await NotificationServices.createNotification({
+              type: "comment",
+              postId: post_id,
+              notificationFrom: user_id,
+              notificationTo: post.user._id.toString(),
+              commentId: cmt._id.toString(),
+            });
+          io.to(`${sockets[post.user._id].id}`).emit(
+            "get_new_noti",
+            savedNotification
+          );
+        }
         //after comment we create notification
       } catch (error) {
         console.log("lỗi comment");

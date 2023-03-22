@@ -1,7 +1,10 @@
+const mongoose = require("mongoose");
+const db = require("../models");
+
 module.exports = new (class {
   async createNotification(_data) {
     try {
-      const newNotification = new Notification({
+      const newNotification = new db.Notification({
         notification_type: _data.type,
         post: mongoose.Types.ObjectId(_data.postId),
         notification_from: mongoose.Types.ObjectId(_data.notificationFrom),
