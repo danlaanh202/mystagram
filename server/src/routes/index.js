@@ -13,15 +13,15 @@ const storyRouter = require("./story.route");
 function route(app) {
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
+  app.use("/cloudinary", cloudinaryRouter);
+  app.use("/media", mediaRouter);
   app.use("/post", postRouter);
   app.use("/comment", commentRouter);
   app.use("/like", likeRouter);
-  app.use("/cloudinary", cloudinaryRouter);
-  app.use("/media", mediaRouter);
+  app.use("/story", storyRouter);
   app.use("/follow", followRouter);
+  app.use("/noti", notiRouter);
   app.use("/room", roomRouter);
   app.use("/message", messageRouter);
-  app.use("/noti", notiRouter);
-  app.use("/story", storyRouter);
 }
 module.exports = route;

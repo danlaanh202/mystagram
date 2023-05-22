@@ -11,7 +11,6 @@ class FollowController {
 
     try {
       const savedFollow = await newFollow.save();
-
       return res.status(200).json(savedFollow);
     } catch (error) {
       return res.status(500).json(error);

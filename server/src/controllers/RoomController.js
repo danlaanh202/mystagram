@@ -41,10 +41,6 @@ class RoomController {
     const my_user = mongoose.Types.ObjectId(req.body.my_user);
     const mongoUser = mongoose.Types.ObjectId(req.body.recipient);
 
-    // this room need 2 body : my_user and recipient
-    const newRoom = new Room({
-      users: [my_user, mongoUser],
-    });
     try {
       const alreadyRoom = await Room.findOne({
         users: { $all: [my_user, mongoUser] },
@@ -61,6 +57,10 @@ class RoomController {
       if (alreadyRoom) {
         return res.status(200).json(alreadyRoom);
       }
+      // this room need 2 body : my_user and recipient
+      const newRoom = new Room({
+        users: [my_user, mongoUser],
+      });
       const savedNewRoom = await newRoom.save();
       const newMessage = new Message({
         is_seen: false,
