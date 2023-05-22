@@ -153,13 +153,13 @@ The database technology is **mongodb** with **mongoose** lib to easy access to d
 
 ## Environment configuration
 
-> **MONGO_URL**: Mongo database connection string (exp: mongodb://127.0.0.1:27017/instagram)
-> **PORT**: Run your server on port(exp: 4000)
-> **PASS_SEC**: Encrypt password need **PASS_SEC**
-> **JWT_SEC**: Create jsonwebtoken need **JWT SECRET**
-> **CLO_NAME**: Cloudinary name configuration
-> **CLO_KEY**: Cloudinary key
-> **CLO_SEC**: Cloudinary secret key
+- **MONGO_URL**: Mongo database connection string (exp: mongodb://127.0.0.1:27017/instagram)
+- **PORT**: Run your server on port(exp: 4000)
+- **PASS_SEC**: Encrypt password need **PASS_SEC**
+- **JWT_SEC**: Create jsonwebtoken need **JWT SECRET**
+- **CLO_NAME**: Cloudinary name configuration
+- **CLO_KEY**: Cloudinary key
+- **CLO_SEC**: Cloudinary secret key
 
 ## About Author
 
