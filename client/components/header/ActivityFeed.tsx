@@ -22,7 +22,15 @@ const StyledFeedContainer = styled.div`
   width: 500px;
   overflow: hidden;
   overflow-y: ${({ overflowY }: { overflowY: boolean }) =>
-    overflowY ? "scroll" : "none"}; ;
+    overflowY ? "scroll" : "none"};
+  .no-notification {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+  }
 `;
 const StyledMenu = styled(Menu)`
   top: 12px !important;
@@ -133,6 +141,9 @@ export default function ActivityFeed() {
             notis.map((item, index) => (
               <NotificationItem key={item._id} noti={item} setSeen={setSeen} />
             ))}
+          {notis?.length === 0 && (
+            <div className="no-notification">Không có thông báo</div>
+          )}
         </StyledFeedContainer>
       </StyledMenu>
     </>

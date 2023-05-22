@@ -3,17 +3,26 @@ import type { AppProps } from "next/app";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import { persistor, store } from "../redux/store";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { io } from "socket.io-client";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 import "react-multi-carousel/lib/styles.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import SplashScreen from "../components/splash/SplashScreen";
 export const socket = io(`${process.env.API_URL}`);
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2000); // Thời gian hiển thị splash screen (2 giây trong ví dụ)
+
+    return () => clearTimeout(timer);
+  }, []);
   useEffect(() => {
     if (window) {
       if (
@@ -42,7 +51,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <Component {...pageProps} />
+        {showSplash ? <SplashScreen /> : <Component {...pageProps} />}
       </PersistGate>
     </Provider>
   );

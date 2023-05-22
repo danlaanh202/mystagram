@@ -1,14 +1,24 @@
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { IRootState } from "../../redux/store";
 import { IMedia, IUser } from "../../types";
 import ActivityFeedIcon from "../icons/ActivityFeedIcon";
 import HomeIcon from "../icons/HomeIcon";
-
+import { TransitionProps } from "@mui/material/transitions";
+import { Slide } from "@mui/material";
+import CreateNewPostMobile from "../modals/CreateNewPostMobile";
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 const StyledNavbarContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -37,6 +47,7 @@ const StyledAvatar = styled(Avatar)`
 `;
 const MobileNavbar = () => {
   const [activeId, setActiveId] = useState(0);
+  const [openCreatePost, setOpenCreatePost] = useState(false);
   const user = useSelector((state: IRootState) => state.user.user as IUser);
   const router = useRouter();
   const { isUnseenNotification } = useSelector(
@@ -49,101 +60,98 @@ const MobileNavbar = () => {
     else if (url[1] === "explore") setActiveId(3);
   }, [router]);
   return (
-    <StyledNavbarContainer>
-      <StyledNavbarButtonContainer>
-        <Link href="/">
-          <a
-            style={{
-              height: "100%",
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <HomeIcon isActive={activeId === 0} />
-          </a>
-        </Link>
-      </StyledNavbarButtonContainer>
-      <StyledNavbarButtonContainer>
-        <Link href="/explore">
-          <a
-            style={{
-              height: "100%",
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SearchIcon />
-          </a>
-        </Link>
-      </StyledNavbarButtonContainer>
-      <StyledNavbarButtonContainer>
-        <div className="add-post-input">
-          <input
-            id="add-post"
-            name="post_image"
-            type="file"
-            style={{ display: "none" }}
-          />
-          <label htmlFor="add-post">
-            <AddPostIcon />
-          </label>
-        </div>
-      </StyledNavbarButtonContainer>
-      <StyledNavbarButtonContainer>
-        <Link href="/accounts/activity">
-          <a
-            style={{
-              height: "100%",
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              position: "relative",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ActivityFeedIcon />
-            {isUnseenNotification && (
-              <div
-                className="new-noti"
-                style={{
-                  position: "absolute",
-                  bottom: "4px",
-                  background: "#ff3040",
-                  width: "4px",
-                  height: "4px",
-                  borderRadius: "100%",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                }}
-              ></div>
-            )}
-          </a>
-        </Link>
-      </StyledNavbarButtonContainer>
-      <StyledNavbarButtonContainer>
-        <Link href={`/${user.username}`}>
-          <a
-            style={{
-              height: "100%",
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <StyledAvatar src={(user.avatar as IMedia)?.media_url} />
-          </a>
-        </Link>
-      </StyledNavbarButtonContainer>
-    </StyledNavbarContainer>
+    <>
+      <StyledNavbarContainer>
+        <StyledNavbarButtonContainer>
+          <Link href="/">
+            <a
+              style={{
+                height: "100%",
+                width: "100%",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <HomeIcon isActive={activeId === 0} />
+            </a>
+          </Link>
+        </StyledNavbarButtonContainer>
+        <StyledNavbarButtonContainer>
+          <Link href="/explore">
+            <a
+              style={{
+                height: "100%",
+                width: "100%",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <SearchIcon />
+            </a>
+          </Link>
+        </StyledNavbarButtonContainer>
+        <StyledNavbarButtonContainer onClick={() => setOpenCreatePost(true)}>
+          <div className="add-post-input">
+            <label htmlFor="add-post">
+              <AddPostIcon />
+            </label>
+          </div>
+        </StyledNavbarButtonContainer>
+        <StyledNavbarButtonContainer>
+          <Link href="/accounts/activity">
+            <a
+              style={{
+                height: "100%",
+                width: "100%",
+                cursor: "pointer",
+                display: "flex",
+                position: "relative",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ActivityFeedIcon />
+              {isUnseenNotification && (
+                <div
+                  className="new-noti"
+                  style={{
+                    position: "absolute",
+                    bottom: "4px",
+                    background: "#ff3040",
+                    width: "4px",
+                    height: "4px",
+                    borderRadius: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
+                ></div>
+              )}
+            </a>
+          </Link>
+        </StyledNavbarButtonContainer>
+        <StyledNavbarButtonContainer>
+          <Link href={`/${user.username}`}>
+            <a
+              style={{
+                height: "100%",
+                width: "100%",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <StyledAvatar src={(user.avatar as IMedia)?.media_url} />
+            </a>
+          </Link>
+        </StyledNavbarButtonContainer>
+      </StyledNavbarContainer>
+      <CreateNewPostMobile open={openCreatePost} setOpen={setOpenCreatePost} />
+    </>
   );
 };
 

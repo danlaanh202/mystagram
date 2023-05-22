@@ -135,6 +135,11 @@ const Login = () => {
           handleShow("đăng nhập thành công!", "success");
           router.push("/");
         }
+        if (res === "fail") {
+          setLoading(false);
+          handleShow("đăng nhập thất bại!", "error");
+          // router.push("/");
+        }
       });
     } catch (error) {
       handleShow("Đăng nhập không thành công", "error");

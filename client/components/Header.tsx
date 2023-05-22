@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { IRootState } from "../redux/store";
 import HeaderNav from "./header/HeaderNav";
 import SearchInput from "./header/SearchInput";
 import { useRouter } from "next/router";
@@ -82,7 +80,7 @@ const Header = ({ isShow = true }: { isShow?: boolean }) => {
           </a>
         </Link>
         <SearchInput />
-        {/* <SearchDropdown /> */}
+
         <HeaderNav />
       </div>
     </StyledHeaderContainer>

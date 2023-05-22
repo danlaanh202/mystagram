@@ -19,6 +19,7 @@ const StyledSendNewMessage = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  max-width: 95%;
   .top {
     background: white;
     width: 400px;
@@ -31,6 +32,8 @@ const StyledSendNewMessage = styled.div`
     font-weight: 600;
     color: #262626;
     border-radius: 16px 16px 0 0;
+    max-width: 100%;
+
     &-icon-container {
       padding: 0 16px;
     }
@@ -52,6 +55,7 @@ const StyledSendNewMessage = styled.div`
     border-top: 1px solid #dbdbdb;
     display: flex;
     width: 400px;
+    max-width: 100%;
     &-to {
       font-weight: 600;
       color: #262626;
