@@ -1,4 +1,4 @@
-# Welcome to Mystagram API!
+# Welcome to Mystagram API! 🔥
 
 Hi! This is MYSTAGRAM API i created with [**#Nodejs**, **#Expressjs**, **#Cloudinary**, **#Socket-io** and **Peerjs**].
 
@@ -155,6 +155,13 @@ The database technology is **mongodb** with **mongoose** lib to easy access to d
 
 > **MONGO_URL**: Mongo database connection string (exp: mongodb://127.0.0.1:27017/instagram)
 > **PORT**: Run your server on port(exp: 4000)
-> **PASS_SEC**: Encrypt password need **PASS_SEC** > **JWT_SEC**: Create jsonwebtoken need **JWT SECRET** > **CLO_NAME**: Cloudinary name configuration
+> **PASS_SEC**: Encrypt password need **PASS_SEC**
+> **JWT_SEC**: Create jsonwebtoken need **JWT SECRET**
+> **CLO_NAME**: Cloudinary name configuration
 > **CLO_KEY**: Cloudinary key
 > **CLO_SEC**: Cloudinary secret key
+
+## About Author
+
+- My name is **Tran Thai Dan**, currently a student of HUST(Hanoi university of science and technology).
+- I create this project for showing what i have learned and how can i use my knowledge in the real project, i hope i can apply to a company with some of my pet projects!
