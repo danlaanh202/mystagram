@@ -1,6 +1,8 @@
 # Welcome to Mystagram API! 🔥
 
-Hi! This is MYSTAGRAM API i created with [**#Nodejs**, **#Expressjs**, **#Cloudinary**, **#Socket-io** and **Peerjs**].
+- My name is **Tran Thai Dan**, currently a student of HUST(Hanoi university of science and technology).
+- I create this project for showing what i have learned and how can i use my knowledge in the real project, i hope i can apply to a company with some of my pet projects!
+- This is MYSTAGRAM API i created with [**#Nodejs**, **#Expressjs**, **#Cloudinary**, **#Socket-io** and **Peerjs**].
 
 ## About this project
 
@@ -151,7 +153,9 @@ The database technology is **mongodb** with **mongoose** lib to easy access to d
 | GET    | /get     | Get messages with pagination | **limit = 1, page = 10, room_id, top_message** |
 | POST   | /send    | Send message                 | **user_id, message, room_id**                  |
 
-## Environment configuration
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
 
 - **MONGO_URL**: Mongo database connection string (exp: mongodb://127.0.0.1:27017/instagram)
 - **PORT**: Run your server on port(exp: 4000)
@@ -161,7 +165,7 @@ The database technology is **mongodb** with **mongoose** lib to easy access to d
 - **CLO_KEY**: Cloudinary key
 - **CLO_SEC**: Cloudinary secret key
 
-## About Author
+## Author
 
-- My name is **Tran Thai Dan**, currently a student of HUST(Hanoi university of science and technology).
-- I create this project for showing what i have learned and how can i use my knowledge in the real project, i hope i can apply to a company with some of my pet projects!
+- [@Facebook](https://www.facebook.com/TTD.Destiny.Info/)
+- [@danlaanh202](https://github.com/danlaanh202)

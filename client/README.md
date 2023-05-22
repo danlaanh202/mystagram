@@ -1,34 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Welcome to Mystagram Nextjs! 🔥🔥🔥
 
-## Getting Started
+Hi! My name is Tran Thai Dan, currently a third-year student of university. For a few months of learning Javascript and other technology. I decide to create this pet project base on `instagram` called **Mystagram** using **Nextjs**.  
+This project is for revision from what i learn, and i hope this will help me find a good opportunity to have a internship job.
 
-First, run the development server:
+## Installation
+
+After clone this repository, you must install all packages of this project to run this app.
 
 ```bash
-npm run dev
-# or
-yarn dev
+  npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Waiting for all the packages downloaded, you can run this app by using this:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+  npm run dev
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Environment Variables
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+To run this project, you will need to add the following environment variables to your **next.config.js** file
 
-## Learn More
+```bash
+/** @type {import('next').NextConfig} */
 
-To learn more about Next.js, take a look at the following resources:
+const nextConfig = {
+  swcMinify: true,
+  styledComponents: true,
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  cssModules: true,
+  images: {
+    domains: ["res.cloudinary.com"],
+  },
+  env: {
+    API_URL: "http://localhost:4000",
+  },
+};
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+module.exports = nextConfig;
 
-## Deploy on Vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Primary technology:** React(Nextjs)
+- **State management:** React-redux, @redux/toolkit, redux-persist
+- **CSS:** styled-components
+- **Components:** Material-UI
+- **Form validation:** react-hook-form, yup, @hookform/resolvers
+
+## Demo
+
+Insert gif or link to demo
