@@ -1,6 +1,6 @@
 # Welcome to Mystagram Nextjs! 🔥🔥🔥
 
-Hi! My name is Tran Thai Dan, currently a third-year student of university. For a few months of learning Javascript and other technology. I decide to create this pet project base on `instagram` called **Mystagram** using **Nextjs**.  
+Hi! My name is Tran Thai Dan, currently a third-year student of a university in Hanoi. For a few months of learning Javascript and other technology. I decide to create this pet project base on `instagram` called **Mystagram** using **Nextjs**.  
 This project is for revision from what i learn, and i hope this will help me find a good opportunity to have a internship job.
 
 ## Installation
