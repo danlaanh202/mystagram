@@ -140,8 +140,8 @@ The database technology is **mongodb** with **mongoose** lib to easy access to d
 
 | METHOD | ENDPOINT        | ACTION                                     | PARAMS/BODY            |
 | ------ | --------------- | ------------------------------------------ | ---------------------- |
-| GET    | /get_rooms      | Create Story                               | **userId**             |
-| GET    | /get_room_by_id | Create Story                               | **roomId**             |
+| GET    | /get_rooms      | Get rooms that include user_id                                | **userId**             |
+| GET    | /get_room_by_id | Get room by id                               | **roomId**             |
 | GET    | /unseen_number  | Get number of unseen message(last message) | **userId**             |
 | POST   | /create_room    | Create room chat                           | **my_user, recipient** |
 | POST   | /create_group   | Create group chat(**unavaiable yet**)      | **posterId, mediaId**  |
