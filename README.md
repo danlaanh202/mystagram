@@ -28,25 +28,26 @@ This project is a combination of researching and knowledge of mine.
 
 ## App Demo
 ### Desktop Demo
-- Signup page
+- Signup page  
 ![signup page](https://res.cloudinary.com/dantranne/image/upload/v1685186419/demo/sign_up_page_rf0h9y.png)
 
-- Login page
+- Login page  
 ![signin page](https://res.cloudinary.com/dantranne/image/upload/v1685186419/demo/login_page_sgkcgy.png)
 
-- Home page
+- Home page  
 ![Home page](https://res.cloudinary.com/dantranne/image/upload/v1685186420/demo/home_page_demo_lojmkn.png)
 
-- Chat page
+- Chat page  
 ![Chat page](https://res.cloudinary.com/dantranne/image/upload/v1685186419/demo/chat_page_demo_jdex3d.png)
 
-- Profile page
+- Profile page  
 ![Profile_page](https://res.cloudinary.com/dantranne/image/upload/v1685186420/demo/profile_page_demo_dhmgyn.png)
 
 ### Mobile Responsive Demo
-- Home Page Mobile  ![Home page mobile](https://res.cloudinary.com/dantranne/image/upload/v1685186419/demo/home_page_demo_mb_dn3gf5.png)
+- Home Page Mobile  
+![Home page mobile](https://res.cloudinary.com/dantranne/image/upload/v1685186419/demo/home_page_demo_mb_dn3gf5.png)
 
-- Profile Page Mobile 
+- Profile Page Mobile   
 ![profile demo](https://res.cloudinary.com/dantranne/image/upload/v1685186419/demo/profile_page_demo_mb_epalzq.png)
 
 
